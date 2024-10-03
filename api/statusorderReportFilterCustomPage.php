@@ -269,7 +269,36 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         $projectScoopInfo[] = $val;    
     } 	
 
-    $totalAmount = "SELECT 
+    $totalAmount = "SELECT
+        SUM(its.total_amount) AS totalPrice,
+        SUM(its.total_amount / its.base_currency_rate) AS totalPriceEUR,
+        SUM(COALESCE(tsv.total_job_price, 0)) AS jobExpenseReportTotal,
+        SUM(COALESCE(tsv.total_job_price, 0) / its.base_currency_rate) AS jobExpenseReportTotalEUR,
+        SUM(its.total_amount - COALESCE(tsv.total_job_price, 0)) AS totalDifference,
+        SUM(
+            (its.total_amount / its.base_currency_rate) - COALESCE(tsv.total_job_price, 0) / its.base_currency_rate
+        ) AS totalDifferenceEUR
+    FROM (
+        SELECT DISTINCT its.*
+        FROM tms_items its
+        LEFT JOIN tms_general gen ON its.order_id = gen.order_id
+        LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
+        LEFT JOIN tms_client c ON cust.client = c.iClientId
+        LEFT JOIN tms_user_status stus ON c.vStatus = stus.status_id
+        LEFT JOIN tms_client_indirect inc ON inc.iClientId = cust.indirect_customer
+        LEFT JOIN tms_users tu ON tu.iUserId = cust.project_manager
+        LEFT JOIN tms_project_type tpt ON its.project_type = tpt.pr_type_id
+        LEFT JOIN tms_project_status ps ON ps.pr_status_id = gen.project_status
+        LEFT JOIN (
+            SELECT order_id, item_id, SUM(total_price) AS total_job_price
+            FROM tms_summmery_view
+            GROUP BY order_id, item_id
+        ) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
+        WHERE 1=1 $qry_invc
+    ) its
+    LEFT JOIN ($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number";
+
+    $totalAmount__ = "SELECT 
     SUM(its.total_amount) AS totalPrice, 
     SUM(its.total_amount/its.base_currency_rate) AS totalPriceEUR,
     SUM(COALESCE(tsv.total_job_price, 0)) AS jobExpenseReportTotal,
@@ -309,7 +338,6 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     $totalRecords = $totalRecordsResult[0]['totalPriceEUR'] ?? 0;
     $jobExpenseReportTotal = $totalRecordsResult[0]['jobExpenseReportTotalEUR'] ?? 0;
     $totalDifference = $totalRecordsResult[0]['totalDifferenceEUR'] ?? 0;
-
 
     $alldataQuery = $dbConn->query($querydata);
     

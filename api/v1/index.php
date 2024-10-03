@@ -3848,6 +3848,11 @@ $app->get('/clientInvoiceApprovedScoop/:id', function ($id) use ($app) {
     $result = $invoice->getClientInvoiceApprovedScoop($id);
     echoResponse(200, $result);
 });
+$app->get('/clientInvoiceApprovedScoopTemp/:id', function ($id) use ($app) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientInvoiceApprovedScoopTemp($id);
+    echoResponse(200, $result);
+});
 $app->get('/getClientInvoiceByScoopId/:id','authenticate', function ($id) {
     $item = new Client_invoice ();
     $result = $item->getClientInvoiceByScoopId($id);
