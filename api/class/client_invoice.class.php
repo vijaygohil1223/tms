@@ -390,11 +390,14 @@ class Client_invoice
         GROUP BY invoice_id";
 
         $invoiceData1 = $this->_db->rawQuery($invoiceQ, [$id]);
+        // print_r($invoiceData1);exit;
         $this->_db->where('invoice_id', $id);
         $invoiceRecords = $this->_db->get('tms_invoice_client');
-
-        if($invoiceData1[0]['total_partial_paid'] == $invoiceRecords[0]['Invoice_cost']){
-            $data['invoice_status'] = 'Completed';
+        // print_r($invoiceRecords);exit;
+        if (!empty($invoiceData1) && !empty($invoiceRecords)) {
+            if($invoiceData1[0]['total_partial_paid'] == $invoiceRecords[0]['Invoice_cost']){
+                $data['invoice_status'] = 'Completed';
+            }
         }
         /* Insert Part paid invoice payment detail in database END */
 
@@ -409,6 +412,9 @@ class Client_invoice
         }
         if($data['invoice_status'] == 'Open'){
             $data['paid_amount'] = 0;
+            $payData['is_deleted'] = 1;
+            $this->_db->where('invoice_id', $id);
+            $this->_db->update('tms_invoice_client_payments', $payData);
         }
         
         $this->_db->where('invoice_id', $id);
@@ -570,6 +576,7 @@ class Client_invoice
     public function getClientInvoicePartPayments($id)
     {
         $this->_db->where('invoice_id', $id);
+        $this->_db->where('is_deleted', 0);
         $data = $this->_db->get('tms_invoice_client_payments');
         return $data;
     }
@@ -1141,6 +1148,7 @@ class Client_invoice
 
             // delete invoice payment data
             $this->_db->where('invoice_id', $id);
+            $this->_db->where('is_deleted', 0);
             $paymentdelete = $this->_db->delete('tms_invoice_client_payments');
 
             if ($delete) {
