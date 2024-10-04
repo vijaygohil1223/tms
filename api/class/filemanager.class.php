@@ -290,7 +290,32 @@ class filemanager {
             if($id > 0){
                 $this->_db->where('parent_id',$id);
                 $data = $this->_db->get('tms_filemanager');    
-                $dataArr = $this->_db->get('tms_filemanager');    
+                //$dataArr = $this->_db->get('tms_filemanager');    
+                $escaped_id = $this->_db->escape($id);
+                // Define the SQL query with the recursive CTE
+                $sql = "
+                WITH RECURSIVE FileTree AS (
+                    SELECT
+                        *,
+                        1 AS depth
+                    FROM tms_filemanager
+                    WHERE parent_id = $escaped_id
+                
+                    UNION ALL
+                
+                    SELECT
+                        t.*,
+                        ft.depth + 1 AS depth
+                    FROM tms_filemanager t
+                    INNER JOIN FileTree ft ON t.parent_id = ft.fmanager_id
+                    WHERE ft.depth < 10
+                )
+                SELECT *
+                FROM FileTree
+                ORDER BY fmanager_id DESC
+                ";
+                $dataArr = $this->_db->rawQueryNew($sql); 
+                
                 $i = 0;
                 foreach($data as $data1){
                     $data[$i]['countchild'] = 0;

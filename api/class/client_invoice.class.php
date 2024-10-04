@@ -386,14 +386,12 @@ class Client_invoice
         }
         $invoiceQ = "SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid 
         FROM tms_invoice_client_payments 
-        WHERE invoice_id = ? 
+        WHERE invoice_id = ? AND is_deleted = 0
         GROUP BY invoice_id";
 
         $invoiceData1 = $this->_db->rawQuery($invoiceQ, [$id]);
-        // print_r($invoiceData1);exit;
         $this->_db->where('invoice_id', $id);
         $invoiceRecords = $this->_db->get('tms_invoice_client');
-        // print_r($invoiceRecords);exit;
         if (!empty($invoiceData1) && !empty($invoiceRecords)) {
             if($invoiceData1[0]['total_partial_paid'] == $invoiceRecords[0]['Invoice_cost']){
                 $data['invoice_status'] = 'Completed';
@@ -410,6 +408,7 @@ class Client_invoice
         if (!in_array($data['invoice_status'], ['Complete', 'Completed', 'Paid'])) {
             $data['paid_date'] = "0000-00-00 00:00:00";
         }
+        // status 'Open' is for Outstanding as per new changes
         if($data['invoice_status'] == 'Open'){
             $data['paid_amount'] = 0;
             $payData['is_deleted'] = 1;
@@ -1022,7 +1021,7 @@ class Client_invoice
         $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id', 'LEFT');
         //$this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id', 'LEFT');
         $this->_db->join('tms_invoice_credit_notes tcn', 'tcn.invoice_id=tmInvoice.invoice_id', 'LEFT');
-        $this->_db->join('(SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid FROM tms_invoice_client_payments GROUP BY invoice_id) tcp', 'tcp.invoice_id=tmInvoice.invoice_id', 'LEFT');
+        $this->_db->join('(SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid FROM tms_invoice_client_payments WHERE is_deleted = 0 GROUP BY invoice_id) tcp', 'tcp.invoice_id=tmInvoice.invoice_id', 'LEFT');
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
         $this->_db->where('tmInvoice.invoice_type', $type);
         $this->_db->where('tmInvoice.is_deleted ', ' != 1');
@@ -1148,7 +1147,7 @@ class Client_invoice
 
             // delete invoice payment data
             $this->_db->where('invoice_id', $id);
-            $this->_db->where('is_deleted', 0);
+            //$this->_db->where('is_deleted', 0);
             $paymentdelete = $this->_db->delete('tms_invoice_client_payments');
 
             if ($delete) {
