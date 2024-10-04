@@ -384,6 +384,18 @@ class Client_invoice
             else
                 $partPaymentInsert = 1;
         }
+        $invoiceQ = "SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid 
+        FROM tms_invoice_client_payments 
+        WHERE invoice_id = ? 
+        GROUP BY invoice_id";
+
+        $invoiceData1 = $this->_db->rawQuery($invoiceQ, [$id]);
+        $this->_db->where('invoice_id', $id);
+        $invoiceRecords = $this->_db->get('tms_invoice_client');
+
+        if($invoiceData1[0]['total_partial_paid'] == $invoiceRecords[0]['Invoice_cost']){
+            $data['invoice_status'] = 'Completed';
+        }
         /* Insert Part paid invoice payment detail in database END */
 
         unset($data['partPaid']);
@@ -392,7 +404,13 @@ class Client_invoice
             unset($data['is_update']);
         }
         $data['modified_date'] = date('Y-m-d');
-        $data['paid_date'] = "0000-00-00 00:00:00";
+        if (!in_array($data['invoice_status'], ['Complete', 'Completed', 'Paid'])) {
+            $data['paid_date'] = "0000-00-00 00:00:00";
+        }
+        if($data['invoice_status'] == 'Open'){
+            $data['paid_amount'] = 0;
+        }
+        
         $this->_db->where('invoice_id', $id);
         $idd = $this->_db->update('tms_invoice_client', $data);
 
