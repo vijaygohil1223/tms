@@ -37478,8 +37478,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
         console.log('invoiceStatus', invoiceStatus)
         
-        var i, j, totalChecked, successMsg;
-        i = j = totalChecked = successMsg = 0;
+        var i, j, totalChecked, successMsg, completedRequests;
+        i = j = totalChecked = successMsg = completedRequests = 0;
         if(invoiceStatus != ''){
             console.log('$scope.checkedIds',$scope.checkedIds )
             //for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
@@ -37534,6 +37534,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = "clientInvoiceStatusChange";
                         rest.put($scope.inv).success(function (data) {
                             successMsg++;
+                            completedRequests++;
+                            checkCompletion();
                             //$scope.getInvoicePartPayments()
                             //$uibModalInstance.dismiss('cancel');
                             //$route.reload();
@@ -37548,6 +37550,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = "clientInvoiceStatusChange";
                         rest.put($scope.invoice).success(function (data) {
                             successMsg++;
+                            completedRequests++;
+                            checkCompletion();
                             // if (i == invoiceCheckLength) {
                             //     successMsg++;
                             //     $route.reload();
@@ -37556,17 +37560,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 j++;
-                if($scope.checkedIds.length == j){
-                //if(i == j){
-                    if(totalChecked == 0)
-                        notification('Please select invoice.', 'warning');
-                    setTimeout(() => {
-                        if(successMsg>0){
-                            notification('Status Updated successfully.', 'success')
-                            $route.reload();
+                
+                function checkCompletion() {
+                    if (completedRequests === totalChecked) {
+                        if (totalChecked === 0) {
+                            notification('Please select invoice.', 'warning');
+                        } else if (successMsg > 0) {
+                            notification('Status Updated successfully.', 'success');
                         }
-                    }, 500);    
+                        $route.reload();
+                    }
                 }
+                // if($scope.checkedIds.length == j){
+                //     if(totalChecked == 0)
+                //         notification('Please select invoice.', 'warning');
+                //     setTimeout(() => {
+                //         if(successMsg>0){
+                //             notification('Status Updated successfully.', 'success')
+                //             $route.reload();
+                //         }
+                //     }, 500);    
+                // }
             })
             //}
             
