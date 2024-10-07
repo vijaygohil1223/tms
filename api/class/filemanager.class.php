@@ -314,7 +314,12 @@ class filemanager {
                 FROM FileTree
                 ORDER BY fmanager_id DESC
                 ";
-                $dataArr = $this->_db->rawQueryNew($sql); 
+                
+                if (defined('STATIC_SERVER_NAME') && STATIC_SERVER_NAME && STATIC_SERVER_NAME == 'kanhasoft') {
+                    $dataArr = $this->_db->get('tms_filemanager');
+                }else{
+                    $dataArr = $this->_db->rawQueryNew($sql);    
+                } 
                 
                 $i = 0;
                 foreach($data as $data1){
@@ -1169,7 +1174,9 @@ array(
         // Fetch the initial fmanager record for the given item_id
         $this->_db->where('item_id', $id);
         $fmanagerId = $this->_db->getOne('tms_filemanager');
-    
+        
+        $count = 0;
+        
         if ($fmanagerId) {
             // Use a recursive SQL query to fetch all the related records (children)
             $sql = "WITH RECURSIVE file_hierarchy AS (
@@ -1185,14 +1192,25 @@ array(
                     )
                     SELECT * FROM file_hierarchy";
             
-            $dataArr = $this->_db->rawQuery($sql, array($fmanagerId['fmanager_id']));
-            //$dataArr = $this->_db->rawQuery($sql);
+            if (defined('STATIC_SERVER_NAME') && STATIC_SERVER_NAME && STATIC_SERVER_NAME == 'kanhasoft') {
+                $dataArr = $this->_db->get('tms_filemanager');
+                $data = []; 
+                $this->treeArr_data_count = self::buildTreePathForFielsCount($dataArr,$fmanagerId['fmanager_id']);
+                if (is_array($this->treeArr_data_count)) {
+                    foreach ($this->treeArr_data_count as $item) {
+                        if (isset($item['f_id']) && $item['f_id'] > 0) {
+                            $count++;
+                        }
+                    }
+                }
 
-            // Count the number of files (f_id)
-            $count = 0;
-            foreach ($dataArr as $item) {
-                if (isset($item['f_id']) && $item['f_id'] > 0) {
-                    $count++;
+            }else{
+                $dataArr = $this->_db->rawQuery($sql, array($fmanagerId['fmanager_id']));
+                // Count the number of files (f_id)
+                foreach ($dataArr as $item) {
+                    if (isset($item['f_id']) && $item['f_id'] > 0) {
+                        $count++;
+                    }
                 }
             }
     

@@ -392,7 +392,8 @@ class Client_invoice
         $invoiceData1 = $this->_db->rawQuery($invoiceQ, [$id]);
         $this->_db->where('invoice_id', $id);
         $invoiceRecords = $this->_db->get('tms_invoice_client');
-        if (!empty($invoiceData1) && !empty($invoiceRecords)) {
+        if ( $data['invoice_status'] != 'Open' && !empty($invoiceData1) && !empty($invoiceRecords)) {
+        //if (!empty($invoiceData1) && !empty($invoiceRecords)) {
             if($invoiceData1[0]['total_partial_paid'] == $invoiceRecords[0]['Invoice_cost']){
                 $data['invoice_status'] = 'Completed';
             }
