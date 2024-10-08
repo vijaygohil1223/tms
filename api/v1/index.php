@@ -4287,5 +4287,12 @@ $app->post('/ordersearchItemStatusBulkUpdate', function () use($app) {
     $result = $statusOrder->ordersearchItemStatusBulkUpdate($data);
     echoResponse(200, $result);
 });
+
+$app->post('/ordersearchItemStatusBulkUpdate1', function () use($app) {
+    $statusOrder = new orderstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusOrder->ordersearchItemStatusBulkUpdate1($data);
+    echoResponse(200, $result);
+});
 $app->run();
 ?>
