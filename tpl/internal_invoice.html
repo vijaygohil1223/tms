@@ -25,9 +25,9 @@
       <div class="content_head bg-light lter b-b wrapper-md ng-scope d-flex" style="justify-content:space-between;">
         <h1 class="m-n font-thin h3">Invoice List</h1>
         <div>
-          <button class="btn btn-info" ng-click="exportData('invoicePDF')" ng-disavled="{{invoiceDisables}}">Invoice pdf
+          <button class="btn btn-info" ng-click="exportData('invoicePDF', invoiceActive)" ng-disavled="{{invoiceDisables}}">Invoice pdf
             &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i></button>
-          <button class="btn btn-info" ng-click="exportData('excel')">Excel &nbsp;<i
+          <button class="btn btn-info" ng-click="exportData('excel',invoiceActive)">Excel &nbsp;<i
               class="glyphicon glyphicon-download-alt" aria-hidden="true"></i></button>
           <a class="btn btn-info" href="#/invoice-linguist-jobs">Create Invoice</a>
         </div>
@@ -357,7 +357,7 @@
                   <th>Invoice Status</th>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="invoiceL in invoiceListAll">
+                  <tr ng-repeat="invoiceL in invoiceListSelected">
                     <td ng-bind="$index + 1"></td>
                     <td>{{invoiceL.org_invoice_number}} </td>
                     <td ng-bind="invoiceL.freelanceName"></td>
