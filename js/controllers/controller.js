@@ -21582,9 +21582,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification("Please select a record.", "warning");
         }
     }
-    
     // end export pdf
-
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date, isMultiple){
         var html = angular.element(
