@@ -35511,11 +35511,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.bccHideShow = function () {
         angular.element('#bccHideShow').toggleClass('none');
     }
-    // $timeout(function () {
-    //     angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(2)').prop('disabled', true);
-    //     angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(3)').prop('disabled', true);
-    //     angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
-    // }, 500);
+    $timeout(function () {
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(2)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(3)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
+    }, 500);
 
     $timeout(function () {
         var editor = angular.element('#jobPO').froalaEditor({
@@ -35543,14 +35543,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             theme: 'gray',
             height: 250,
             zIndex: 2001,
-            imageUploadURL: '/api/v1/knowledgeArticleImage',
-            imageUploadParams: {
-                id: 'my_editor'
-            },
-            fileUploadURL: '/api/v1/knowledgeArticlefile',
-            fileUploadParams: {
-                id: 'my_editor'
-            }
         }).on('froalaEditor.contentChanged', function (e, editor) {
             // Sync Froala editor content with AngularJS model
             $scope.$apply(function () {
