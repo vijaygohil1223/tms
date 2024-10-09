@@ -868,7 +868,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         } else {
                             $window.localStorage.setItem("invoiceDesignType", 2);
                         }
-                    }).error(errorCallback);
+                    }).error( function(){
+                        $window.localStorage.setItem("invoiceDesignType", 2);
+                    });
 
                     $location.path('/dashboard1');
                 }).error(errorCallback, $('#loginSpin').hide());
