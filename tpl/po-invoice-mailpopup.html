@@ -106,9 +106,12 @@
     </div> -->
     <br><br>
     <div class="form-group"> 
-      <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
-      <div style="padding-left:18%;" class="messText" text-angular="text-angular" name="htmlcontent" ng-model="cPersonMsg.messageData"  required> </div>
+      <textarea id="jobPO" name="jobPO" style="padding-left:18%;"
+      ng-model="cPersonMsg.messageData" required></textarea>
+  
+      <!-- <div style="padding-left:18%;" class="messText" text-angular="text-angular" name="htmlcontent" ng-model="cPersonMsg.messageData"  required> </div> -->
     </div>
+
      <div class="pull-right">
           <button class="btn btn-info" ng-click="ok('message_form',cPersonMsg)"><span class="fa fa-envelope"></span> Send</button>
           <button class="btn btn-info" ng-click="cancel()"><span class="fa fa-times"></span> Cancel</button>
