@@ -32531,6 +32531,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('div.fr-wrapper + div').remove();
         $('.fr-toolbar').find("button:eq(2)").remove();
     }, 200);
+    
 
     rest.path = 'emailSignget';
     rest.get().success(function (data) {
@@ -35515,6 +35516,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(3)').prop('disabled', true);
         angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
     }, 500);
+
+    $timeout(function () {
+        var editor = angular.element('#jobPO').froalaEditor({
+            toolbarButtons: [
+                'fontSize', 'bold', 'italic', 'underline', 'paragraphFormat',
+                'align', 'quote', 'formatOL', 'formatUL', 'undo', 'redo',
+                'html', 'color'
+            ],
+            colorsBackground: [
+                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+                '#800000', '#808000', '#008000', '#800080', '#008080', '#000080', '#808080', '#C0C0C0',
+                '#FF6347', '#40E0D0', '#4682B4', '#D2691E', '#9ACD32', '#FF1493', '#00BFFF', '#8A2BE2'
+            ],
+            colorsText: [
+                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+                '#800000', '#808000', '#008000', '#800080', '#008080', '#000080', '#808080', '#C0C0C0',
+                '#FF6347', '#40E0D0', '#4682B4', '#D2691E', '#9ACD32', '#FF1493', '#00BFFF', '#8A2BE2'
+            ],
+            inlineStyles: {
+                'Big Red': 'font-size: 20px; color: red;',
+                'Small Blue': 'font-size: 14px; color: blue;',
+                'Italic': 'font-style: italic;',
+                'Normal': 'font-style: normal;'
+            },
+            theme: 'gray',
+            height: 250,
+            zIndex: 2001,
+        }).on('froalaEditor.contentChanged', function (e, editor) {
+            // Sync Froala editor content with AngularJS model
+            $scope.$apply(function () {
+                $scope.cPersonMsg.messageData = editor.html.get();
+            });
+        }).on('froalaEditor.initialized', function (e, editor) {
+            // Set Froala editor content from AngularJS model
+            editor.html.set($scope.cPersonMsg.messageData || '');
+        });
+    
+        // Watch the ng-model for changes and update Froala editor content
+        $scope.$watch('cPersonMsg.messageData', function (newValue, oldValue) {
+            if (newValue !== oldValue && editor.froalaEditor('html.get') !== newValue) {
+                editor.froalaEditor('html.set', newValue);
+            }
+        });
+    });
 
 
     $scope.getFile = function (file) {
