@@ -868,7 +868,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         } else {
                             $window.localStorage.setItem("invoiceDesignType", 2);
                         }
-                    }).error(errorCallback);
+                    }).error( function(){
+                        $window.localStorage.setItem("invoiceDesignType", 2);
+                    });
 
                     $location.path('/dashboard1');
                 }).error(errorCallback, $('#loginSpin').hide());
@@ -20670,6 +20672,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.resourceType = 2;
     $window.localStorage.userType = 1;
     var allInvoiceListArr = [];
+    $scope.invoiceListSelected = [];
     
     $scope.padNumber = function(number) {
         let numStr = number.toString();
@@ -21180,7 +21183,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $("#paymentExdate").trigger( "click" );        
     }
     //Linguist Invoice export to excel
-    $scope.exportData = function (type) {
+    $scope.exportData = function (type, activeTabName) {
+
         try{
             $scope.invoiceDisables = true;
         }catch{
@@ -21191,10 +21195,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceListSelected = [];
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            //$scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
             const invoiceListClone = [...$scope.invoiceListAll];
             $scope.invoiceListSelected = invoiceListClone.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         }
+        console.log('$scope.checkedIds', $scope.checkedIds)
+        console.log('activeTabName', activeTabName)
+
+        console.log('$scope.invoiceListSelected',$scope.invoiceListSelected )
+        //return false;
+
         
         switch (type) {
             //case "Allexcel":
@@ -21212,7 +21222,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                $route.reload();
+                                //$route.reload();
                                 notification('File downloaded successfully', 'success');
                                 // $scope.checkedIds = [];
                             }
@@ -21560,7 +21570,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             try {
                 // After all promises are resolved
                 const pdfDataArray = await Promise.all(pdfPromises);
-                console.log('pdfDataArray', pdfDataArray)
+                //console.log('pdfDataArray', pdfDataArray)
                 
                 // var pdfFile = pdfDataArray.map((pdfData, index) => ({
                 //     name: pdfData.name,
@@ -21603,9 +21613,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const content = await zipdwnld.generateAsync({ type: 'blob' });
                         saveAs(content, 'Invoices.zip');
                         notification("Download successful.", "success");
-                        setTimeout(() => {
-                            $route.reload();
-                        }, 200);
+                        // setTimeout(() => {
+                        //     $route.reload();
+                        // }, 200);
                     } catch (error) {
                         console.error('Error generating zip with files:', error);
                     }
@@ -21614,9 +21624,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const content = await zipdwnld.generateAsync({ type: 'blob' });
                     saveAs(content, 'Invoices.zip');
                     notification("Download successful.", "success");
-                    setTimeout(() => {
-                        $route.reload();
-                    }, 200);
+                    // setTimeout(() => {
+                    //     $route.reload();
+                    // }, 200);
                 }
             } catch (error) {
                 console.error('Error generating PDFs:', error);
@@ -21628,9 +21638,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification("Please select a record.", "warning");
         }
     }
-    
     // end export pdf
-
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date, isMultiple){
         var html = angular.element(
