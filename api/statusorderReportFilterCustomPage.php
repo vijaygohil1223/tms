@@ -103,6 +103,9 @@ function statusorderReportFilterCustomPage($post, $dbConn){
 
     if (isset($filterParams['customer'])) {
         $qry_invc .= " AND cust.client = '" . $filterParams['customer'] . "'";
+        $text = "its.total_amount";
+    }else{
+        $text = "its.total_amount / its.base_currency_rate";
     }
 
     if (isset($filterParams['contactPerson'])) {
@@ -268,18 +271,28 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     while ($val = $projectScoopInfo1->fetch_assoc()) {
         $projectScoopInfo[] = $val;    
     } 	
+    if(isset($filterParams['customer'])){
+
+    }
+
+    // if(cli){
+    //     $text = "its.total_amount";
+    // }else{
+    //     $text = "its.total_amount / its.base_currency_rate";
+    // }
 
     $totalAmount = "SELECT
+        c.client_currency,
         SUM(its.total_amount) AS totalPrice,
-        SUM(its.total_amount / its.base_currency_rate) AS totalPriceEUR,
+        SUM($text) AS totalPriceEUR,
         SUM(COALESCE(tsv.total_job_price, 0)) AS jobExpenseReportTotal,
         SUM(COALESCE(tsv.total_job_price, 0) / its.base_currency_rate) AS jobExpenseReportTotalEUR,
         SUM(its.total_amount - COALESCE(tsv.total_job_price, 0)) AS totalDifference,
         SUM(
-            (its.total_amount / its.base_currency_rate) - COALESCE(tsv.total_job_price, 0) / its.base_currency_rate
+            ($text) - COALESCE(tsv.total_job_price, 0) / its.base_currency_rate
         ) AS totalDifferenceEUR
     FROM (
-        SELECT DISTINCT its.*
+        SELECT DISTINCT its.*, c.client_currency
         FROM tms_items its
         LEFT JOIN tms_general gen ON its.order_id = gen.order_id
         LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
@@ -296,7 +309,27 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         ) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
         WHERE 1=1 $qry_invc
     ) its
-    LEFT JOIN ($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number";
+    LEFT JOIN ($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
+    LEFT JOIN tms_general gen ON its.order_id = gen.order_id
+    LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
+    LEFT JOIN tms_client c ON cust.client = c.iClientId";
+
+    // Execute the query
+    $getTotalRecordsQuery = $dbConn->query($totalAmount);
+
+    // Check if the query executed successfully
+    if (!$getTotalRecordsQuery) {
+        // Query failed, output the error for debugging
+        die('Query failed: ' . $dbConn->error);
+    }
+
+    // Fetch the results if query was successful
+    $totalRecordsResult = [];
+    while ($val = $getTotalRecordsQuery->fetch_assoc()) {
+        $totalRecordsResult[] = $val;
+    }
+
+   
 
     $totalAmount__ = "SELECT 
     SUM(its.total_amount) AS totalPrice, 
@@ -338,6 +371,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     $totalRecords = $totalRecordsResult[0]['totalPriceEUR'] ?? 0;
     $jobExpenseReportTotal = $totalRecordsResult[0]['jobExpenseReportTotalEUR'] ?? 0;
     $totalDifference = $totalRecordsResult[0]['totalDifferenceEUR'] ?? 0;
+    $clientCurrency = $totalRecordsResult[0]['client_currency'] ?? 0;
 
     $alldataQuery = $dbConn->query($querydata);
     
@@ -351,6 +385,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     $results['totalAmount'] = $totalRecords;
     $results['jobExpenseReportTotal'] = $jobExpenseReportTotal;
     $results['totalDifference'] = $totalDifference;
+    $results['clientCurrency'] = $clientCurrency;
     $results['info'] = $info;
     $results['Typeinfo'] = $Typeinfo;
     $results['customerType'] = $customerType;

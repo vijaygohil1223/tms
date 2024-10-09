@@ -11041,6 +11041,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Initial calculation
     $scope.calculateTotals();
 
+    
+
     $scope.storeScoopOrders = function(id){
         $window.localStorage.scoopReport = JSON.stringify($scope.orderReport);
         if (id) {
@@ -11159,10 +11161,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var html = '<div>' +
                '<input type="checkbox" id="orderCheck' + meta.row + '" ' +
                'name="orderCheck' + meta.row + '" ng-model="checkdata[' + meta.row + ']" ' +
-               'ng-checked="checkdata== \'ordercheck\'">' +
+               'ng-checked="checkdata[' + meta.row + ']" ng-click="toggleSelection('+full.scoopId+', $event)">' +
                '<input type="text" id="orderCheckData' + meta.row + '" ' +
                'name="orderCheckData' + index + '" style="display: none;" ' +
-               'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.scoopId + '\'">' +
+               'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.scoopId + '\'" >' +
                '</div>';
 
             // Use $timeout and $compile to ensure AngularJS processes the bindings
@@ -11171,10 +11173,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledHtml);
             }, 0);
             return ''; 
-            // return `<input type="checkbox" id="orderCheck${index}" name="orderCheck${index}" 
-            //                ng-model="checkor" ng-checked="checkdata == 'ordercheck'">
-            //         <input type="text" id="orderCheckData${index}" name="orderCheckData${index}" 
-            //                style="display: none;" value=${full.scoopId}>`;
         }),
         DTColumnBuilder.newColumn(null).withTitle('Orders Number').renderWith(function(data, type, full, meta) {
             var html = '<a ng-click="storeScoopOrders(' + full.orderId + ')" class="summeryColor">' +
@@ -11258,12 +11256,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 search: data.search.value,
                 filterParams: $scope.orderReport
             };
+            $scope.paramData = params;
 
             // API call to fetch data
             $http.post('api/statusorderReportFilterCustomPage.php', params)
                 .then(function(response) {
                     var res = response?.data;
-                    console.log('Server Response:', res.data.totalAmount);
 
                     // Pass the data to DataTables
                     callback({
@@ -11278,7 +11276,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.totalScoopAmount = res.data.totalAmount;
                     $scope.totalJobExpenseReport = res.data.jobExpenseReportTotal;
                     $scope.totalDifference = res.data.totalDifference;
-                    console.log('$scope.statusResult==1.', $scope.statusResult)
+                    $scope.clientCurrency = res.data.clientCurrency;
                     // $scope.Dateobject = Dateobject;
 
                     $scope.showDataLoader = false;
@@ -11442,7 +11440,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.calculateItemShare = function(totalItemAmount) {
                         // let totalItemAmount = parseFloat(angular.element('#totalItemAmout').text()) || 0;
                         angular.forEach($scope.Dateobject, function(val, i) {
-                            console.log("total1111", totalItemAmount)
                             let total = val.itemAmount * 100 / totalItemAmount;
                             
                             $scope.Dateobject[i].itemShare = total ? total.toFixed(2) + '%' : '0.0%';
@@ -11574,6 +11571,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         return $scope.totalDifference;
     };
+
+    $scope.calculateclientCurrency = function() {
+        return $scope.clientCurrency;
+    };
+
+    $scope.unselectedIDs = [];
+
+    $scope.toggleSelection = function(id, event) {
+        var isChecked = event.target.checked;
+        if (isChecked) {
+            const index = $scope.unselectedIDs.indexOf(id);
+            if (index !== -1) {
+                $scope.unselectedIDs.splice(index, 1);
+            }
+            // If checked, add to unselectedIDs array
+            
+        } else {
+            // If unchecked, remove from unselectedIDs array
+            $scope.unselectedIDs.push(id);
+        }
+    };
+
+    
 
     //items total graph
     var chart;
@@ -12066,39 +12086,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "Change item status":
-                const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
-                if (!itemStatus) {
-                    notification('Status not available!', 'warning');
-                    return;
-                }
-                const scoopIds = [];
-                const checkboxes = angular.element('[id^=orderCheckData]');
-                checkboxes.each((index, element) => {
-                    if (document.querySelector(`#orderCheck${index}`).checked) {
-                        const orderId = angular.element(element).val();
-                        scoopIds.push(orderId);
+
+                bootbox.confirm("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong>", function (result) {
+                    if (result == true) {
+                        const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+                        if (!itemStatus) {
+                            notification('Status not available!', 'warning');
+                            return;
+                        }
+                        const scoopIds = [];
+                        // const checkboxes = angular.element('[id^=orderCheckData]');
+                        // checkboxes.each((index, element) => {
+                        //     if (document.querySelector(`#orderCheck${index}`).checked) {
+                        //         const orderId = angular.element(element).val();
+                        //         scoopIds.push(orderId);
+                        //     }
+                        // });
+
+                        const checkboxes = angular.element('[id^=orderCheckData]');
+                        let allSelected = true; // Variable to track if all checkboxes are selected
+
+                        checkboxes.each((index, element) => {
+                            const checkbox = document.querySelector(`#orderCheck${index}`);
+                            if (!checkbox.checked) {
+                                allSelected = false; // If any checkbox is not checked, set `allSelected` to false
+                            }
+                            if (checkbox.checked) {
+                                const orderId = angular.element(element).val();
+                                scoopIds.push(orderId);
+                            }
+                        });
+
+                        if (!allSelected) {
+                            $scope.paramData['unselected_ids'] = $scope.unselectedIDs;
+                        }
+
+                        if (scoopIds.length === 0) {
+                            notification('No orders selected!', 'warning');
+                            return;
+                        }
+                        $scope.paramData['scoop_status'] = itemStatus;
+                        
+                        const updateStatus = async () => {
+                            try {
+                                rest.path = 'ordersearchItemStatusBulkUpdate1';
+                                await rest.post($scope.paramData).success(data => {
+                                    notification('Status updated successfully', 'success');
+                                    $route.reload();
+                                }).error(errorCallback);
+                            } catch (err) {
+                                console.error("An error occurred:", err);
+                            }
+                        };
+                        updateStatus();
                     }
                 });
-                if (scoopIds.length === 0) {
-                    notification('No orders selected!', 'warning');
-                    return;
-                }
-                const postArr = {
-                    scoop_status: itemStatus,
-                    scoop_array: scoopIds
-                };
-                const updateStatus = async () => {
-                    try {
-                        rest.path = 'ordersearchItemStatusBulkUpdate';
-                        await rest.post(postArr).success(data => {
-                            notification('Status updated successfully', 'success');
-                            $route.reload();
-                        }).error(errorCallback);
-                    } catch (err) {
-                        console.error("An error occurred:", err);
-                    }
-                };
-                updateStatus();
             
             break;
                     
@@ -12140,13 +12182,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //         console.error("An error occurred:", err);
             //     });
             //     break;
+            // case "Remove selection":
+            //     $scope.checkdata = false;
+            //     for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+            //         var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+            //         if (itemselect == 'true') {
+            //             var jobId = angular.element('#orderCheckData' + i).val();
+            //             $("#orderCheck" + i).prop("checked", false);
+            //         }
+            //     }
+            //     break;
             case "Remove selection":
-                $scope.checkdata = false;
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                for (var i = 0; i < angular.element('[id^=orderCheck]').length; i++) {
                     var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
                     if (itemselect == 'true') {
-                        var jobId = angular.element('#orderCheckData' + i).val();
-                        $("#orderCheck" + i).prop("checked", false);
+                    var jobId = angular.element('#orderCheckData' + i).val();
+                    $("#orderCheck" + i).prop("checked", false);
+                    $scope.checkdata[i] = false; // Clear the selection in AngularJS model
                     }
                 }
                 break;
@@ -12179,14 +12231,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // });
                 // saveAs(blob, "Order-status-report.xls");
                 break;
-            case "Select all":
-                $scope.checkdata = "ordercheck";
-                // $scope.checkdata = true;
-                break;
+                case "Select all":
+                    $scope.checkdata = [];
+                    for (var i = 0; i < angular.element('[id^=orderCheck]').length; i++) {
+                      $scope.checkdata[i] = true; // Set each checkbox as selected
+                    }
+                    break;
         }
     }
 
-    console.log("$scope.statusResult",$scope.statusResult ) 
+
 
 
     $scope.dtOptions = DTOptionsBuilder.newOptions().
