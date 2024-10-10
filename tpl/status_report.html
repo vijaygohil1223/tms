@@ -471,7 +471,7 @@
                                   <div class="col-sm-4 m-b-xs">
                                      <div class="d-flex justify-space-between">
                                        <div>
-                                          <strong>Total:</strong> {{ calculateTotal() | customNumber }} ({{ calculateclientCurrency() ? calculateclientCurrency() : 'EUR (€)' }})
+                                          <strong>Total:</strong> {{ calculateTotal() | customNumber }} ({{ calculateclientCurrency() ? calculateclientCurrency().split(',')[0] : 'EUR' }})
                                       </div>
                                       
                                         <button class="btn m-b-xs btn-info"
@@ -503,7 +503,7 @@
                                     <tfoot>
                                         <tr>
                                           <th colspan="3"></th>
-                                          <th>(Amount In {{ calculateclientCurrency() ? calculateclientCurrency() : 'EUR (€)' }}: )</th>
+                                          <th>(Amount In {{ calculateclientCurrency() ? calculateclientCurrency().split(',')[0] : 'EUR' }}: )</th>
                                           <th id="totalScoop"><strong>{{ calculateTotal() | customNumber }}</strong></th>
                                           <th id="totalJobExpense"><strong>{{ calculatejobExpenseReportTotal() | customNumber }}</strong></th>
                                           <th id="totalCl"><strong>{{ calculatetotalDifference() | customNumber }}</strong></th>

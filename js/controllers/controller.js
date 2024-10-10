@@ -11204,7 +11204,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var html = '<div>' +
                '<input type="checkbox" id="orderCheck' + meta.row + '" ' +
                'name="orderCheck' + meta.row + '" ng-model="checkdata[' + meta.row + ']" ' +
-               'ng-checked="checkdata[' + meta.row + ']" ng-click="toggleSelection('+full.scoopId+', $event)">' +
+               'ng-checked="checkdata[' + index + ']" ng-click="toggleSelection('+full.scoopId+', $event)">' +
                '<input type="text" id="orderCheckData' + meta.row + '" ' +
                'name="orderCheckData' + index + '" style="display: none;" ' +
                'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.scoopId + '\'" >' +
@@ -11313,7 +11313,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         recordsFiltered: res.recordsFiltered,
                         data: res['data']['data'] ? res['data']['data'] : []
                     });
-                    
+                    $scope.totalRecords = res.recordsTotal;
                     $scope.statusResult = res['data']['data'];
                     $scope.allStatusResult = res['data']['alldata'];
                     $scope.totalScoopAmount = res.data.totalAmount;
@@ -12129,61 +12129,67 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "Change item status":
-
-                bootbox.confirm("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong>", function (result) {
-                    if (result == true) {
-                        const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
-                        if (!itemStatus) {
-                            notification('Status not available!', 'warning');
-                            return;
-                        }
-                        const scoopIds = [];
-                        // const checkboxes = angular.element('[id^=orderCheckData]');
-                        // checkboxes.each((index, element) => {
-                        //     if (document.querySelector(`#orderCheck${index}`).checked) {
-                        //         const orderId = angular.element(element).val();
-                        //         scoopIds.push(orderId);
-                        //     }
-                        // });
-
-                        const checkboxes = angular.element('[id^=orderCheckData]');
-                        let allSelected = true; // Variable to track if all checkboxes are selected
-
-                        checkboxes.each((index, element) => {
-                            const checkbox = document.querySelector(`#orderCheck${index}`);
-                            if (!checkbox.checked) {
-                                allSelected = false; // If any checkbox is not checked, set `allSelected` to false
-                            }
-                            if (checkbox.checked) {
-                                const orderId = angular.element(element).val();
-                                scoopIds.push(orderId);
-                            }
-                        });
-
-                        if (!allSelected) {
-                            $scope.paramData['unselected_ids'] = $scope.unselectedIDs;
-                        }
-
-                        if (scoopIds.length === 0) {
-                            notification('No orders selected!', 'warning');
-                            return;
-                        }
-                        $scope.paramData['scoop_status'] = itemStatus;
-                        
-                        const updateStatus = async () => {
-                            try {
-                                rest.path = 'ordersearchItemStatusBulkUpdate1';
-                                await rest.post($scope.paramData).success(data => {
-                                    notification('Status updated successfully', 'success');
-                                    $route.reload();
-                                }).error(errorCallback);
-                            } catch (err) {
-                                console.error("An error occurred:", err);
-                            }
-                        };
-                        updateStatus();
+                const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+    
+                if (!itemStatus) {
+                    notification('Status not available!', 'warning');
+                    return;
+                }
+            
+                const scoopIds = [];
+                const checkboxes = angular.element('[id^=orderCheckData]');
+                let allSelected = true;
+            
+                checkboxes.each((index, element) => {
+                    const isChecked = document.querySelector(`#orderCheck${index}`).checked;
+                    if (isChecked) {
+                        scoopIds.push(angular.element(element).val());
+                    } else {
+                        allSelected = false;
                     }
                 });
+            
+                if (scoopIds.length === 0) {
+                    notification('No orders selected!', 'warning');
+                    return;
+                }
+            
+                const confirmUpdate = (message) => {
+                    return new Promise((resolve) => {
+                        bootbox.confirm(message, function (result) {
+                            resolve(result);
+                        });
+                    });
+                };
+            
+                const updateStatus = async () => {
+                    try {
+                        rest.path = 'ordersearchItemStatusBulkUpdate1';
+                        await rest.post($scope.paramData);
+                        notification('Status updated successfully', 'success');
+                        $route.reload();
+                    } catch (err) {
+                        console.error("An error occurred:", err);
+                    }
+                };
+            
+                const updateScoopStatus = async () => {
+                    $scope.paramData['scoop_status'] = itemStatus;
+            
+                    if (allSelected) {
+                        const confirmed = await confirmUpdate("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong>");
+                        if (confirmed) {
+                            await updateStatus();
+                        }
+                    } else {
+                        $scope.paramData['unselected_ids'] = $scope.unselectedIDs;    
+                        await updateStatus();
+                    }
+                };
+            
+                updateScoopStatus();
+            
+                        
             
             break;
                     
@@ -12276,7 +12282,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
                 case "Select all":
                     $scope.checkdata = [];
-                    for (var i = 0; i < angular.element('[id^=orderCheck]').length; i++) {
+                    for (var i = 0; i < $scope.totalRecords; i++) {
                       $scope.checkdata[i] = true; // Set each checkbox as selected
                     }
                     break;
