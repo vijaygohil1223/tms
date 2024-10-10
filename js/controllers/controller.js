@@ -2391,25 +2391,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //         $scope.jobListDelivered = data;
             
     //     })
-    // }         
-    
-    $scope.dashboardTabList = [ 
-        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":0  }, 
-        { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":1  },
-        { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":2 }, 
-        { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":3  }, 
-        { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":4  }, 
-        { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":5 }, 
-        { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":6}, 
-        { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":7 },
-        { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":8 },
-        { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":9 }, 
-        { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":10 }, 
-        { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":11 }, 
-        { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":12  }, 
-        { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":13  }, 
-        { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId": 14 } 
-    ];
+    // }    
+    $scope.getDefaultDashboardTabList = function(){
+        return [ 
+            { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":0  }, 
+            { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":1  },
+            { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":2 }, 
+            { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":3  }, 
+            { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":4  }, 
+            { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":5 }, 
+            { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":6}, 
+            { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":7 },
+            { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":8 },
+            { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":9 }, 
+            { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":10 }, 
+            { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":11 }, 
+            { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":12  }, 
+            { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":13  }, 
+            { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId": 14 } 
+        ];
+    }  
+    //$scope.dashboardTabList = $scope.getDefaultDashboardTabList()  
+    if ($window.localStorage.getItem('dashboardTabListSorted')) {
+       try {
+        $scope.dashboardTabList = JSON.parse($window.localStorage.getItem('dashboardTabListSorted'));
+       } catch (error) {
+         $scope.dashboardTabList = $scope.getDefaultDashboardTabList();
+       }
+      
+    }else{
+        $scope.dashboardTabList = $scope.getDefaultDashboardTabList()
+    }
+
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
     //var tabPermission = { "due_today": true, "assigned": true, "ongoing": true, "qa_ready": true, "qa_issue": true, "pm_ready": true, "delivery": true, "completed": true, "overdue": true, "due_tomorrow": true, "my_project": true, "upcoming": true, "approved": true, "PO_missing": true, "all": true };
@@ -4966,6 +4979,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })    
     }
 
+    $scope.sortableOptions = {
+        axis: "X",
+        activate: function () { },
+        beforeStop: function () { },
+        change: function () { },
+        create: function (event, ui) {
+            //
+        },
+        deactivate: function () { },
+        out: function () { },
+        over: function () { },
+        receive: function () { },
+        remove: function () { },
+        sort: function () { },
+        start: function (event, ui) { },
+        update: function (e, ui) {
+            //console.log('Tab order updated:', $scope.dashboardTabList);
+            //$scope.$apply();
+        },
+        stop: function (e, ui) {
+            // const activeTabName = $window.localStorage.getItem("projectActiveTab");
+            // const activeTab = $scope.dashboardTabList.find(tab => tab.tabClassName === activeTabName);
+            // if (activeTab) {
+            //     $window.localStorage.setItem("projectActiveTab", activeTab.tabClassName);
+            // }
+            $scope.dashboardTabList = $scope.dashboardTabList
+            $window.localStorage.setItem("dashboardTabListSorted", JSON.stringify($scope.dashboardTabList) )
+        }
+    };
+    
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';

@@ -251,17 +251,17 @@ div.dataTables_length select{margin: 0 5px;}
 
 /* projecttable */
 .page_content_wrapper .white_box_wrapper .white_box{position: relative; background: #fff; border: 0; border-radius: 8px; box-shadow: 1px 1px 2px #0000000d;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{display: flex; background: #f4f4fb; padding-top: 0 !important;padding-bottom: 1px;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{background: #fafaff; padding: 0; margin-right: 30px; z-index: 0;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li:before{z-index: 0;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 6px 8px 0 !important; white-space: nowrap;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .badge, .overviewli .list-group-item .bg-info{color: #737f8b; background: #e5eaf0; font-size: 11px; margin: 0 0 0 5px;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .glyphicon{color: #b4b2c9; margin: 0 5px 0 0;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active{background: #fff; z-index: 1;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a, .overviewli .list-group-item.active a{color: #4e2fc4 !important;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .badge, .overviewli .list-group-item.active .bg-info{color: #fff; background: #4e2fc4; margin: 0 0 0 5px;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .glyphicon{color: #4e2fc4; margin: 0 5px 0 0;}
-.projecttable .nav-tabs>li, .overviewli li.list-group-item {
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs{display: flex; background: #f4f4fb; padding-top: 0 !important;padding-bottom: 1px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li{background: #fafaff; padding: 0; margin-right: 30px; z-index: 0;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li:before{z-index: 0;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li > a{height: 100%; padding: 10px 6px 8px 0 !important; white-space: nowrap;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li > a .badge, .overviewli .list-group-item .bg-info{color: #737f8b; background: #e5eaf0; font-size: 11px; margin: 0 0 0 5px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li > a .glyphicon{color: #b4b2c9; margin: 0 5px 0 0;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li.active{background: #fff; z-index: 1;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li.active > a, .overviewli .list-group-item.active a{color: #4e2fc4 !important;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li.active > a .badge, .overviewli .list-group-item.active .bg-info{color: #fff; background: #4e2fc4; margin: 0 0 0 5px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li.active > a .glyphicon{color: #4e2fc4; margin: 0 5px 0 0;}
+.projecttable .dashboardsortable_tabs>li, .overviewli li.list-group-item {
     display: block;
     padding: 10px 11px 8px 0;
     background-color: #f7f8fd;
@@ -277,8 +277,8 @@ div.dataTables_length select{margin: 0 5px;}
   .overviewli li.list-group-item:last-child{
     margin-bottom: -1px;
   }
-  .projecttable .nav-tabs>li::before,
-  .projecttable .nav-tabs>li::after, 
+  .projecttable .dashboardsortable_tabs>li::before,
+  .projecttable .dashboardsortable_tabs>li::after, 
   .overviewli li::before,
   .overviewli li::after {
     display: block;
@@ -291,7 +291,7 @@ div.dataTables_length select{margin: 0 5px;}
     transition: all 250ms ease;
   }
 
-  .projecttable .nav-tabs>li::before,
+  .projecttable .dashboardsortable_tabs>li::before,
   .overviewli li::before {
     right: -17px;
     border-radius: 0 8px 0 0;
@@ -302,7 +302,7 @@ div.dataTables_length select{margin: 0 5px;}
     border-top: 1px solid #eaeaf4;
   }
 
-  .projecttable .nav-tabs>li::after,
+  .projecttable .dashboardsortable_tabs>li::after,
   .overviewli li::after {
     left: -20px;
     border-radius: 8px 0 0 0;
@@ -311,7 +311,7 @@ div.dataTables_length select{margin: 0 5px;}
     border-top: 1px solid #eaeaf4;
   }
 
-  .projecttable .nav-tabs>li.active,.overviewli li.active {
+  .projecttable .dashboardsortable_tabs>li.active,.overviewli li.active {
     background-color: #fff;
     z-index: 100;
   }
@@ -322,15 +322,15 @@ div.dataTables_length select{margin: 0 5px;}
     border-bottom: 0;
   }
 
-  .projecttable .nav-tabs>li.active::before,.overviewli li.active::before {
+  .projecttable .dashboardsortable_tabs>li.active::before,.overviewli li.active::before {
     background-color: #fff;
   }
 
-  .projecttable .nav-tabs>li.active::after,.overviewli li.active::after {
+  .projecttable .dashboardsortable_tabs>li.active::after,.overviewli li.active::after {
     background-color: #fff;
   }
 
-  .projecttable .nav-tabs>li>a,.overviewli>li>a {
+  .projecttable .dashboardsortable_tabs>li>a,.overviewli>li>a {
     padding: 10px 0 !important;
     background-color: transparent !important;
     color: #9290a8 !important;
@@ -344,7 +344,7 @@ div.dataTables_length select{margin: 0 5px;}
     color: #818296;
   }
 
-  .projecttable .nav-tabs>li.active>a,
+  .projecttable .dashboardsortable_tabs>li.active>a,
   .nav-tabs>li.active>a:hover,
   .nav-tabs>li.active>a:focus,
   .overviewli>li.active>a,
@@ -363,183 +363,25 @@ div.dataTables_length select{margin: 0 5px;}
     border: none;
   }
 
-  .projecttable .nav-tabs>li.active>li,
+  .projecttable .dashboardsortable_tabs>li.active>li,
   .nav-tabs>li.active>a:focus,
-  .projecttable .nav-tabs>li.active>a:hover {
+  .projecttable .dashboardsortable_tabs>li.active>a:hover {
     border: none;
   }
-  /* .projecttable .nav-tabs>li.tab-due-today,  
-  .projecttable .nav-tabs>li.tab-due-today::before,
-  .projecttable .nav-tabs>li.tab-due-today::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-assigned,  
-  .projecttable .nav-tabs>li.tab-assigned::before,
-  .projecttable .nav-tabs>li.tab-assigned::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-in-progress,  
-  .projecttable .nav-tabs>li.tab-in-progress::before,
-  .projecttable .nav-tabs>li.tab-in-progress::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-qa-ready, 
-  .projecttable .nav-tabs>li.tab-qa-ready::before,
-  .projecttable .nav-tabs>li.tab-qa-ready::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-to-be-delivered,  
-  .projecttable .nav-tabs>li.tab-to-be-delivered::before,
-  .projecttable .nav-tabs>li.tab-to-be-delivered::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-due-tomorrow, 
-  .projecttable .nav-tabs>li.tab-due-tomorrow::before,
-  .projecttable .nav-tabs>li.tab-due-tomorrow::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.tab-my-projects,  
-  .projecttable .nav-tabs>li.tab-my-projects::before,
-  .projecttable .nav-tabs>li.tab-my-projects::after{
-    background-color: #64c5eb !important;    
-  }
-  .projecttable .nav-tabs>li.active.tab-due-today,
-  .projecttable .nav-tabs>li.active.tab-due-today::before,
-  .projecttable .nav-tabs>li.active.tab-due-today::after
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today.active,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today.active::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today.active::after  {
-    background-color: #98AFC7 !important;    
-  }   */
-  /* .projecttable .nav-tabs>li.active.tab-assigned,
-  .projecttable .nav-tabs>li.active.tab-assigned::before,
-  .projecttable .nav-tabs>li.active.tab-assigned::after, 
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active::after{
-    background-color: #7F58AF !important    
-  }*/
-  /* .projecttable .nav-tabs>li.active.tab-in-progress,
-  .projecttable .nav-tabs>li.active.tab-in-progress::before,
-  .projecttable .nav-tabs>li.active.tab-in-progress::after, */
-  /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress.active,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress.active::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress.active::after{
-    background-color: #3B9C9C !important;    
-  } */
-  /* .projecttable .nav-tabs>li.active.tab-qa-ready,
-  .projecttable .nav-tabs>li.active.tab-qa-ready::before,
-  .projecttable .nav-tabs>li.active.tab-qa-ready::after{
-    background-color: #3B9C9C !important;
-  }
-  .projecttable .nav-tabs>li.active.tab-to-be-delivered,
-  .projecttable .nav-tabs>li.active.tab-to-be-delivered::before,
-  .projecttable .nav-tabs>li.active.tab-to-be-delivered::after{
-    background-color: #3B9C9C !important;    
-  } */
-  /* .projecttable .nav-tabs>li.active.tab-due-tomorrow,
-  .projecttable .nav-tabs>li.active.tab-due-tomorrow::before,
-  .projecttable .nav-tabs>li.active.tab-due-tomorrow::after
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active::after  {
-    background-color: #98AFC7 !important;    
-  } */
-  /* .white_box .projectjobdv2.overviewli .list-group-item.active, .list-group-item.active:hover,
-  .white_box .projectjobdv2.overviewli .list-group-item.active::before,
-  .white_box .projectjobdv2.overviewli .list-group-item.active::after{
-    background-color: #7F58AF !important;    
-  } */
-  /* .white_box .projectjobdv2.overviewli .list-group-item.active span.badge.bg-info{
-    background-color: #64C5EB;
-  } */
-    /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active,
-    .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::before,
-    .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::after  {
-      background-color: #7F58AF !important;    
-   } */
-  /* .projecttable .nav-tabs>li.active.tab-my-projects,
-  .projecttable .nav-tabs>li.active.tab-my-projects::before,
-  .projecttable .nav-tabs>li.active.tab-my-projects::after{
-    background-color: #98AFC7 !important;    
-  } 
-  .projecttable .nav-tabs>li.active.tab-my-projects,
-  .projecttable .nav-tabs>li.active.tab-my-projects::before,
-  .projecttable .nav-tabs>li.active.tab-my-projects::after{
-    background-color: #3B9C9C !important;    
-  }*/
-  /* .projecttable .nav-tabs>li.active,
-  .projecttable .nav-tabs>li.active::before,
-  .projecttable .nav-tabs>li.active::after{
-    background-color: #7f58af !important;    
-  } */
-  /* .projecttable .nav-tabs>li.active .glyphicon{
-    color: #fff !important;    
-  }
-  .projecttable .nav-tabs>li.active .badge{
-    background-color: #64c5eb !important;    
-  } */
  
   .tab-container.projecttable.tab_dashboard .nav-tabs>li.active>a::after{
     z-index: 2;
     left: -19px;
     bottom: -2px;
   }
-  /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a .glyphicon,
-  .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a .glyphicon{
-    color: #7f58af;
-  } */
-  /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a .badge,
-  .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a .badge,
-  .white_box .projectjobdv2.overviewli .list-group-item .bg-info,
-  .white_box .projectjobdv2.overviewli .list-group-item.active .bg-info{
-    background:#7f58af;
-    color: #fff;
-  } */
-  /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a{
-    color: #000 !important;
-  } */
-  /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.tab-assigned > a{
-    color: #000 !important;
-  } */
-  /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a{
-    color: #fff !important;
-  } */
+  
+  
   .white_box .projectjobdv2.overviewli li.list-group-item {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
-  /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::after{
-    background-color: #64c5eb;
-  } */
-  /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::after{
-    background-color: #64c5eb;
-  }
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today::after{
-    background-color: #64c5eb;
-  }
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow::after{
-    background-color: #64c5eb;
-  }
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue::before,
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue::after{
-    background-color: #64c5eb;
-  } */
-  /* .white_box .projectjobdv2.overviewli li.list-group-item > a{
-    color: #000 !important;
-  } */
-  /* .white_box .projectjobdv2.overviewli li.list-group-item.active:not(.tab-requested) > a{
-    color: #fff !important;
-  } */
+
+  
   .page_dashboard .page_content_wrapper .white_box_wrapper .white_box .btn_create-project,
   .page_dashboard .page_content_wrapper .pagination > .active > a,
   .page_dashboard .page_content_wrapper .white_box_wrapper .rightBox-group .box .bg-info,
@@ -680,7 +522,7 @@ div.dataTables_length select{margin: 0 5px;}
     margin-right: initial;
     position: relative;
   }
-  .projecttable .nav-tabs>li.active>a::after {
+  .projecttable .dashboardsortable_tabs>li.active>a::after {
     position: absolute;
     content: "";
     height: 2px;
@@ -933,12 +775,12 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .boxgtr{ margin: 15px 28px;}
 }
 @media only screen and (min-width: 1400px) {
-    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 35px;}
-    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 8px 8px 0 !important;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li{margin-right: 35px;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li > a{padding: 10px 8px 8px 0 !important;}
   }
   @media only screen and (min-width: 1550px) {
-    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
-    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li{margin-right: 40px;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .dashboardsortable_tabs > li > a{padding: 10px 11px 8px 0 !important;}
     .boxgtr{ margin: 15px 130px;}
     .status-tags .btn{min-width: 170px;}
     .colsize-lg{
@@ -1290,4 +1132,15 @@ Scroll Tabs css */
 }
 .polyglot-language-switcher img {
   width: 16px !important;
+}
+
+.dashboardsortable_tabs {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.tab-container .tab-heading {
+  cursor: move;
+}
+.tab-container tab {
+  user-select: none;
 }
