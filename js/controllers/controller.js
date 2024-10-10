@@ -12166,7 +12166,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     try {
                         rest.path = 'ordersearchItemStatusBulkUpdate1';
                         await rest.post($scope.paramData);
-                        notification('Status updated successfully', 'success');
+                        notification('Status updated successfully.(Note: The status will not be updated if an invoice has been created for that scoop.)', 'success');
                         $route.reload();
                     } catch (err) {
                         console.error("An error occurred:", err);
@@ -12177,7 +12177,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.paramData['scoop_status'] = itemStatus;
             
                     if (allSelected) {
-                        const confirmed = await confirmUpdate("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong>");
+                        const confirmed = await confirmUpdate("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong><br/><b>Note: If any scoop invoice is created, then the status will not be changed.</b>");
                         if (confirmed) {
                             await updateStatus();
                         }

@@ -396,7 +396,14 @@ class orderstatussearch {
 				// Exclude unselected_ids from the itemIdsArray
 				$itemIdsArray = array_diff($itemIdsArray, $unselectedIdsArray);
 			}
-		
+
+			//if invoice is created then can't change status
+			$itemIdsList = implode(',', array_map('intval', $itemIdsArray)); // Ensure IDs are integers for safety
+			$this->_db->where("invc_scoop_id IN ($itemIdsList)");
+			$invoiceSoops = $this->_db->get('tms_invoice_scoops iscp');
+			$invoiceScoopIds = array_column($invoiceSoops, 'invc_scoop_id'); // Get all invc_scoop_id values
+			$itemIdsArray = array_diff($itemIdsArray, $invoiceScoopIds);
+
 			// Convert back to a string
 			$itemIdsString = implode(',', $itemIdsArray);
 		
