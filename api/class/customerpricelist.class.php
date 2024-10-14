@@ -58,62 +58,6 @@ class Customerpricelist {
         $data = $this->_db->get('tms_customer_price_list');
         return $data;
     }
-
-    public function checkUserAbsent($id, $date) {
-        // Validate that the $date parameter is provided and not null
-        if (empty($date)) {
-            echo "Date parameter is missing.";
-            return; // Stop further execution if date is not provided
-        }
-    
-        // Retrieve user availability data
-        $this->_db->where('iUserId', $id);
-        $data = $this->_db->getOne('tms_users');
-        $dataArray = json_decode($data['is_available'], true);
-    
-        $isAbsent = false; // Assume the user is absent by default
-    
-        if (is_array($dataArray)) {
-            // Iterate through the array
-            foreach ($dataArray as $item) {
-                // echo "dateFrom value: ";
-                // print_r($item['dateFrom']);  
-    
-                // echo "dateTo value: ";
-                // print_r($item['dateTo']); 
-    
-                // Ensure dateFrom and dateTo are strings
-                if (isset($item['dateFrom']) && is_string($item['dateFrom']) && isset($item['dateTo']) && is_string($item['dateTo'])) {
-                    // Convert the check date to Y-m-d format
-                    $checkDateObj = DateTime::createFromFormat('d.m.Y', $date['newValue']);
-                    $dateFromObj = DateTime::createFromFormat('Y-m-d', $item['dateFrom']);
-                    $dateToObj = DateTime::createFromFormat('Y-m-d', $item['dateTo']);
-    
-                    // Check if the date conversion was successful
-                    if ($checkDateObj && $dateFromObj && $dateToObj) {
-                        $checkDate = $checkDateObj->format('Y-m-d');
-                        $dateFrom = $dateFromObj->format('Y-m-d');
-                        $dateTo = $dateToObj->format('Y-m-d');
-    
-                        // Check if the date is between dateFrom and dateTo
-                        if ($checkDate >= $dateFrom && $checkDate <= $dateTo) {
-                            $isAbsent = true; // User is present, so set to true
-                        }
-                    }
-                }
-            }
-        }
-    
-        // Output the final status
-        if ($isAbsent) {
-            $return['status'] = 200;
-            $return['message'] = $data['vFirstName'] . " " . $data['vLastName'] . " resource is absent on ". $date['newValue'];
-            return $return;
-        }
-    }
-    
-    
-    
     
     public function customerpriceListCopy($id) {
         $data = self::customerpriceGetOne($id);

@@ -1832,7 +1832,7 @@ $app->get('/customerpriceAll/:id','authenticate', function($id) {
     echoResponse(200, $result);
 });
 $app->post('/checkUserAbsent/:id','authenticate', function($id) use($app) {
-    $userAbsent = new Customerpricelist ();
+    $userAbsent = new jobs_detail();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $userAbsent->checkUserAbsent($id, $data);
     echoResponse(200, $result);
