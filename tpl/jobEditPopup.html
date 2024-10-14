@@ -304,7 +304,7 @@
                                                         <input ng-if="dueDate!='0000-00-00'" ng-Datepicker2 type="text"
                                                             class="form-control" id="duedate" name="due_date"
                                                             ng-model="jobdetail.due_date" required
-                                                            onkeydown="return false" />
+                                                            onkeydown="return false" ng-change="checkUserAbsence(jobdetail.resource, jobdetail.due_date)" />
                                                         <input ng-if="dueDate=='0000-00-00'" ng-Datepicker2 type="text"
                                                             class="form-control" id="duedate" name="due_date"
                                                             ng-model="jobdetail.due_date" required

@@ -5205,20 +5205,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    $scope.$watch('jobdetail.due_date', function (newValue, oldValue) {
-        const date = {newValue: newValue}
-        rest.path = 'checkUserAbsent/' + $scope.jobdetail.resource;
-        rest.post(date).success(function (data) {
-           if(data?.status == 200 ){
-            openPopup(data.message);
-           }
-        });
-    });
-    
-    // Function to open the popup (implement this based on your popup logic)
+    $scope.checkUserAbsence = function(resource, dueDate) {
+        const postdate = { newValue: dueDate };
+        if(resource != '' ){
+            const resourceID = resource.toString().split(',').pop();
+            rest.path = 'checkUserAbsent/' + resourceID;
+            rest.post(postdate).success(function(data) {
+                if (data?.status === 200) {
+                    openPopup(data.message);
+                }
+            });
+        }
+    };
     function openPopup(message) {
-        // Example using a simple alert for demonstration
-        bootbox.confirm(message, function (result) {});
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            template: `
+                <style>
+                   .absentcustom-modal {
+                        width: 30%; 
+                        max-width: 100%; 
+                        margin: auto; 
+                    }
+                </style>
+                <div class="modal-header">
+                    <h3 class="modal-title">Linguist absent</h3>
+                </div>
+                <div class="modal-body">
+                    <p>${message}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="$close()">Close</button>
+                </div>
+            `,
+            controller: function($scope, $uibModalInstance) {
+                // Here you can also define any additional logic if needed
+                $scope.close = function() {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            },
+            size: 'sm',
+            windowClass: 'absentcustom-modal' 
+        });
     }
 
     $scope.exChildPriceArr = [];
