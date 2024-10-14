@@ -236,176 +236,196 @@ class orderstatussearch {
 			
 			function customNumberFormat($input) {
 				$decimalSeparator = isset($_COOKIE['DecimalSeparator']) ? $_COOKIE['DecimalSeparator'] : ',';
-					$numStr = (string)$input;
-					$number = str_replace('.', $decimalSeparator, $numStr);
-					$number = str_replace(',', '.', $numStr); 
-				
-					return $number;
+				$numStr = (string)$input;
+				$number = str_replace('.', $decimalSeparator, $numStr);
+				$number = str_replace(',', '.', $numStr); 
+			
+				return $number;
+			}
+
+			if($post && isset($post['is_all_selected'] ) && $post['is_all_selected']==1){
+		
+				$searchValueNum = customNumberFormat($searchValue);
+				$qry_invc = '';
+				// Apply search functionality
+				if (!empty($searchValue)) {
+					$qry_invc .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%" . $searchValue . "%' 
+								OR its.item_name LIKE '%" . $searchValue . "%'
+								OR its.item_email_subject LIKE '%" . $searchValue . "%'
+								OR c.vUserName LIKE '%" . $searchValue . "%'
+								OR inc.vUserName LIKE '%" . $searchValue . "%'
+								OR scs.item_status_name LIKE '%" . $searchValue . "%'
+								OR its.po_number LIKE '%" . $searchValue . "%'
+								OR DATE_FORMAT(its.created_date, '%d.%m.%Y | %H:%i') LIKE '%" . $searchValue . "%'
+								OR DATE_FORMAT(its.due_date, '%d.%m.%Y | %H:%i') LIKE '%" . $searchValue . "%'
+								OR FORMAT(its.total_amount, 2) LIKE '%" . $searchValueNum . "%'
+								OR FORMAT(COALESCE(tsv.total_job_price, 0), 2) LIKE '%" . $searchValueNum . "%'
+								OR FORMAT(its.total_amount - COALESCE(tsv.total_job_price, 0), 2) LIKE '%" . $searchValueNum . "%'
+								OR IFNULL(SUBSTRING_INDEX(c.client_currency, ',', 1), 'EUR') LIKE '%" . $searchValue . "%'
+								
+								)";
+			
 				}
-		
-		
-			$searchValueNum = customNumberFormat($searchValue);
-			$qry_invc = '';
-			// Apply search functionality
-			if (!empty($searchValue)) {
-				$qry_invc .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%" . $searchValue . "%' 
-							OR its.item_name LIKE '%" . $searchValue . "%'
-							OR its.item_email_subject LIKE '%" . $searchValue . "%'
-							OR c.vUserName LIKE '%" . $searchValue . "%'
-							OR inc.vUserName LIKE '%" . $searchValue . "%'
-							OR scs.item_status_name LIKE '%" . $searchValue . "%'
-							OR its.po_number LIKE '%" . $searchValue . "%'
-							OR DATE_FORMAT(its.created_date, '%d.%m.%Y | %H:%i') LIKE '%" . $searchValue . "%'
-							OR DATE_FORMAT(its.due_date, '%d.%m.%Y | %H:%i') LIKE '%" . $searchValue . "%'
-							OR FORMAT(its.total_amount, 2) LIKE '%" . $searchValueNum . "%'
-							OR FORMAT(COALESCE(tsv.total_job_price, 0), 2) LIKE '%" . $searchValueNum . "%'
-							OR FORMAT(its.total_amount - COALESCE(tsv.total_job_price, 0), 2) LIKE '%" . $searchValueNum . "%'
-							OR IFNULL(SUBSTRING_INDEX(c.client_currency, ',', 1), 'EUR') LIKE '%" . $searchValue . "%'
-							
-							)";
-		
-			}
-		
-			if (isset($filterParams['pm_name'])) {
-				$pmId = $filterParams['pm_name'];
-				$qry_invc .= " AND (cust.project_manager = '" . $pmId . "' OR cust.sub_pm = '" . $pmId . "' OR its.manager = '" . $pmId . "' OR its.subPm = '" . $pmId . "')";
-			}
-		
-			if (isset($filterParams['pm_name_exclude'])) {
-				$pmIdExclude = $filterParams['pm_name_exclude'];
-				$qry_invc .= " AND (cust.project_manager != '" . $pmIdExclude . "' AND cust.sub_pm != '" . $pmIdExclude . "' AND its.manager != '" . $pmIdExclude . "' AND its.subPm != '" . $pmIdExclude . "')";
-			}
-		
-			if (isset($filterParams['emailSubject'])) {
-				$qry_invc .= " AND its.item_email_subject LIKE '%" . $filterParams['emailSubject'] . "%'";
-			}
-		
-			if (isset($filterParams['itemPonumber'])) {
-				$qry_invc .= " AND its.po_number = '" . $filterParams['itemPonumber'] . "'";
-			}
-		
-			if (isset($filterParams['customer'])) {
-				$qry_invc .= " AND cust.client = '" . $filterParams['customer'] . "'";
-				$text = "its.total_amount";
+			
+				if (isset($filterParams['pm_name'])) {
+					$pmId = $filterParams['pm_name'];
+					$qry_invc .= " AND (cust.project_manager = '" . $pmId . "' OR cust.sub_pm = '" . $pmId . "' OR its.manager = '" . $pmId . "' OR its.subPm = '" . $pmId . "')";
+				}
+			
+				if (isset($filterParams['pm_name_exclude'])) {
+					$pmIdExclude = $filterParams['pm_name_exclude'];
+					$qry_invc .= " AND (cust.project_manager != '" . $pmIdExclude . "' AND cust.sub_pm != '" . $pmIdExclude . "' AND its.manager != '" . $pmIdExclude . "' AND its.subPm != '" . $pmIdExclude . "')";
+				}
+			
+				if (isset($filterParams['emailSubject'])) {
+					$qry_invc .= " AND its.item_email_subject LIKE '%" . $filterParams['emailSubject'] . "%'";
+				}
+			
+				if (isset($filterParams['itemPonumber'])) {
+					$qry_invc .= " AND its.po_number = '" . $filterParams['itemPonumber'] . "'";
+				}
+			
+				if (isset($filterParams['customer'])) {
+					$qry_invc .= " AND cust.client = '" . $filterParams['customer'] . "'";
+					$text = "its.total_amount";
+				}else{
+					$text = "its.total_amount / its.base_currency_rate";
+				}
+			
+				if (isset($filterParams['contactPerson'])) {
+					$qry_invc .= " AND cust.contact = '" . $filterParams['contactPerson'] . "'";
+				}
+			
+				if (isset($filterParams['indirect_customer'])) {
+					$qry_invc .= " AND inc.iClientId = '" . $filterParams['indirect_customer'] . "'";
+				}
+			
+				if (isset($filterParams['itemStatus'])) {
+					$qry_invc .= " AND its.item_status IN ('" . implode("','", explode(",", $filterParams['itemStatus'])) . "')";
+				}
+			
+				if (isset($filterParams['projectStatus'])) {
+					$qry_invc .= " AND gen.project_status = '" . $filterParams['projectStatus'] . "'";
+				}
+			
+				if (isset($filterParams['projectType'])) {
+					$qry_invc .= " AND its.project_type LIKE '%" . $filterParams['projectType'] . "%'";
+				}
+			
+				if (isset($filterParams['sourceLanguage'])) {
+					$qry_invc .= " AND its.source_lang LIKE '%\"sourceLang\":\"" . $filterParams['sourceLanguage'] . "\"%'";
+				}
+			
+				if (isset($filterParams['targetLanguage'])) {
+					$qry_invc .= " AND its.target_lang LIKE '%\"sourceLang\":\"" . $filterParams['targetLanguage'] . "\"%'";
+				}
+			
+				if (isset($filterParams['companyCode'])) {
+					$qry_invc .= " AND gen.order_no LIKE '" . $filterParams['companyCode'] . "%'";
+				}
+			
+				if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {
+					$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
+					$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
+					$qry_invc .= " AND DATE(its.due_date) BETWEEN '" . $Frm . "' AND '" . $To . "'";
+				} else if (isset($filterParams['itemDuedateStart'])) {
+					$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
+					$qry_invc .= " AND its.due_date > '" . $Frm . "'";
+				} else if (isset($filterParams['itemDuedateEnd'])) {
+					$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
+					$qry_invc .= " AND its.due_date < '" . $To . "'";
+				}
+			
+				if (isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])) {
+					$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
+					$To = $filterParams['createDateTo'] . ' 00:00:00';
+					$qry_invc .= " AND DATE(its.created_date) BETWEEN '" . $Frm . "' AND '" . $To . "'";
+				} else if (isset($filterParams['createDateFrom'])) {
+					$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
+					$qry_invc .= " AND its.created_date > '" . $Frm . "'";
+				} else if (isset($filterParams['createDateTo'])) {
+					$To = $filterParams['createDateTo'] . ' 00:00:00';
+					$qry_invc .= " AND its.created_date < '" . $To . "'";
+				}
+				
+				
+				// Start building the base query
+				$subQuery = "(SELECT order_id, item_id, SUM(total_price) AS total_job_price 
+						FROM tms_summmery_view 
+						GROUP BY order_id, item_id)";
+			
+				$querydata1 = "SELECT 
+						its.itemId AS scoopId
+					FROM 
+						tms_items its
+					LEFT JOIN 
+						tms_general gen ON its.order_id = gen.order_id
+					LEFT JOIN 
+						tms_customer cust ON its.order_id = cust.order_id
+					LEFT JOIN 
+						tms_client c ON cust.client = c.iClientId
+					LEFT JOIN 
+						tms_user_status stus ON c.vStatus = stus.status_id
+					LEFT JOIN 
+						tms_client_indirect inc ON inc.iClientId = cust.indirect_customer
+					LEFT JOIN 
+						tms_users tu ON tu.iUserId = cust.project_manager
+					LEFT JOIN 
+						tms_project_type tpt ON its.project_type = tpt.pr_type_id
+					LEFT JOIN 
+						tms_project_status ps ON ps.pr_status_id = gen.project_status
+					LEFT JOIN 
+						tms_item_status scs ON scs.item_status_id = its.item_status
+					LEFT JOIN 
+						($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
+					WHERE 1=1 " . $qry_invc. "
+					GROUP BY its.itemId";
+			
+				$scoop_array = $this->_db->rawQuery($querydata1);
+				$orderIds = array_column($scoop_array, 'scoopId');
+				$itemIdsArray = array_unique($orderIds);  // Remove duplicate item IDs
+				
+				if (isset($post['unselected_ids'])) {
+					if (is_string($post['unselected_ids'])) {
+						// If it's a string, convert it to an array
+						$unselectedIdsArray = explode(',', $post['unselected_ids']);
+					} elseif (is_array($post['unselected_ids'])) {
+						// If it's already an array, use it directly
+						$unselectedIdsArray = $post['unselected_ids'];
+					}
+					
+					// Exclude unselected_ids from the itemIdsArray
+					$itemIdsArray = array_diff($itemIdsArray, $unselectedIdsArray);
+				}
+
+				//if invoice is created then can't change status
+				$itemIdsList = implode(',', array_map('intval', $itemIdsArray)); // Ensure IDs are integers for safety
+				$this->_db->where("invc_scoop_id IN ($itemIdsList)");
+				$invoiceSoops = $this->_db->get('tms_invoice_scoops iscp');
+				$invoiceScoopIds = array_column($invoiceSoops, 'invc_scoop_id'); // Get all invc_scoop_id values
+				$itemIdsArray = array_diff($itemIdsArray, $invoiceScoopIds);
+
+				// Convert back to a string
+				$itemIdsString = implode(',', $itemIdsArray);
 			}else{
-				$text = "its.total_amount / its.base_currency_rate";
-			}
-		
-			if (isset($filterParams['contactPerson'])) {
-				$qry_invc .= " AND cust.contact = '" . $filterParams['contactPerson'] . "'";
-			}
-		
-			if (isset($filterParams['indirect_customer'])) {
-				$qry_invc .= " AND inc.iClientId = '" . $filterParams['indirect_customer'] . "'";
-			}
-		
-			if (isset($filterParams['itemStatus'])) {
-				$qry_invc .= " AND its.item_status IN ('" . implode("','", explode(",", $filterParams['itemStatus'])) . "')";
-			}
-		
-			if (isset($filterParams['projectStatus'])) {
-				$qry_invc .= " AND gen.project_status = '" . $filterParams['projectStatus'] . "'";
-			}
-		
-			if (isset($filterParams['projectType'])) {
-				$qry_invc .= " AND its.project_type LIKE '%" . $filterParams['projectType'] . "%'";
-			}
-		
-			if (isset($filterParams['sourceLanguage'])) {
-				$qry_invc .= " AND its.source_lang LIKE '%\"sourceLang\":\"" . $filterParams['sourceLanguage'] . "\"%'";
-			}
-		
-			if (isset($filterParams['targetLanguage'])) {
-				$qry_invc .= " AND its.target_lang LIKE '%\"sourceLang\":\"" . $filterParams['targetLanguage'] . "\"%'";
-			}
-		
-			if (isset($filterParams['companyCode'])) {
-				$qry_invc .= " AND gen.order_no LIKE '" . $filterParams['companyCode'] . "%'";
-			}
-		
-			if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {
-				$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
-				$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
-				$qry_invc .= " AND DATE(its.due_date) BETWEEN '" . $Frm . "' AND '" . $To . "'";
-			} else if (isset($filterParams['itemDuedateStart'])) {
-				$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
-				$qry_invc .= " AND its.due_date > '" . $Frm . "'";
-			} else if (isset($filterParams['itemDuedateEnd'])) {
-				$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
-				$qry_invc .= " AND its.due_date < '" . $To . "'";
-			}
-		
-			if (isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])) {
-				$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
-				$To = $filterParams['createDateTo'] . ' 00:00:00';
-				$qry_invc .= " AND DATE(its.created_date) BETWEEN '" . $Frm . "' AND '" . $To . "'";
-			} else if (isset($filterParams['createDateFrom'])) {
-				$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
-				$qry_invc .= " AND its.created_date > '" . $Frm . "'";
-			} else if (isset($filterParams['createDateTo'])) {
-				$To = $filterParams['createDateTo'] . ' 00:00:00';
-				$qry_invc .= " AND its.created_date < '" . $To . "'";
-			}
-			
-			
-			// Start building the base query
-			$subQuery = "(SELECT order_id, item_id, SUM(total_price) AS total_job_price 
-					  FROM tms_summmery_view 
-					  GROUP BY order_id, item_id)";
-		
-			$querydata1 = "SELECT 
-					its.itemId AS scoopId
-				FROM 
-					tms_items its
-				LEFT JOIN 
-					tms_general gen ON its.order_id = gen.order_id
-				LEFT JOIN 
-					tms_customer cust ON its.order_id = cust.order_id
-				LEFT JOIN 
-					tms_client c ON cust.client = c.iClientId
-				LEFT JOIN 
-					tms_user_status stus ON c.vStatus = stus.status_id
-				LEFT JOIN 
-					tms_client_indirect inc ON inc.iClientId = cust.indirect_customer
-				LEFT JOIN 
-					tms_users tu ON tu.iUserId = cust.project_manager
-				LEFT JOIN 
-					tms_project_type tpt ON its.project_type = tpt.pr_type_id
-				LEFT JOIN 
-					tms_project_status ps ON ps.pr_status_id = gen.project_status
-				LEFT JOIN 
-					tms_item_status scs ON scs.item_status_id = its.item_status
-				LEFT JOIN 
-					($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
-				WHERE 1=1 " . $qry_invc. "
-				GROUP BY its.itemId";
-		
-			$scoop_array = $this->_db->rawQuery($querydata1);
-			$orderIds = array_column($scoop_array, 'scoopId');
-			$itemIdsArray = array_unique($orderIds);  // Remove duplicate item IDs
-			
-			if (isset($post['unselected_ids'])) {
-				if (is_string($post['unselected_ids'])) {
-					// If it's a string, convert it to an array
-					$unselectedIdsArray = explode(',', $post['unselected_ids']);
-				} elseif (is_array($post['unselected_ids'])) {
-					// If it's already an array, use it directly
-					$unselectedIdsArray = $post['unselected_ids'];
-				}
+				$updateIds = $post['checkIds'];
+				$updateIdsArrSttring = implode(',', $updateIds);
 				
-				// Exclude unselected_ids from the itemIdsArray
-				$itemIdsArray = array_diff($itemIdsArray, $unselectedIdsArray);
+				$update_date = date('Y-m-d H:i:s');
+				$item_status = $post['scoop_status'];
+				
+				$updateSql = "
+				UPDATE tms_items 
+				SET item_status = $item_status, updated_date = '$update_date' 
+				WHERE itemId IN ($updateIdsArrSttring) 
+				AND itemId NOT IN (
+					SELECT invc_scoop_id FROM tms_invoice_scoops
+				) ";
+
+				$response = $this->_db->rawQuery($updateSql);
+				
+				return $response;
 			}
-
-			//if invoice is created then can't change status
-			$itemIdsList = implode(',', array_map('intval', $itemIdsArray)); // Ensure IDs are integers for safety
-			$this->_db->where("invc_scoop_id IN ($itemIdsList)");
-			$invoiceSoops = $this->_db->get('tms_invoice_scoops iscp');
-			$invoiceScoopIds = array_column($invoiceSoops, 'invc_scoop_id'); // Get all invc_scoop_id values
-			$itemIdsArray = array_diff($itemIdsArray, $invoiceScoopIds);
-
-			// Convert back to a string
-			$itemIdsString = implode(',', $itemIdsArray);
 		
 			// Update status only for the remaining selected items
 			if (!empty($itemIdsString)) {
@@ -414,7 +434,6 @@ class orderstatussearch {
 				
 				$sql = "UPDATE tms_items SET item_status = $item_status, updated_date = '$update_date' 
 						WHERE itemId IN ($itemIdsString)";
-				
 				// Execute update query
 				$response = $this->_db->rawQuery($sql);
 				return $response;

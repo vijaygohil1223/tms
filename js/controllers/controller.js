@@ -10068,7 +10068,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal);
     };
     
-
     $scope.calculateProfitMargin = function (revenue, cost) {
         if (revenue === 0) {
             return 0; // To handle the case where revenue is zero to avoid division by zero
@@ -12175,6 +12174,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "Change item status":
+                
                 const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
     
                 if (!itemStatus) {
@@ -12223,19 +12223,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.paramData['scoop_status'] = itemStatus;
             
                     if (allSelected) {
-                        const confirmed = await confirmUpdate("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong><br/><b>Note: If any scoop invoice is created, then the status will not be changed.</b>");
+                        const confirmed = await confirmUpdate("Are you sure you want to change scoop status for all?<br/><strong>Please note that all status will be updated.</strong><br/><b>Note: Status will remain unchanged if an invoice is created for the scoop.</b>");
                         if (confirmed) {
+                            $scope.paramData['is_all_selected'] = 1; 
                             await updateStatus();
                         }
                     } else {
                         $scope.paramData['unselected_ids'] = $scope.unselectedIDs;    
+                        $scope.paramData['checkIds'] = scoopIds;    
                         await updateStatus();
                     }
                 };
             
                 updateScoopStatus();
-            
-                        
             
             break;
                     
