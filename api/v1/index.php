@@ -1831,6 +1831,12 @@ $app->get('/customerpriceAll/:id','authenticate', function($id) {
     $result = $cusPrice->customerpriceAll($id);
     echoResponse(200, $result);
 });
+$app->post('/checkUserAbsent/:id','authenticate', function($id) use($app) {
+    $userAbsent = new Customerpricelist ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $userAbsent->checkUserAbsent($id, $data);
+    echoResponse(200, $result);
+});
 $app->get('/customerpriceListCopy/:id','authenticate', function($id) {
     $cusPrice = new Customerpricelist ();
     $result = $cusPrice->customerpriceListCopy($id);

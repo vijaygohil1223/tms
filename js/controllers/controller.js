@@ -5205,6 +5205,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.$watch('jobdetail.due_date', function (newValue, oldValue) {
+        const date = {newValue: newValue}
+        rest.path = 'checkUserAbsent/' + $scope.jobdetail.resource;
+        rest.post(date).success(function (data) {
+           if(data?.status == 200 ){
+            openPopup(data.message);
+           }
+        });
+    });
+    
+    // Function to open the popup (implement this based on your popup logic)
+    function openPopup(message) {
+        // Example using a simple alert for demonstration
+        bootbox.confirm(message, function (result) {});
+    }
+
     $scope.exChildPriceArr = [];
     // Get PriceList for client
     $scope.scoopSpecializationArr = '';
