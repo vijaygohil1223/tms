@@ -63,7 +63,8 @@ class orderstatussearch {
 			if(isset($filterParams['indirect_customer'])){
 				$this->_db->where('inc.iClientId', $filterParams['indirect_customer']);
 			}
-			if(isset($filterParams['itemStatus'])){
+			if (isset($filterParams['itemStatus']) && $filterParams['itemStatus']!='' ) {
+				//if(isset($filterParams['itemStatus'])){
 				// $this->_db->where('its.item_status', $filterParams['itemStatus']);
 				$this->_db->where('its.item_status', explode(",",$filterParams['itemStatus']),'IN');
 			}
@@ -323,6 +324,10 @@ class orderstatussearch {
 				if (isset($filterParams['companyCode'])) {
 					$qry_invc .= " AND gen.order_no LIKE '" . $filterParams['companyCode'] . "%'";
 				}
+				
+				if (isset($filterParams['currency']) && $filterParams['currency'] != '' ) {
+					$qry_invc .= " AND c.client_currency LIKE '" . $filterParams['currency'] . "%'";
+				}
 			
 				if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {
 					$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
@@ -410,7 +415,7 @@ class orderstatussearch {
 			}else{
 				$updateIds = $post['checkIds'];
 				$updateIdsArrSttring = implode(',', $updateIds);
-				
+
 				$update_date = date('Y-m-d H:i:s');
 				$item_status = $post['scoop_status'];
 				

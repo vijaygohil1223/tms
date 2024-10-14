@@ -116,7 +116,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         $qry_invc .= " AND inc.iClientId = '" . $filterParams['indirect_customer'] . "'";
     }
 
-    if (isset($filterParams['itemStatus'])) {
+    if (isset($filterParams['itemStatus']) && $filterParams['itemStatus']!='' ) {
         $qry_invc .= " AND its.item_status IN ('" . implode("','", explode(",", $filterParams['itemStatus'])) . "')";
     }
 
@@ -138,6 +138,9 @@ function statusorderReportFilterCustomPage($post, $dbConn){
 
     if (isset($filterParams['companyCode'])) {
         $qry_invc .= " AND gen.order_no LIKE '" . $filterParams['companyCode'] . "%'";
+    }
+    if (isset($filterParams['currency']) && $filterParams['currency'] != '' ) {
+        $qry_invc .= " AND c.client_currency LIKE '" . $filterParams['currency'] . "%'";
     }
 
     if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {

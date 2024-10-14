@@ -11187,6 +11187,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //status oreder report find
     $scope.statusReportsearch = function (frmId, eID) {
+
+        console.log('$scope.orderReport',$scope.orderReport )
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
         } else {
@@ -11344,6 +11346,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 search: data.search.value,
                 filterParams: $scope.orderReport
             };
+
             $scope.paramData = params;
 
             // API call to fetch data
@@ -12212,7 +12215,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     try {
                         rest.path = 'ordersearchItemStatusBulkUpdate1';
                         await rest.post($scope.paramData);
-                        notification('Status updated successfully.(Note: The status will not be updated if an invoice has been created for that scoop.)', 'success');
+                        notification('Status updated successfully.(Note: Status will remain unchanged if an invoice is created for the scoop.)', 'success');
                         $route.reload();
                     } catch (err) {
                         console.error("An error occurred:", err);
