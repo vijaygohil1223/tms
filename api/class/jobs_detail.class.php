@@ -2501,38 +2501,47 @@ class jobs_detail
         // Retrieve user availability data
         $this->_db->where('iUserId', $id);
         $data = $this->_db->getOne('tms_users');
+        $today = new DateTime(); 
         $dataArray = json_decode($data['is_available'], true);
-    
+        // Filter out periods where both `dateFrom` and `dateTo` are in the past
+        if(!empty($dataArray)){
+            $dataArray = array_filter($dataArray, function($period) use ($today) {
+                $dateFrom = new DateTime($period['dateFrom']);
+                $dateTo = new DateTime($period['dateTo']);
+                
+                // Keep periods that are either in the future or ongoing (i.e., dateTo >= today)
+                return $dateTo >= $today;
+            });
+        }
+        
+
         $isAbsent = false; // Assume the user is absent by default
-    
-        if (is_array($dataArray)) {
-            foreach ($dataArray as $item) {
-                // Ensure dateFrom and dateTo are strings
-                if (isset($item['dateFrom']) && is_string($item['dateFrom']) && isset($item['dateTo']) && is_string($item['dateTo'])) {
-                    // Convert the check date to Y-m-d format
-                    $checkDateObj = DateTime::createFromFormat('d.m.Y', $date['newValue']);
-                    $dateFromObj = DateTime::createFromFormat('Y-m-d', $item['dateFrom']);
-                    $dateToObj = DateTime::createFromFormat('Y-m-d', $item['dateTo']);
-    
-                    // Check if the date conversion was successful
-                    if ($checkDateObj && $dateFromObj && $dateToObj) {
-                        $checkDate = $checkDateObj->format('Y-m-d');
-                        $dateFrom = $dateFromObj->format('Y-m-d');
-                        $dateTo = $dateToObj->format('Y-m-d');
-    
-                        // Check if the date is between dateFrom and dateTo
-                        if ($checkDate >= $dateFrom && $checkDate <= $dateTo) {
-                            $isAbsent = true; 
-                        }
-                    }
-                }
+        
+        $checkStart = $today->format('Y-m-d');
+        $newValueDateObj = DateTime::createFromFormat('d.m.Y', $date['newValue']);
+        $checkEnd = $newValueDateObj->format('Y-m-d');
+
+        // Convert the check range to DateTime objects for comparison
+        $checkStartDate = new DateTime($checkStart);
+        $checkEndDate = new DateTime($checkEnd);
+
+
+        foreach ($dataArray as $period) {
+            $dateFrom = new DateTime($period['dateFrom']);
+            $dateTo = new DateTime($period['dateTo']);
+
+            // Check if the date ranges overlap
+            if (($checkStartDate <= $dateTo) && ($checkEndDate >= $dateFrom)) {
+                // If there's an overlap, the user is unavailable
+                $isAbsent = true;
+                break;
             }
         }
-    
-        // Output the final status
+
         if ($isAbsent) {
             $return['status'] = 200;
-            $return['message'] = $data['vFirstName'] . " " . $data['vLastName'] . " resource is absent on ". $date['newValue'];
+            $return['date'] = $dataArray;
+            $return['message'] = $data['vFirstName'] . " " . $data['vLastName'] . " resource is absent on below dates";
             return $return;
         }
     }

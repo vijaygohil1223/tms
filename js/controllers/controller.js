@@ -6488,12 +6488,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'checkUserAbsent/' + resourceID;
             rest.post(postdate).success(function(data) {
                 if (data?.status === 200) {
-                    openPopup(data.message);
+                    openPopup(data?.date, data?.message);
                 }
             });
         }
     };
-    function openPopup(message) {
+    function openPopup(dates, message) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             template: `
@@ -6503,19 +6503,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         max-width: 100%; 
                         margin: auto; 
                     }
+                    .badge{
+                        padding: 8px 14px !important;
+                        font-size: 13px !important;
+                        border-radius: 10px !important;
+                        background-color: gray !important;
+                    }
                 </style>
                 <div class="modal-header">
                     <h3 class="modal-title">Linguist absent</h3>
                 </div>
-                <div class="modal-body">
-                    <p>${message}</p>
+                
+                <div class="modal-body" style="margin-left:20px">
+                <h4 >${message}</h4>
+                    <ul style="list-style:none;margin-left:-30px;">
+                        <li ng-repeat="date in dates" class="datebadge ng-scope" style="margin-bottom: 3px;">
+                        <span class="badge ng-binding">
+                            {{date.dateFrom === date.dateTo ? (date.dateFrom | globalDtFormat) : (date.dateFrom | globalDtFormat) + ' to ' + (date.dateTo | globalDtFormat)}}
+                        </span>
+                        </li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="$close()">Close</button>
                 </div>
             `,
             controller: function($scope, $uibModalInstance) {
-                // Here you can also define any additional logic if needed
+                $scope.dates = dates; // Assign the passed dates to scope
                 $scope.close = function() {
                     $uibModalInstance.dismiss('cancel');
                 };
@@ -6524,6 +6538,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             windowClass: 'absentcustom-modal' 
         });
     }
+    
 
 
 }).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $q, $http ) {
