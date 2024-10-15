@@ -141,6 +141,12 @@ $app->put('/userUpdate_Byid/:id','authenticate', function ($id) use($app) {
     $result = $user->userUpdate_Byid($data);
     echoResponse($result ['status'], $result);
 });
+$app->put('/updateUserTabsortorder/:id','authenticate', function ($id) use($app) {
+    $user = new users ();
+    $data = json_decode($app->request->getBody());
+    $result = $user->updateUserTabsortorder($id, $data);
+    echoResponse($result ['status'], $result);
+});
 
 //------------------communication profile start----------------//
 $app->post('/saveuserprofileinternal','authenticate', function () use($app) {
@@ -185,7 +191,7 @@ $app->get('/getProfile/:id','authenticate', function ($id) use($app) {
 $app->put('/saveuserprofile/:id','authenticate', function ($id) use($app) {
     $user = new users ();
     $data = json_decode($app->request->getBody(), TRUE);
-    $result = $user->updateprofile($id, $data);
+    $result = $user->updateprofile($id, $data );
     echoResponse($result ['status'], $result);
 });
 $app->post('/ContactAdd','authenticate', function () use($app) {
