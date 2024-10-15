@@ -11670,8 +11670,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             console.log('index=====>', index)
                             var isCheckedorderselect = $('#orderCheck' + index).is(':checked') ? 'true' : 'false';
                             if (isCheckedorderselect == 'true') {
-                            console.log('isCheckedorderselect', isCheckedorderselect)
-                                angular.element('#orderCheck'+index).prop('checked', false);
+                                //angular.element('#orderCheck'+index).prop('checked', false);
+                                $scope.checkdata[index] = false;
                             }
                         });
                     }, 100);
