@@ -2421,6 +2421,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
       
     }else{
         $scope.dashboardTabList = $scope.getDefaultDashboardTabList()
+        console.log('$scope.dashboardTabList', $scope.dashboardTabList)
     }
 
     // Tabs permission array
@@ -2442,6 +2443,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($window.localStorage.getItem("session_iUserId") != 1){ 
                 if(data.tabPermission){
                     $scope.tabPermission = JSON.parse(data.tabPermission) 
+                    console.log('$scope.tabPermission===>', $scope.tabPermission)
                     $scope.dashboardTabList.map( (item) =>  { 
                         for (const keyName in $scope.tabPermission){
                             if( keyName == item.tabPermissionValue )
@@ -5005,7 +5007,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     $window.localStorage.setItem("projectActiveTab", activeTab.tabClassName);
             // }
             $scope.dashboardTabList = $scope.dashboardTabList
-            $window.localStorage.setItem("dashboardTabListSorted", JSON.stringify($scope.dashboardTabList) )
+            const dashboardListString = JSON.stringify($scope.dashboardTabList);
+            $window.localStorage.setItem("dashboardTabListSorted", dashboardListString )
+            
+            // $routeParams.id = $cookieStore.get('session_iUserId')
+            // rest.path = 'updateUserTabsortorder' ;
+            // const postdata = {
+            //     tab_sortedorder: dashboardListString
+            // };
+            // rest.put(postdata).success(function (data) {
+            // }).error(errorCallback);
+
         }
     };
     
@@ -11195,6 +11207,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.showDataLoader = true;
 
             try {
+                
+
                 $scope.clReportTotal = 0;
                 if ($scope.orderReport.startCreateDate) {
                     $scope.orderReport.createDateFrom = originalDateFormatNew($scope.orderReport.startCreateDate);
@@ -11634,10 +11648,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                         $scope.CustomerTypeChart(custType);
                     }, 500)
+
+                    setTimeout(() => {
+                        const checkboxes = angular.element('[id^=orderCheckData]');
+                        checkboxes.each((index, element) => {
+                            console.log('index=====>', index)
+                            var isCheckedorderselect = $('#orderCheck' + index).is(':checked') ? 'true' : 'false';
+                            if (isCheckedorderselect == 'true') {
+                            console.log('isCheckedorderselect', isCheckedorderselect)
+                                angular.element('#orderCheck'+index).prop('checked', false);
+                            }
+                        });
+                    }, 100);
+
                 })
                 .catch(function(error) {
                     console.error('Error fetching data:', error);
                 });
+
         })
         .withDataProp('data') 
         .withOption('paging', true) 

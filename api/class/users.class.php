@@ -1645,5 +1645,14 @@ array(
     
     }
 
+    public function updateUserTabsortorder($id, $data) {
+        $postData = [];
+        $postData['tab_sortedorder'] = $data->tab_sortedorder; 
+        $this->_db->where('iUserId ', $id);
+        $this->_db->update('tms_users', $postData );
+        $result['status'] = 200;
+        return $result;
+    }
+
     
 }
