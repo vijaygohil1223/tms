@@ -513,16 +513,23 @@ class item {
 
     public function scoopStatusChange($updateRec) {
         $scoopId = json_decode($updateRec['scoop_id'], TRUE);
-        //print_r( $scoopId );
-        //print_r($updateRec);
         
         $result['all_update'] = 0;
         foreach ($scoopId as $key => $value) {
-            //print_r($value);
             $statusData['item_status'] = $updateRec['item_status'];
-            //print_r($statusData);
-            $this->_db->where("itemId", $value);
-            $id = $this->_db->update('tms_items', $statusData);
+            // $this->_db->where("itemId", $value);
+            // $id = $this->_db->update('tms_items', $statusData);
+            $update_date = date('Y-m-d H:i:s');
+			$item_status = $updateRec['item_status'];
+            $updateSql = "
+            UPDATE tms_items 
+            SET item_status = $item_status, updated_date = '$update_date' 
+            WHERE itemId = $value 
+            AND itemId NOT IN (
+                SELECT invc_scoop_id FROM tms_invoice_scoops
+            ) ";
+            $id = $this->_db->rawQuery($updateSql);
+
             if($key == count($scoopId)-1 ){
                 $result['all_update'] = 1;
             }
