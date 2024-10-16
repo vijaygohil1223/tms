@@ -4985,6 +4985,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })    
     }
 
+    const keysToKeep = [
+        "tabName",
+        "tabClassName",
+        "tabPermissionValue",
+        "projectScoopCount",
+        "totalItems",
+        "totalPages",
+        "pageShowRec",
+        "tabIndexId"
+    ];
+    
     $scope.sortableOptions = {
         axis: "X",
         activate: function () { },
@@ -5005,13 +5016,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.$apply();
         },
         stop: function (e, ui) {
-            // const activeTabName = $window.localStorage.getItem("projectActiveTab");
-            // const activeTab = $scope.dashboardTabList.find(tab => tab.tabClassName === activeTabName);
-            // if (activeTab) {
-            //     $window.localStorage.setItem("projectActiveTab", activeTab.tabClassName);
-            // }
+
             $scope.dashboardTabList = $scope.dashboardTabList
-            const dashboardListString = JSON.stringify($scope.dashboardTabList);
+
+            const tempDashboardTablist = $scope.dashboardTabList.map(item => {
+                return keysToKeep.reduce((newObj, key) => {
+                    newObj[key] = item[key];
+                    return newObj;
+                }, {});
+            });
+            const dashboardListString = JSON.stringify(tempDashboardTablist);
             $window.localStorage.setItem("dashboardTabListSorted", dashboardListString )
             
             $routeParams.id = $cookieStore.get('session_iUserId')
@@ -5020,6 +5034,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 tab_sortedorder: dashboardListString
             };
             rest.put(postdata).success(function (data) {
+                
             }).error(errorCallback);
 
         }
