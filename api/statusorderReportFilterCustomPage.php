@@ -239,7 +239,6 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         ORDER BY " . $orderColumn . " " . $orderDir;
     
     $querydata1 = $querydata . " LIMIT $start, $length";
-
     $data = $dbConn->query($querydata1);
     
     $results = array();
@@ -249,6 +248,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
 
     $qry = "SELECT gen.order_no AS orderNumber,gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,its.source_lang AS sourceLanguage,its.target_lang AS targetLanguage, its.q_date AS QuentityDate ,SUM(its.total_amount) As TotalAmount FROM tms_items its LEFT JOIN tms_general gen ON its.order_id = gen.order_id LEFT JOIN tms_customer cust ON its.order_id = cust.order_id LEFT JOIN tms_client c ON cust.client = c.iClientId LEFT JOIN tms_user_status stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_project_status ps ON ps.pr_status_id = gen.project_status group by its.q_date";
     $info1 = $dbConn->query($qry);
+        
     $info = array();
     while ($val = $info1->fetch_assoc()) {
         $info[] = $val;    
@@ -256,6 +256,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     
     $qry1 = "SELECT gen.order_no AS orderNumber,gen.project_type,gen.order_id AS orderId,tpt.project_name AS projectTypeName, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,its.source_lang AS sourceLanguage,its.target_lang AS targetLanguage, its.q_date AS QuentityDate ,SUM(its.total_amount) As TotalAmount FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id=cust.order_id LEFT JOIN tms_items AS its ON gen.order_id=its.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_project_type AS tpt ON gen.project_type = tpt.pr_type_id group by gen.project_type";
     $Typeinfo1 = $dbConn->query($qry1);
+    
     $Typeinfo = array();
     while ($val = $Typeinfo1->fetch_assoc()) {
         $Typeinfo[] = $val;    
@@ -263,12 +264,14 @@ function statusorderReportFilterCustomPage($post, $dbConn){
 
     $qry2 = "SELECT gen.order_no AS orderNumber,gen.order_id AS orderId,tpt.project_name AS projectTypeName, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,its.source_lang AS sourceLanguage,its.target_lang AS targetLanguage, its.q_date AS QuentityDate ,SUM(its.total_amount) As TotalAmount FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id=cust.order_id LEFT JOIN tms_items AS its ON gen.order_id=its.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_project_type AS tpt ON gen.project_type = tpt.pr_type_id group by c.iClientId";
     $customerType1 = $dbConn->query($qry2);
+    
     $customerType = array();
     while ($val = $customerType1->fetch_assoc()) {
         $customerType[] = $val;    
     } 		
 
     $qry3 = "SELECT gen.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate,its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, gen.project_status AS projectStatus, gen.project_type AS projectType, its.total_amount AS totalAmount, inc.vUserName AS accountname, concat(tu.vFirstName, ' ', tu.vLastName) AS pm_name, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, its.q_date AS QuentityDate, SUM(its.total_amount) As TotalAmount FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status group by its.q_date";
+        
     $projectScoopInfo1 = $dbConn->query($qry3);
     $projectScoopInfo = array();
     while ($val = $projectScoopInfo1->fetch_assoc()) {
@@ -305,6 +308,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         LEFT JOIN tms_users tu ON tu.iUserId = cust.project_manager
         LEFT JOIN tms_project_type tpt ON its.project_type = tpt.pr_type_id
         LEFT JOIN tms_project_status ps ON ps.pr_status_id = gen.project_status
+        LEFT JOIN tms_item_status scs ON scs.item_status_id = its.item_status
         LEFT JOIN (
             SELECT order_id, item_id, SUM(total_price) AS total_job_price
             FROM tms_summmery_view
@@ -319,7 +323,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
 
     // Execute the query
     $getTotalRecordsQuery = $dbConn->query($totalAmount);
-
+    
     // Check if the query executed successfully
     if (!$getTotalRecordsQuery) {
         // Query failed, output the error for debugging
@@ -331,8 +335,6 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     while ($val = $getTotalRecordsQuery->fetch_assoc()) {
         $totalRecordsResult[] = $val;
     }
-
-   
 
     $totalAmount__ = "SELECT 
     SUM(its.total_amount) AS totalPrice, 

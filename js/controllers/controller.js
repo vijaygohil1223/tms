@@ -7228,14 +7228,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             angular.forEach($scope.downloadAllfile, function(val, i) {
                                                 if (val.ext != '') {
                                                     var fimg = val.name;
-                                                    const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                                    let originalFileName = val.original_filename; 
+                                                    // const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                                    // if (sameNameExist.length > 1) {
+                                                    //     fimg = val.name; 
+                                                    // }
+                                                    const sameNameExist = $scope.downloadAllfile.filter(itm => itm.original_filename === val.original_filename);
                                                     if (sameNameExist.length > 1) {
-                                                        fimg = val.name; 
+                                                        const currentIndex = sameNameExist.indexOf(val);
+                                                        if (currentIndex > 0) {
+                                                            originalFileName = originalFileName.replace(/\.[^/.]+$/, '') + `(${currentIndex})` + '.'+ val.ext;
+                                                        }
                                                     }
                                                     //var fimgUrl = "uploads/fileupload/" + fimg;
                                                     var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
-                                            
-                                                    let originalFileName = val.original_filename; 
                                                     
                                                     if (val.is_s3bucket == 1) {
                                                         fileUrls.push({
@@ -9163,11 +9169,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     angular.forEach($scope.downloadAllfile, function(val) {
                                         if (val.ext !== '') {
                                             var fimg = val.name;
+                                            let fOriginalName_ =  val.original_filename;
+
+                                            //const sameNameExist = $scope.downloadAllfile.filter(itm => itm.original_filename === val.original_filename);
+                                            // if (sameNameExist.length > 1) {
+                                            //     fimg = val.name;
+                                            // }
+                                            //let fOriginalName_ =  val.original_filename;
                                             const sameNameExist = $scope.downloadAllfile.filter(itm => itm.original_filename === val.original_filename);
                                             if (sameNameExist.length > 1) {
-                                                fimg = val.name;
+                                                const currentIndex = sameNameExist.indexOf(val);
+                                                if (currentIndex > 0) {
+                                                    fOriginalName_ = fOriginalName_.replace(/\.[^/.]+$/, '') + `(${currentIndex})` + '.'+ val.ext;
+                                                }
                                             }
-                                            let fOriginalName_ =  val.original_filename;
+
                                             var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
                                             if (val.is_s3bucket == 1) {
                                                 fileUrls.push({
@@ -9208,6 +9224,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         var filePromises = fileUrls.map(function(url) {
                                             return $q(function(resolve, reject) {
                                                 JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
+                                                    console.log('url.full_url', url.full_url)
                                                     if (err) {
                                                         $scope.showLoder = false;
                                                         return reject(err);
@@ -9221,7 +9238,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         });
                             
                                         return $q.all(filePromises).then(function(files) {
-                                            console.log('filesDAta =====>', files)
                                             false;
                                             files.forEach(function(file) {
                                                 folderArr.forEach(function(folder) {
@@ -11670,8 +11686,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             console.log('index=====>', index)
                             var isCheckedorderselect = $('#orderCheck' + index).is(':checked') ? 'true' : 'false';
                             if (isCheckedorderselect == 'true') {
-                            console.log('isCheckedorderselect', isCheckedorderselect)
-                                angular.element('#orderCheck'+index).prop('checked', false);
+                                //angular.element('#orderCheck'+index).prop('checked', false);
+                                $scope.checkdata[index] = false;
                             }
                         });
                     }, 100);
