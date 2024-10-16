@@ -35675,22 +35675,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 500);
 
     $timeout(function () {
-        var editor = angular.element('#jobPO').froalaEditor({
-            toolbarButtons: [
-                'fontSize', 'bold', 'italic', 'underline', 'paragraphFormat',
-                'align', 'quote', 'formatOL', 'formatUL', 'undo', 'redo',
-                'html', 'color'
-            ],
-            colorsBackground: [
-                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
-                '#800000', '#808000', '#008000', '#800080', '#008080', '#000080', '#808080', '#C0C0C0',
-                '#FF6347', '#40E0D0', '#4682B4', '#D2691E', '#9ACD32', '#FF1493', '#00BFFF', '#8A2BE2'
-            ],
-            colorsText: [
-                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
-                '#800000', '#808000', '#008000', '#800080', '#008080', '#000080', '#808080', '#C0C0C0',
-                '#FF6347', '#40E0D0', '#4682B4', '#D2691E', '#9ACD32', '#FF1493', '#00BFFF', '#8A2BE2'
-            ],
+        angular.element('#jobPO').froalaEditor({
+            // Set the image upload URL.
             inlineStyles: {
                 'Big Red': 'font-size: 20px; color: red;',
                 'Small Blue': 'font-size: 14px; color: blue;',
@@ -35700,6 +35686,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             theme: 'gray',
             height: 250,
             zIndex: 2001,
+            toolbarButtons: [
+                'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'inlineStyle',
+                'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertHR',
+                'clearFormatting', 'undo', 'redo', 'html'  
+            ]
         }).on('froalaEditor.contentChanged', function (e, editor) {
             // Sync Froala editor content with AngularJS model
             $scope.$apply(function () {
@@ -35716,7 +35707,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 editor.froalaEditor('html.set', newValue);
             }
         });
-    });
+    
+        angular.element('div.fr-wrapper + div').remove();
+        $('.fr-toolbar').find("button:eq(2)").remove();
+    }, 200);
 
 
     $scope.getFile = function (file) {
