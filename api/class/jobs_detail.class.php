@@ -2504,30 +2504,26 @@ class jobs_detail
         // Retrieve user availability data
         $this->_db->where('iUserId', $id);
         $data = $this->_db->getOne('tms_users');
-        $today = new DateTime();
+        $today2 = new DateTime();
+        $today = $today2->format('Y-m-d');
         $dataArray = json_decode($data['is_available'], true);
         $dataArray2 = [];
-        if (!empty($dataArray)) {
-            $dataArray2 = array_filter($dataArray, function ($period) use ($today) {
-                $dateFrom = new DateTime($period['dateFrom']);
-                $dateTo = new DateTime($period['dateTo']);
-
-                // Keep periods that include today or are in the future
-                return $dateTo >= $today || ($dateFrom <= $today && $dateTo >= $today);
-            });
-        }
-
-
+        $dataArray2 = array_filter($dataArray, function ($period) use ($today) {
+            $dateFrom = new DateTime($period['dateFrom']);
+            $dateTo = new DateTime($period['dateTo']);
+        
+            return ($dateTo >= new DateTime($today));
+            //return ($dateFrom <= new DateTime($today) && $dateTo >= new DateTime($today));
+        });
         $isAbsent = false; // Assume the user is absent by default
 
-        $checkStart = $today->format('Y-m-d');
+        $checkStart = $today2->format('Y-m-d');
         $newValueDateObj = DateTime::createFromFormat('d.m.Y', $date['newValue']);
         $checkEnd = $newValueDateObj->format('Y-m-d');
 
         // Convert the check range to DateTime objects for comparison
         $checkStartDate = new DateTime($checkStart);
         $checkEndDate = new DateTime($checkEnd);
-
 
         foreach ($dataArray as $period) {
             $dateFrom = new DateTime($period['dateFrom']);
