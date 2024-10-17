@@ -212,7 +212,18 @@
                           class="fa fa-pencil"></i></a>
                         
                       </td>
-                      <td> <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.paid_date | globalDtFormat }} </span> </td> 
+                      <td> 
+                        <span ng-if="!invoiceL.credit_note_id && invoiceL.paid_date !== '0000-00-00 00:00:00' && invoiceL.paid_date"> 
+                          {{ invoiceL.paid_date | globalDtFormat }} 
+                          <a href="javascript:void(0)" 
+                             title="edit paymentdate" class="trActionIcon"
+                             ng-click="editPaymentDate(invoiceL.invoice_id, invoiceL.paid_date | globalDtFormat , invoiceL.invoice_date)">
+                             <i class="fa fa-pencil"></i>
+                          </a>
+                        </span> 
+                      </td>
+                      
+                      
                       <td>
                         <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>
                         <span ng-if="invoiceL.credit_note_id"> Credited </span>

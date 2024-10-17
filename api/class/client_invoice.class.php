@@ -1442,6 +1442,25 @@ class Client_invoice
         return $result;
     }
 
+    public function clientInvoicePaymentDate($data){
+        if (isset($data['post_inv_payment_date']) && strtotime($data['post_inv_payment_date']) !== false) {
+            $updataData['paid_date'] = $data['post_inv_payment_date'];
+            $this->_db->where('invoice_id', $data['invoice_id']);
+            $dueDateUpdate = $this->_db->update('tms_invoice_client', $updataData);
+            if ($dueDateUpdate) {
+                $result['status'] = 200;
+                $result['msg'] = "Successfully Updated";
+            } else {
+                $result['status'] = 422;
+                $result['msg'] = "Not updated";
+            }
+        } else {
+            $result['status'] = 422;
+            $result['msg'] = "Date format is not proper";
+        }    
+        return $result;
+    }
+
     public function downloadInvoiceWord($data)
     {
         $headerHtml = '';

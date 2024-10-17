@@ -38069,6 +38069,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.editPaymentDate = function(id, inv_payment_date, invoice_date){
+    
+        var html = angular.element(
+            ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
+            '<div class="col-sm-6">'+
+            '<lable><strong> Select Payment date </strong> <lable>'+
+            '<input class="form-control" type="text" required ng-model="paid_date" id="inv_payment_date" ng-datepicker-minmaxdate name="inv_payment_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
+            '</div></div>' );
+        setTimeout(() => {
+            $('#inv_payment_date').val(inv_payment_date);
+            $scope.dtInvoiceDueDate = invoice_date;
+        }, 500);
+        $compile(html)($scope);
+        var dialog = bootbox.dialog({
+            title: "Change Payment date",
+            message: html,
+            buttons: {
+                success: {
+                    label: "Save",
+                    onEscape: true,
+                    className: "btn-info",
+                    callback: function () {
+                        var get_inv_payment_date = $('#inv_payment_date').val();
+                        if(get_inv_payment_date !== ''){
+                            var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
+                            var post_date = moment(get_inv_payment_date, customDateFormat);
+                            post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
+                            let objStatus = {
+                                'invoice_id':id,
+                                'post_inv_payment_date':post_date
+                            }
+                            rest.path = "clientInvoicePaymentDate";
+                            rest.post(objStatus).success(function (data) {
+                                if(data){
+                                    notification('Date successfully updated', 'success');
+                                    $route.reload();
+                                }
+                            }).error(errorCallback);  
+                        }else{
+                            notification("Please select date", 'warning');
+                            return false;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     $scope.isValidDate = function(date) {
         return date && date !== '0000-00-00';
     };
