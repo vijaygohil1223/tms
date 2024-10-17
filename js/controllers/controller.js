@@ -823,6 +823,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
                     $window.localStorage.setItem("session_superAdmin", data.session_data.super_admin);
                     $window.localStorage.setItem("linguist_invoice_due_days", 60);
+                    $window.localStorage.setItem("dashboardTabListSorted", data.session_data.tab_sortedorder )
 
                     $rootScope.myData = data;
                     
@@ -3318,10 +3319,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 1000);
             
         }else{
-            console.log('Elllleseeeeeeeeee', )
-
-            var tabIndex = findIndexByTabClassName('tab-due-today');
-            $scope.tabName = 'tab-due-today';
+            // var tabIndex = findIndexByTabClassName('tab-due-today');
+            // $scope.tabName = 'tab-due-today';
+            const tempDafaultTabName = $scope.dashboardTabList[0].tabClassName || 'tab-due-today';
+            var tabIndex = findIndexByTabClassName(tempDafaultTabName);
+            $scope.tabName = tempDafaultTabName;
             $window.localStorage.setItem("projectActiveTab", $scope.tabName);
             $scope.dashboardScoopLoad(1,tabIndex);
         }
@@ -3463,8 +3465,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 rest.path = "scoopStatusChange";
                                 rest.post(objStatus).success(function (data) {
                                     if(data && data.all_update == 1){
-                                        notification('Status successfully updated', 'success');
-                                        $route.reload();
+                                        notification('Status successfully updated (Status will remain unchanged if an invoice is created for the scoop.)', 'success');
+                                        setTimeout(() => {
+                                            $route.reload(); 
+                                        }, 200);
                                     }
                                 }).error(errorCallback);
                             }    
@@ -4981,6 +4985,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })    
     }
 
+    const keysToKeep = [
+        "tabName",
+        "tabClassName",
+        "tabPermissionValue",
+        "projectScoopCount",
+        "totalItems",
+        "totalPages",
+        "pageShowRec",
+        "tabIndexId"
+    ];
+    
     $scope.sortableOptions = {
         axis: "X",
         activate: function () { },
@@ -5001,22 +5016,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.$apply();
         },
         stop: function (e, ui) {
-            // const activeTabName = $window.localStorage.getItem("projectActiveTab");
-            // const activeTab = $scope.dashboardTabList.find(tab => tab.tabClassName === activeTabName);
-            // if (activeTab) {
-            //     $window.localStorage.setItem("projectActiveTab", activeTab.tabClassName);
-            // }
+
             $scope.dashboardTabList = $scope.dashboardTabList
-            const dashboardListString = JSON.stringify($scope.dashboardTabList);
+
+            const tempDashboardTablist = $scope.dashboardTabList.map(item => {
+                return keysToKeep.reduce((newObj, key) => {
+                    newObj[key] = item[key];
+                    return newObj;
+                }, {});
+            });
+            const dashboardListString = JSON.stringify(tempDashboardTablist);
             $window.localStorage.setItem("dashboardTabListSorted", dashboardListString )
             
-            // $routeParams.id = $cookieStore.get('session_iUserId')
-            // rest.path = 'updateUserTabsortorder' ;
-            // const postdata = {
-            //     tab_sortedorder: dashboardListString
-            // };
-            // rest.put(postdata).success(function (data) {
-            // }).error(errorCallback);
+            $routeParams.id = $cookieStore.get('session_iUserId')
+            rest.path = 'updateUserTabsortorder' ;
+            const postdata = {
+                tab_sortedorder: dashboardListString
+            };
+            rest.put(postdata).success(function (data) {
+                
+            }).error(errorCallback);
 
         }
     };
@@ -35703,8 +35722,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
         // Watch the ng-model for changes and update Froala editor content
         $scope.$watch('cPersonMsg.messageData', function (newValue, oldValue) {
-            if (newValue !== oldValue && editor.froalaEditor('html.get') !== newValue) {
-                editor.froalaEditor('html.set', newValue);
+            var froalaInstance = angular.element('#jobPO').data('froala.editor');
+            if (newValue !== oldValue && froalaInstance && froalaInstance.html.get() !== newValue) {
+                froalaInstance.html.set(newValue);
             }
         });
     

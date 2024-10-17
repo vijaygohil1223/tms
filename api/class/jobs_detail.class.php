@@ -249,15 +249,15 @@ class jobs_detail
         $this->_db->where('job_summmeryId', $id);
         $jobSummeryData = $this->_db->getOne('tms_summmery_view');
 
-        if($jobSummeryData){
-            if($jobSummeryData['resource'] > 0 && $jobSummeryData['item_status'] != 'In preparation'){
+        if ($jobSummeryData) {
+            if ($jobSummeryData['resource'] > 0 && $jobSummeryData['item_status'] != 'In preparation') {
                 $return['is_delete'] = false;
                 $return['status'] = 200;
-                $return['msg'] = 'You can not delete. Status is '.$jobSummeryData['item_status'];
-                return $return;      
+                $return['msg'] = 'You can not delete. Status is ' . $jobSummeryData['item_status'];
+                return $return;
             }
         }
-        
+
         $invoiceAlreadyAdded = false;
 
         if ($id) {
@@ -271,7 +271,7 @@ class jobs_detail
                         $existedJobId = $val['id'];
                         if ($id == $existedJobId) {
                             $invoiceAlreadyAdded = true;
-                            break; 
+                            break;
                         }
                     }
                 }
@@ -285,7 +285,7 @@ class jobs_detail
         }
 
         if ($invoiceAlreadyAdded) {
-            
+
             if ($jobSummeryData) {
                 $return['jobNumber'] = $jobSummeryData['po_number'];
             }
@@ -593,10 +593,10 @@ class jobs_detail
                 FROM tms_summmery_view tsv
                 LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
                 LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)";
-        
+
         // Fetch all the data
         $data = $this->_db->rawQuery($qry);
-        
+
         // Iterate through the data and update each record
         foreach ($data as $d) {
             // Prepare the update data
@@ -729,12 +729,12 @@ class jobs_detail
             FROM tms_summmery_view tsv
             LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
             LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
-            WHERE tsv.resource = ".$data['resource']." LIMIT 1";
+            WHERE tsv.resource = " . $data['resource'] . " LIMIT 1";
             $base_currency_rate = $this->_db->rawQuery($sql, $data['resource']);
-            
-            $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) 
-            ? $base_currency_rate[0]['current_curency_rate'] 
-            : 1;
+
+            $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate'])
+                ? $base_currency_rate[0]['current_curency_rate']
+                : 1;
 
             $this->_db->where('job_summmeryId', $id);
 
@@ -1216,14 +1216,14 @@ class jobs_detail
             $this->_db->where('job_summmeryId', $data['id']);
             $jobDetails = $this->_db->getone('tms_summmery_view');
 
-            $jobnumber = isset($jobDetails['po_number']) ? $jobDetails['po_number'] : ''; 
+            $jobnumber = isset($jobDetails['po_number']) ? $jobDetails['po_number'] : '';
             if (isset($jobDetails['due_date'])) {
                 $format = 'Y-m-d H:i:s';
                 $due_date = $jobDetails['due_date'] ?? '';
-            
+
                 $datetime = DateTime::createFromFormat($format, $due_date);
                 $duedateFrmt = ($datetime && $datetime->format($format) === $due_date) ? $datetime->format('d.m.Y H:i') : '';
-            
+
                 $duedate = $duedateFrmt ?? '';
             } else {
                 $duedate = '';
@@ -1279,7 +1279,8 @@ class jobs_detail
                         //save job request mail history
                         $save['job_summmeryId'] = $jobId;
                         $save['user_id'] = $val;
-                        $save['subject'] = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Request";;
+                        $save['subject'] = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Request";
+                        ;
                         $save['created_date'] = date('Y-m-d H:i:s');
                         $save['updated_date'] = date('Y-m-d H:i:s');
                         $id = $this->_db->insert('tms_job_requests', $save);
@@ -1319,7 +1320,7 @@ class jobs_detail
                 $dataUp['item_status'] = 'Ongoing';
             } else {
                 $dataUp['rejection'] = $data['resourceId'];
-                $dataUp['request_rejected_ids'] = $jobDetails && isset($jobDetails['request_rejected_ids']) && $jobDetails['request_rejected_ids'] != '' ? $jobDetails['request_rejected_ids'].','.$data['resourceId'] : $data['resourceId']; 
+                $dataUp['request_rejected_ids'] = $jobDetails && isset($jobDetails['request_rejected_ids']) && $jobDetails['request_rejected_ids'] != '' ? $jobDetails['request_rejected_ids'] . ',' . $data['resourceId'] : $data['resourceId'];
             }
             $this->_db->where('job_summmeryId', $data['jobId']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
@@ -1363,17 +1364,17 @@ class jobs_detail
         $data['updated_date'] = date('Y-m-d H:i:s');
 
         $data['user_base_currency_rate'] = 1;
-        if (isset($data['resource']) && $data['resource']>0){
+        if (isset($data['resource']) && $data['resource'] > 0) {
             $sql = "SELECT tcu.current_curency_rate
                     FROM tms_summmery_view tsv
                     LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
                     LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
-                    WHERE tsv.resource = ".$data['resource']." LIMIT 1";
+                    WHERE tsv.resource = " . $data['resource'] . " LIMIT 1";
             $base_currency_rate = $this->_db->rawQuery($sql, $data['resource']);
-            
-            $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) 
-            ? $base_currency_rate[0]['current_curency_rate'] 
-            : 1;
+
+            $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate'])
+                ? $base_currency_rate[0]['current_curency_rate']
+                : 1;
         }
         $this->_db->where('job_summmeryId', $id);
         $update = $this->_db->update('tms_summmery_view', $data);
@@ -1645,8 +1646,8 @@ class jobs_detail
     public function acceptJobStatus($id, $data)
     {
 
-        if($data && isset($data['acceptJobType']) && $data['acceptJobType']== 'accept' ){
-            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : 0; 
+        if ($data && isset($data['acceptJobType']) && $data['acceptJobType'] == 'accept') {
+            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : 0;
             $data['accept'] = $loginUserId;
             $data['resource'] = $loginUserId;
             unset($data['userId']);
@@ -1654,7 +1655,7 @@ class jobs_detail
         }
         $data['updated_date'] = date('Y-m-d H:i:s');
         $data['rejection'] = '';
-        
+
         $this->_db->where('job_summmeryId', $id);
         $idd = $this->_db->update('tms_summmery_view', $data);
 
@@ -1668,11 +1669,11 @@ class jobs_detail
 
             $this->_db->where('order_id', $jobsData['order_id']);
             $jobEmailData = $this->_db->getOne('tms_customer');
-            
+
             $this->_db->where('iUserId', $jobEmailData['project_manager']);
             $proManagerEmail = $this->_db->getOne('tms_users');
 
-            
+
             if ($data['item_status'] == 'Delivered' || $data['item_status'] == 'Completed') {
 
                 //Sending Email to manager after job is Delivered START
@@ -1697,7 +1698,7 @@ class jobs_detail
                 // temp stop email sending
                 //$mailSendStatus = $this->sendEmail($to, $subject, $html);
                 $mailSendStatus['emailSend'] = "true";
-                
+
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
@@ -1765,14 +1766,14 @@ class jobs_detail
             $this->_db->where('job_summmeryId', $id);
             $jobsData = $this->_db->getOne('tms_summmery_view');
 
-            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : $jobsData['resource'] ;
-            $rejectedId = $jobsData && isset($jobsData['request_rejected_ids']) && $jobsData['request_rejected_ids'] != '' ? $jobsData['request_rejected_ids'].','.$data['userId'] : $data['userId']; 
-            
-            if($jobsData){
-                $sendRequest = explode(",", $jobsData['send_request'] ) ;
-                $requestRejectedIds = explode(",",$jobsData['request_rejected_ids'] );
-                if( count($sendRequest)>1 && count($requestRejectedIds)>1 ){
-                    if( empty(array_diff($sendRequest, $requestRejectedIds)) )
+            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : $jobsData['resource'];
+            $rejectedId = $jobsData && isset($jobsData['request_rejected_ids']) && $jobsData['request_rejected_ids'] != '' ? $jobsData['request_rejected_ids'] . ',' . $data['userId'] : $data['userId'];
+
+            if ($jobsData) {
+                $sendRequest = explode(",", $jobsData['send_request']);
+                $requestRejectedIds = explode(",", $jobsData['request_rejected_ids']);
+                if (count($sendRequest) > 1 && count($requestRejectedIds) > 1) {
+                    if (empty(array_diff($sendRequest, $requestRejectedIds)))
                         $data['item_status'] = 'In preparation';
                 }
             }
@@ -1780,12 +1781,12 @@ class jobs_detail
             $data['updated_date'] = date('Y-m-d H:i:s');
             $data['request_rejected_ids'] = $rejectedId;
             unset($data['userId']);
-            
+
             $this->_db->where('job_summmeryId', $id);
             $data = $this->_db->update('tms_summmery_view', $data);
 
             //$this->_db->where('iUserId', $jobsData['resource']);
-            $this->_db->where('iUserId', $loginUserId );
+            $this->_db->where('iUserId', $loginUserId);
             $resourceData = $this->_db->getOne('tms_users');
 
 
@@ -1856,9 +1857,9 @@ class jobs_detail
                         AND tsv.item_status = '" . $data['searchValue'] . "'
                         )";
         }
-        
-        
-        $qry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id". $qry_invc;
+
+
+        $qry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id" . $qry_invc;
 
         $data1 = $this->_db->rawQuery($qry);
 
@@ -1915,13 +1916,13 @@ class jobs_detail
             if ($value['resource']) {
                 $this->_db->where('iUserId', $value['resource']);
                 $resourceData = $this->_db->getOne('tms_users');
-                $data[$key]['resource'] = $resourceData ? $resourceData['vFirstName']. " " .$resourceData['vLastName'] : '';
+                $data[$key]['resource'] = $resourceData ? $resourceData['vFirstName'] . " " . $resourceData['vLastName'] : '';
                 $data[$key]['resourceId'] = isset($value['resource']) ? $value['resource'] : '';
             }
             if ($value['contact_person']) {
                 $this->_db->where('iUserId', $value['contact_person']);
                 $resourceName = $this->_db->getOne('tms_users');
-                $data[$key]['contact_person'] = $resourceName ? $resourceName['vFirstName']. " " .$resourceName['vLastName'] : '';
+                $data[$key]['contact_person'] = $resourceName ? $resourceName['vFirstName'] . " " . $resourceName['vLastName'] : '';
             }
         }
 
@@ -1935,17 +1936,17 @@ class jobs_detail
         $offset = ($currentPage - 1) * $perPage;
         $whereCond = '';
         $totalCount = 0;
-        
+
         $tabName = isset($_GET['tabName']) ? $_GET['tabName'] : '';
-        if($tabName != ''){
-            
-            if($tabName == 'DueToday'){
+        if ($tabName != '') {
+
+            if ($tabName == 'DueToday') {
                 $whereCond = "  AND DATE(tsv.due_date) = CURDATE() AND tsv.item_status IN ('Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced','Cancelled') ";
             }
-            if($tabName == 'DueTomorrow'){
+            if ($tabName == 'DueTomorrow') {
                 $whereCond = "  AND DATE(tsv.due_date) = CURDATE() + INTERVAL 1 DAY AND tsv.item_status IN ('Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced','Cancelled')  ";
             }
-            if($tabName == 'Overdue'){
+            if ($tabName == 'Overdue') {
                 $whereCond = "  AND DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ('In preparation','Requested','Assigned-waiting','Waiting','In-progress','Ongoing') ";
                 // alternate 1
                 // $this->_db->where('DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ("In preparation","Requested","Assigned-waiting","Waiting","In-progress","Ongoing")');
@@ -1960,17 +1961,17 @@ class jobs_detail
                 // $results_count = $get_query->fetch_all(MYSQLI_ASSOC);
                 // $totalCount = count($results_count);
             }
-            if($tabName == 'inProgress'){
+            if ($tabName == 'inProgress') {
                 $whereCond = "   AND tsv.item_status IN ('In-progress', 'Ongoing') ";
             }
-            if($tabName == 'Requested'){
+            if ($tabName == 'Requested') {
                 $whereCond = "  AND tsv.item_status = 'Requested' ";
             }
             //$currentPage = 0;
         }
 
         $search = isset($_GET['search']) ? $_GET['search'] : '';
-        if($search != ''){
+        if ($search != '') {
             $sLang = " OR ti.source_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $tLang = " OR ti.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $clientName = " OR tc.vUserName LIKE '%$search%' ";
@@ -1985,59 +1986,59 @@ class jobs_detail
                 $beforeHyphen = $parts[0];
                 $scoop_number = " OR tsv.company_code LIKE '%$beforeHyphen%'";
             }
-        
+
             $whereCond .= " AND (tsv.po_number LIKE '%$search%'$sLang $tLang $clientName $clientName_indirect $find_resource $find_project_m $job_type $scoop_number)";
             //$currentPage = 0;
         }
-        
+
         $sortBy = ' tsv.job_summmeryId  DESC';
-        if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
+        if (isset($_GET['sortBy']) && $_GET['sortBy'] != '') {
             $sortBy = $_GET['sortBy'];
-            if($_GET['sortBy'] == 'jobNumber')
+            if ($_GET['sortBy'] == 'jobNumber')
                 $sortBy = 'tsv.po_number';
-            if($_GET['sortBy'] == 'scoopNumber')
+            if ($_GET['sortBy'] == 'scoopNumber')
                 $sortBy = 'tsv.po_number';
-            if($_GET['sortBy'] == 'jobStatus')
+            if ($_GET['sortBy'] == 'jobStatus')
                 $sortBy = 'tsv.item_status';
-            if($_GET['sortBy'] == 'clientName')
+            if ($_GET['sortBy'] == 'clientName')
                 $sortBy = 'tc.vUserName';
-            if($_GET['sortBy'] == 'jobType')
+            if ($_GET['sortBy'] == 'jobType')
                 $sortBy = 'tjb.service_name';
-            if($_GET['sortBy'] == 'jobResource')
+            if ($_GET['sortBy'] == 'jobResource')
                 $sortBy = 'tu.vLastName';
-            if($_GET['sortBy'] == 'jobProjectManager')
+            if ($_GET['sortBy'] == 'jobProjectManager')
                 $sortBy = 'tu2.vFirstName';
 
-                
-            if($_GET['sortBy'] == 'jobDuedate')
+
+            if ($_GET['sortBy'] == 'jobDuedate')
                 $sortBy = 'DATE(tsv.due_date)';
-            if($_GET['sortBy'] == 'projectDuedate')
-                $sortBy = 'DATE(ti.due_date)';    
-            
-            $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;
+            if ($_GET['sortBy'] == 'projectDuedate')
+                $sortBy = 'DATE(ti.due_date)';
+
+            $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC';
             $sortBy = " $sortBy $sortOrder  ";
         }
 
         //$qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
-        if($tabName !== 'Overdue'){
+        if ($tabName !== 'Overdue') {
             $qry = "SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id $whereCond ";
             $tCount = $this->_db->rawQuery($qry);
-            $totalCount = $tCount && isset($tCount[0]['totalItems']) ? $tCount[0]['totalItems'] : 0 ;
-        }else{
+            $totalCount = $tCount && isset($tCount[0]['totalItems']) ? $tCount[0]['totalItems'] : 0;
+        } else {
             $sql = "SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id $whereCond ";
             $stmt = $this->_conn->prepare($sql);
             $stmt->execute();
             $get_query = $stmt->get_result();
             $tCount = $get_query->fetch_all(MYSQLI_ASSOC);
             //print_r($tCount[0]['totalItems']);
-            $totalCount = ($tCount && isset($tCount[0]['totalItems'])) ? $tCount[0]['totalItems'] : 0 ;
+            $totalCount = ($tCount && isset($tCount[0]['totalItems'])) ? $tCount[0]['totalItems'] : 0;
         }
         $totalPages = ceil($totalCount / $perPage);
-        
-        if($tabName !== 'Overdue'){
+
+        if ($tabName !== 'Overdue') {
             $selqry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id $whereCond ORDER BY $sortBy limit $perPage offset $offset ";
             $data = $this->_db->rawQuery($selqry);
-        }else{
+        } else {
             $selqry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id $whereCond ORDER BY $sortBy limit $perPage offset $offset  ";
             // echo $selqry;
             // exit;
@@ -2047,7 +2048,7 @@ class jobs_detail
             $data = $get_query->fetch_all(MYSQLI_ASSOC);
 
         }
-        
+
         foreach ($data as &$row) {
             $row['Client'] = isset($row['clientName']) ? $row['clientName'] : '';
             $row['clientlogo'] = isset($row['clientLogo']) ? $row['clientLogo'] : '';
@@ -2070,7 +2071,7 @@ class jobs_detail
     public function getJobsFromTmsSummeryViewCount()
     {
         $data = [];
-        
+
         // $qry = "SELECT tjs.job_status_name, tsv.item_status ,COUNT(*) AS totalItems FROM tms_summmery_view as tsv LEFT JOIN tms_job_status as tjs ON tjs.job_status_name = tsv.item_status GROUP BY tsv.item_status";
         // $data1 = $this->_db->rawQuery($qry);
         // if($data1){
@@ -2079,24 +2080,24 @@ class jobs_detail
 
         $qry = " SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND tsv.item_status = 'Requested'  ";
         $dataOn = $this->_db->rawQuery($qry);
-        if($dataOn){
+        if ($dataOn) {
             $data['requested'] = $dataOn[0]['totalItems'];
         }
 
         $qry = " SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND tsv.item_status IN ('In-progress', 'Ongoing')  ";
         $dataOn = $this->_db->rawQuery($qry);
-        if($dataOn){
+        if ($dataOn) {
             $data['inProgress'] = $dataOn[0]['totalItems'];
         }
 
         $qry = " SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND DATE(tsv.due_date) = CURDATE() AND tsv.item_status IN ('Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced','Cancelled')  ";
         $dataToday = $this->_db->rawQuery($qry);
-        if($dataToday){
+        if ($dataToday) {
             $data['dueToday'] = $dataToday[0]['totalItems'];
         }
         $qry = " SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND DATE(tsv.due_date) = CURDATE() + INTERVAL 1 DAY AND tsv.item_status IN ('Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced','Cancelled')  ";
         $datadueTomorrow = $this->_db->rawQuery($qry);
-        if($datadueTomorrow){
+        if ($datadueTomorrow) {
             $data['dueTomorrow'] = $datadueTomorrow[0]['totalItems'];
         }
 
@@ -2110,7 +2111,7 @@ class jobs_detail
         $stmt->execute();
         $get_query = $stmt->get_result();
         $tCount = $get_query->fetch_all(MYSQLI_ASSOC);
-        $data['overdue'] = ($tCount && isset($tCount[0]['totalItems'])) ? $tCount[0]['totalItems'] : 0 ;
+        $data['overdue'] = ($tCount && isset($tCount[0]['totalItems'])) ? $tCount[0]['totalItems'] : 0;
 
         return $data;
     }
@@ -2401,16 +2402,16 @@ class jobs_detail
         $this->_db->where('job_summmeryId', $id);
         $data = $this->_db->getOne('tms_summmery_view');
         $data['freelance_currency'] = '';
-        if($data && $data['resource'] != ''){
+        if ($data && $data['resource'] != '') {
             $this->_db->where('iUserId', $data['resource']);
             $data2 = $this->_db->getone('tms_users');
             $data['freelance_currency'] = $data2 ? $data2['freelance_currency'] : '';
-            $data['userName'] = $data2 ? $data2['vFirstName'] .' '. $data2['vLastName'] : '';
-            }
-        if($data && $data['contact_person'] != ''){
+            $data['userName'] = $data2 ? $data2['vFirstName'] . ' ' . $data2['vLastName'] : '';
+        }
+        if ($data && $data['contact_person'] != '') {
             $this->_db->where('iUserId', $data['contact_person']);
             $data3 = $this->_db->getone('tms_users');
-            $data['projectManager'] = $data3 ? $data3['vFirstName'] .' '. $data3['vLastName'] : '';
+            $data['projectManager'] = $data3 ? $data3['vFirstName'] . ' ' . $data3['vLastName'] : '';
         }
         return $data;
     }
@@ -2492,39 +2493,37 @@ class jobs_detail
         return $data;
     }
 
-    public function checkUserAbsent($id, $date) {
+
+    public function checkUserAbsent($id, $date)
+    {
         if (empty($date)) {
             echo "Date parameter is missing.";
-            return; 
+            return;
         }
-    
+
         // Retrieve user availability data
         $this->_db->where('iUserId', $id);
         $data = $this->_db->getOne('tms_users');
-        $today = new DateTime(); 
+        $today2 = new DateTime();
+        $today = $today2->format('Y-m-d');
         $dataArray = json_decode($data['is_available'], true);
-        // Filter out periods where both `dateFrom` and `dateTo` are in the past
-        if(!empty($dataArray)){
-            $dataArray = array_filter($dataArray, function($period) use ($today) {
-                $dateFrom = new DateTime($period['dateFrom']);
-                $dateTo = new DateTime($period['dateTo']);
-                
-                // Keep periods that are either in the future or ongoing (i.e., dateTo >= today)
-                return $dateTo >= $today;
-            });
-        }
+        $dataArray2 = [];
+        $dataArray2 = array_filter($dataArray, function ($period) use ($today) {
+            $dateFrom = new DateTime($period['dateFrom']);
+            $dateTo = new DateTime($period['dateTo']);
         
-
+            return ($dateTo >= new DateTime($today));
+            //return ($dateFrom <= new DateTime($today) && $dateTo >= new DateTime($today));
+        });
         $isAbsent = false; // Assume the user is absent by default
-        
-        $checkStart = $today->format('Y-m-d');
+
+        $checkStart = $today2->format('Y-m-d');
         $newValueDateObj = DateTime::createFromFormat('d.m.Y', $date['newValue']);
         $checkEnd = $newValueDateObj->format('Y-m-d');
 
         // Convert the check range to DateTime objects for comparison
         $checkStartDate = new DateTime($checkStart);
         $checkEndDate = new DateTime($checkEnd);
-
 
         foreach ($dataArray as $period) {
             $dateFrom = new DateTime($period['dateFrom']);
@@ -2540,10 +2539,13 @@ class jobs_detail
 
         if ($isAbsent) {
             $return['status'] = 200;
-            $return['date'] = $dataArray;
+            //$return['date'] = $dataArray;
+            $return['date'] = $dataArray2;
             $return['message'] = $data['vFirstName'] . " " . $data['vLastName'] . " resource is absent on below dates";
             return $return;
         }
     }
+
+
 
 }
