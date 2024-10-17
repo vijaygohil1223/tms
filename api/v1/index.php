@@ -3897,6 +3897,12 @@ $app->post('/clientInvoiceDueDate', function () use($app) {
     $result = $invoice->clientInvoiceDueDate($data);
     echoResponse(200, $result);
 });
+$app->post('/clientInvoicePaymentDate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->clientInvoicePaymentDate($data);
+    echoResponse(200, $result);
+});
 
 $app->post('/checkFIleExist','authenticate', function () use($app) {
     $invoice = new Client_invoice ();
