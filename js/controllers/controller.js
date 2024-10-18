@@ -30996,7 +30996,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             isLinguist: isLinguistChat,
             is_updateByid: 1,
             [isScoop ? 'scoop_id' : 'job_id']: itemId,
-            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true
+            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true,
+            loginUserType: $scope.userRight,
         };
     
         rest.path = "discussionCommentread";
@@ -31345,6 +31346,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$timeout(function() {
             rest.path = "discussionCommentread";
             rest.put($scope.commentReadArray).success(function (res) {
+                console.log('res=====>called', res)
                 if (res.status == 1) {
                     jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                 }
@@ -35720,7 +35722,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 'Normal': 'font-style: normal;'
             },
             theme: 'gray',
-            height: 250,
+            //height: 250,
             zIndex: 2001,
             toolbarButtons: [
                 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'inlineStyle',
@@ -39440,7 +39442,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         read_id: loginid,
                         isLinguist: true,
                         job_id: chatJobId,
-                        is_updateByid: 1
+                        is_updateByid: 1,
+                        loginUserType: $scope.userRight,
                     }
                     rest.path = "discussionCommentread";
                     rest.put(cmtObjTemp).success(function (res) {
@@ -45480,7 +45483,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
 
 }).controller('commentchatController', function ($scope, $q, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
-
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $scope.isLinguist = false
@@ -45649,7 +45652,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             isLinguist: isLinguistChat,
             is_updateByid: 1,
             [isScoop ? 'scoop_id' : 'job_id']: itemId,
-            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true
+            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true,
+            loginUserType: $scope.userRight,
         };
     
         rest.path = "discussionCommentread";
