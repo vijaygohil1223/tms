@@ -37272,6 +37272,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     $scope.jobId = id;
     // }
 
+    $scope.isPastDate = function(date, status) {
+        if(status !== 'Paid'){
+            var today = new Date();
+            var dueDate = new Date(date);
+            // Ensure comparison is for date only, ignoring time.
+            return dueDate < today.setHours(0, 0, 0, 0);
+        }
+    };
+
     //Display invoice 
     $scope.viewInvoice = function (type) {
         var modalInstance = $uibModal.open({
