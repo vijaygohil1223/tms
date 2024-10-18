@@ -498,6 +498,29 @@
                                                                   </td>
                                                                </tr>
                                                                <tr>
+                                                                  <td>
+                                                                     <div class="form-group">
+                                                                        <label class="control-label">PM Deadline</label>
+                                                                        <input ng-Datepicker2
+                                                                           id="pm_deadline{{it.itemId}}" type="text"
+                                                                           class="form-control end_date pm_deadline_class{{$index}}" name="pm_deadline"
+                                                                           ng-model="it.pm_deadline" autocomplete=""
+                                                                           onkeydown="return false" />
+      
+                                                                     </div>
+                                                                  </td>
+                                                                  <td>
+                                                                     <div class="form-group">
+                                                                        <label class="control-label">QA Deadline</label>
+                                                                        <input ng-Datepicker2
+                                                                           id="qa_deadline{{it.itemId}}" type="text"
+                                                                           class="form-control end_date qa_deadline_class{{$index}}" name="qa_deadline"
+                                                                           ng-model="it.qa_deadline" autocomplete=""
+                                                                           onkeydown="return false" />
+                                                                     </div>
+                                                                  </td>
+                                                               </tr>
+                                                               <tr>
                                                                   <td class="pl-0">
                                                                      <div class="form-group">
                                                                         <label class="control-label">Accounting Comment</label>

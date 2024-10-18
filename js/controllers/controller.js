@@ -27882,6 +27882,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     }
 
+                    if ($scope.itemList[i].pm_deadline) {
+                        var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#pm_deadline' + i).val(due_timevl);
+                    }
+
+                    if ($scope.itemList[i].qa_deadline) {
+                        var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#qa_deadline' + i).val(due_timevl);
+
+                    }
+
                     if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
                         var sourceData = JSON.parse($scope.itemList[i].source_lang);
                         var targetData = JSON.parse($scope.itemList[i].target_lang);
@@ -42500,6 +42517,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var due_timevl = new_due_date.split(" ")[1];
                         $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
                         angular.element('#due_time' + i).val(due_timevl);
+                    }
+
+                    if ($scope.itemList[i].pm_deadline) {
+                        var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#pm_deadline' + i).val(due_timevl);
+                    }
+
+                    if ($scope.itemList[i].qa_deadline) {
+                        var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#qa_deadline' + i).val(due_timevl);
+
                     }
 
                     if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
