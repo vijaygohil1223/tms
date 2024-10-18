@@ -181,6 +181,20 @@ class item {
                 unset($data['due_date']);
             }
         }
+        if(isset($data['pm_deadline'])) {
+            $datetimeString = $data['pm_deadline'];
+            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            $formattedPMDate = $dateTimeObj->format('Y-m-d');
+            $data['pm_deadline'] = $formattedPMDate;
+         
+        }
+        if(isset($data['qa_deadline'])) {
+            $datetimeString = $data['qa_deadline'];
+            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            $formattedQADate = $dateTimeObj->format('Y-m-d');
+            $data['qa_deadline'] = $formattedQADate;
+        }
+        
         $sql = "SELECT tcu.current_curency_rate
             FROM tms_items ti
             LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
