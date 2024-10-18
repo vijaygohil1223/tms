@@ -33,6 +33,7 @@
 
     var isExternalChat2 = localStorage.getItem('isLinguistChat') == 'true' || localStorage.getItem("session_iFkUserTypeId") == 2 ? 1 : 0
     var loginUserId = localStorage.getItem("session_iUserId")
+    const loginUserType = localStorage.getItem("session_iFkUserTypeId") || 0
             
     function formatDateToRelativeText(date) {
         var commentDate = new Date(date);
@@ -1685,7 +1686,7 @@
                 var saveButtonText = this.options.textFormatter(this.options.sendText);
 
                 // Add upload button if attachments are enabled
-                if (this.options.enableAttachments) {
+                if (this.options.enableAttachments && loginUserType == 1 ) {
                     var uploadButton = $('<span/>', {
                         'class': 'enabled upload'
                     });
@@ -1989,12 +1990,12 @@
                 attachmentsIcon.css('background-image', 'url("' + this.options.attachmentIconURL + '")');
                 attachmentsIcon.addClass('image');
             }
-            attachments.prepend(attachmentsIcon);
-            attachments.prepend(attachmentsCount);
+            if(loginUserType == 1){
+                attachments.prepend(attachmentsIcon);
+                attachments.prepend(attachmentsCount);
+            }
 
-            setTimeout(() => {
-                //$(".att_count").text('5');
-            }, 2000);
+            
             // Responsive navigation
             var dropdownNavigationWrapper = $('<div/>', {
                 'class': 'navigation-wrapper responsive'
@@ -2022,7 +2023,7 @@
                 navigationWrapper.append(popular);
                 dropdownNavigation.append(popular.clone());
             }
-            if (this.options.enableAttachments) {
+            if (this.options.enableAttachments && loginUserType == 1 ) {
                 navigationWrapper.append(attachments);
                 dropdownNavigationWrapper.append(attachments.clone());
             }

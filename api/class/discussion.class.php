@@ -47,10 +47,15 @@ class discussion {
                     if ($userData && $userData['vEmailAddress'] != '') {
                         
                         // update job table
-                        $jbupData['comment_read'] = 1;
-                        $jbupData['updated_date'] = date('Y-m-d H:i:s');
-                        $this->_db->where('job_summmeryId', $data['job_id']);
-                        $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
+                        $jobId = $data['job_id'];
+                        //$jbupData['comment_read'] = 1;
+                        //$jbupData['updated_date'] = date('Y-m-d H:i:s');
+                        // $this->_db->where('job_summmeryId', $data['job_id']);
+                        // $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
+                        $jobsql = "UPDATE tms_summmery_view 
+                        SET comment_read = comment_read + 1
+                        WHERE job_summmeryId = $jobId ";
+                        $scpstsId = $this->_db->rawQuery($jobsql);
 
                         $attachment = '';
                         if (isset($data['fileURL'])) {
@@ -168,8 +173,12 @@ class discussion {
                 $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE job_id = " . $data['job_id'] . " AND FIND_IN_SET(".$data['read_id'].",read_id)=0 " ;
                 $this->_db->rawQuery($qry);
                 
-                $this->_db->where('job_summmeryId', $data['job_id'] );
-            	$this->_db->update('tms_summmery_view', array('comment_read'=>0) );
+                if(isset($data['loginUserType']) && $data['loginUserType'] != 1 ){
+                    $this->_db->where('job_summmeryId', $data['job_id'] );
+            	    $this->_db->update('tms_summmery_view', array('comment_read' => 0) );
+                }
+                    
+
             }
 
             if(isset($data['is_scoopUpdate']) && $data['is_scoopUpdate'] == true && isset($data['scoop_id']) && $data['scoop_id'] > 0 ){
