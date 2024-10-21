@@ -37777,14 +37777,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             exportTableToExcel('exportable2Tripletex','invoice_import_example_new_min',[11], 1)
             
             // on excel download add flag 1 (To display check mark)
-            rest.path = 'clientInvoiceExcelStatus';
-            rest.post($scope.checkedIds).success(function (data) {
-                if (data.status == 200) {
-                    $route.reload();
-                    //notification('File downloaded successfully', 'success');
-                    $scope.checkedIds = [];
-                }
-            }).error(errorCallback);
+            // rest.path = 'clientInvoiceExcelStatus';
+            // rest.post($scope.checkedIds).success(function (data) {
+            //     if (data.status == 200) {
+            //         $route.reload();
+            //         //notification('File downloaded successfully', 'success');
+            //         $scope.checkedIds = [];
+            //     }
+            // }).error(errorCallback);
+            $route.reload();
+            //notification('File downloaded successfully', 'success');
+            $scope.checkedIds = [];
             $scope.getAllInvoice = allInvoiceListArr
             // Remove selected
             $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');

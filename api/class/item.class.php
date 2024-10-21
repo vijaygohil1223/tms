@@ -181,18 +181,18 @@ class item {
                 unset($data['due_date']);
             }
         }
-        if(isset($data['pm_deadline'])) {
-            $datetimeString = $data['pm_deadline'];
-            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            $formattedPMDate = $dateTimeObj->format('Y-m-d');
-            $data['pm_deadline'] = $formattedPMDate;
-         
+        if(isset($data['pm_deadline'])  ) {
+            // $datetimeString = $data['pm_deadline'];
+            // $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            // $formattedPMDate = $dateTimeObj->format('Y-m-d');
+            $data['pm_deadline'] = self::formatDeadline($data['pm_deadline'], 'pm_deadline');
         }
-        if(isset($data['qa_deadline'])) {
-            $datetimeString = $data['qa_deadline'];
-            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            $formattedQADate = $dateTimeObj->format('Y-m-d');
-            $data['qa_deadline'] = $formattedQADate;
+        if(isset($data['qa_deadline'])  ) {
+            // $datetimeString = $data['qa_deadline'];
+            // $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            // $formattedQADate = $dateTimeObj->format('Y-m-d');
+            // $data['qa_deadline'] = $formattedQADate;
+            $data['qa_deadline'] = self::formatDeadline($data['qa_deadline'], 'qa_deadline');
         }
         
         $sql = "SELECT tcu.current_curency_rate
@@ -611,6 +611,19 @@ class item {
 
         $data = $this->_db->rawQuery("SELECT its.itemId, its.item_number, gen.order_no FROM `tms_items` its LEFT JOIN tms_general gen ON gen.order_id = its.order_id WHERE its.order_id = $orderId ");
         return $data;
+    }
+
+    public function formatDeadline($dateString, $format = 'd.m.Y', $outputFormat = 'Y-m-d') {
+        if (!empty($dateString)) {
+            $dateTimeObj = DateTime::createFromFormat($format, $dateString);
+    
+            // Check if the date is valid according to the given format.
+            if ($dateTimeObj && $dateTimeObj->format($format) === $dateString) {
+                return $dateTimeObj->format($outputFormat);
+            }
+        }
+        // Return null if the date is invalid or empty.
+        return null;
     }
 
 
