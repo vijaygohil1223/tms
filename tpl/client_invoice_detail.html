@@ -63,6 +63,9 @@
                             <button class="btn btn-info" ng-click="exportData()">
                               Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                             </button>
+                            <button class="btn btn-info" ng-click="tripletexData()">
+                            Tripletex &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                            </button>
                           </div>
                         </div>
                       </form>
@@ -297,6 +300,56 @@
             </table>
           </div>
         </div>
+
+        <div class="panel panel-default"></div>
+          
+          <!-- Invoice for export to excel -->
+          <div class="table-responsive" id="exportableTripletex" style="display: none">
+            <table class="table m-b-none default footable-loaded footable" id="exportable2Tripletex" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
+              <thead>
+                <th>INVOICE NO</th>
+                <th>INVOICE DATE</th>
+                <th>DUE DATE</th>
+                <th>KID</th>
+                <th>PAYMENT TYPE</th>
+                <th>PAID AMOUNT</th>
+                <th>ORDER NO</th>
+                <th>ORDER DATE</th>
+                <th>CUSTOMER NO</th>
+                <th>DELIVERY DATE</th>
+                <th>ORDER LINE</th>
+                <th>ORDER LINE - UNIT PRICE </th>
+                <th>ORDER LINE - COUNT</th>
+                <th>ORDER LINE – VAT CODE</th>
+                <th>CURRENCY</th>
+              </thead>
+              <tbody>
+                <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
+                  <td>
+                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }}
+                  </td>
+                  <td style="font-weight: initial; font-size: initial;">{{invoiceL.invoice_date | globalDtFormat}}</td>
+                  <td>{{ invoiceL.invoice_due_date | globalDtFormat }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }}
+                  </td>
+                  <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
+                  <td>{{ invoiceL.accounting_tripletex}}</td>
+                  <td>{{ invoiceL.invoice_date | globalDtFormat}}</td>
+                  <td>{{ invoiceL.invoice_number}}</td>
+                  <td>{{ invoiceL.Invoice_cost }}</td>
+                  <td>1</td>
+                  <td>52</td>
+                  <td>{{invoiceL.client_currency}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
 
       <!-- footer copy right -->
       <div data-ng-include="'tpl/copyRight.html'"></div>
