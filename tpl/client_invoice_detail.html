@@ -7,7 +7,7 @@
     padding-top: 10px !important;
     padding-bottom: 10px !important;
   }
-  .past-due {
+  .past-date {
     color: red;
   }
 </style>
@@ -206,13 +206,14 @@
                           {{ (invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date) | globalDtFormat }}
                       </span>
                       </td>
-                      <td ng-class="{'past-due': isPastDate(invoiceL.invoice_duedate,invoiceL.invoice_status )}">
-                        <span > {{ invoiceL.invoice_due_date | globalDtFormat }} </span> 
+                      <td >
+                        <span ng-class="{'past-date': isPastDate(invoiceL.invoice_due_date, invoiceL.invoice_status)}">
+                          {{ invoiceL.invoice_due_date | globalDtFormat }}
+                        </span>
                         <a href="javascript:void(0)" 
                         title="edit duedate" class="trActionIcon"
                         ng-click="editDueDate(invoiceL.invoice_id, invoiceL.invoice_due_date | globalDtFormat , invoiceL.invoice_date)"><i
                           class="fa fa-pencil"></i></a>
-                        
                       </td>
                       <td> 
                         <span ng-if="!invoiceL.credit_note_id && invoiceL.paid_date !== '0000-00-00 00:00:00' && invoiceL.paid_date"> 

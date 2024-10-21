@@ -37271,15 +37271,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.invoicebuttonShow = function (id) {
     //     $scope.jobId = id;
     // }
-
     $scope.isPastDate = function(date, status) {
         if(status !== 'Paid'){
+            var dueDate = new Date(date); // Convert the date to a JavaScript Date object
             var today = new Date();
-            var dueDate = new Date(date);
-            // Ensure comparison is for date only, ignoring time.
-            return dueDate < today.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0); // Set today's time to midnight for accurate comparison
+            return dueDate < today; // Returns true if the date is in the past
         }
-    };
+      };
 
     //Display invoice 
     $scope.viewInvoice = function (type) {
