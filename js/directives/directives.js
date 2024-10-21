@@ -1361,8 +1361,7 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',
         require: 'ngModel',
-        link: function(scope, element, attrs) {
-            console.log('attrs', attrs)
+        link: function(scope, element, attrs, ngModelCtrl) {
             rest.path = 'select2Jobdata';
             rest.get().success(function(data) {
                 
@@ -1371,6 +1370,7 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                 }else{
                     var jobData = attrs?.typeid > 0 && data.filter((itms) => itms.order_id == attrs.typeid ) || data;
                 }
+
                 var prType = [];
                 angular.forEach(jobData, function(value, key) {
                     var obj = {
@@ -1384,9 +1384,9 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         placeholder: "Select job",
                         data: prType,
-                        multiple:true,
+                        multiple: attrs.ismultiple == "false" ? false : true,
                         //maximumSelectionSize:1,
-                        closeOnSelect:true,
+                        closeOnSelect: true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -1401,6 +1401,20 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                             });
                         }    
                     });
+
+                    setTimeout(() => {
+                        if(scope.selectedTab ==2 ){
+                            const firstOptionId = prType[0].id;
+                            console.log('firstOptionId', firstOptionId)
+                            element.val(firstOptionId).trigger('change');
+                            if(firstOptionId && firstOptionId >0 ){
+                                scope.changeLinguistJob(firstOptionId)
+                            }
+                        }
+                    }, 200);
+
+
+
                 }, 500);
 
             }).error(function(data, error, status) {});

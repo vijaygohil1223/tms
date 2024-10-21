@@ -628,7 +628,7 @@
         <tab index="0" select="discussionChat(jobdetail.job_summmeryId)">
           <tab-heading id="linguistJobDiscussion">
             <i class="fa fa-commenting-o"></i>
-            <span>Discussion <span style="color: gray;font-weight:bold; "> ({{jobdetail.comment_read}}) </span></span>
+            <span>Discussion <span style="color: gray;font-weight:bold; " ng-if="jobdetail.comment_read > 0"> ({{jobdetail.comment_read}}) </span></span>
           </tab-heading>
           <div class="tab-content">
             <div class="col-md-12">
@@ -643,8 +643,8 @@
                   <div class="col-sm-8 livemsg w-100">
                     <div id="comments-container"></div>
                   </div>
-                  <div class="col-md-4 statusBox">
-                    <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Scoop detail</b></span>
+                  <div class="col-md-4 statusBox" style="margin-top:25px;">
+                    <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Job detail</b></span>
                     <div class="navside white r box-shadow-z0 nav-center" layout="column">
                       <div flex-no-shrink="" style="background:#fff; border-radius: 5px;">
                         <nav ui-nav="">
@@ -659,8 +659,9 @@
                               <i class="fa fa-tasks"></i>
                               <div class="caption">
                                 <div class="name">
-                                  {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}}
-                                  <label>Project scoop</label>
+                                  <!-- {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}} -->
+                                   {{jobdetail.po_number}}
+                                  <label>Job </label>
                                 </div>
                               </div>
                             </li>
@@ -680,8 +681,8 @@
                             </li>
                             <li class="userSection">
                               <span class="sec-title">Project Members:</span>
-                              <div class="top">
-                                <figure class="managerIcon"></figure>
+                              <!-- <div class="top">
+                                <figure class="managerIcon" style="height: 25px; width: 26px; color: white;"></figure>
                                 <div class="user-info">
                                   <div class="user-name">
                                     <span> {{scoopSidebarDetail.pm_fullName }}</span>
@@ -689,9 +690,50 @@
 
                                     </div>
                                 </div>
+                              </div> -->
+                              <div>
+                                <div class="user-info">
+                                  <div>
+                                    <span class="designation"> <strong>Project Manager:</strong> </span>
+                                  </div>
+                                  <div class="user-name">
+                                    <span> {{scoopSidebarDetail.pm_fullName }}</span>
+                                  </div>
+                                </div>
                               </div>
+                              <div class="mt-15">
+                                <div class="user-info">
+                                  <div>
+                                    <span class="designation"> <strong>Project Coordinator:</strong> </span>
+                                  </div>
+                                  <div class="user-name">
+                                    <span> {{scoopSidebarDetail.pc_fullName }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="mt-15">
+                                <div class="user-info">
+                                  <div>
+                                    <span class="designation"> <strong>QA Specialist:</strong> </span>
+                                  </div>
+                                  <div class="user-name">
+                                    <span> {{scoopSidebarDetail.qa_fullName }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="mt-15">
+                                <div class="user-info">
+                                  <div>
+                                    <span class="designation"> <strong>Linguist:</strong> </span>
+                                  </div>
+                                  <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId ">
+                                    <span> {{linguist.vUserName}} </span>
+                                  </div>
+                                </div>
+                              </div>
+                              
                               <div class="projectTeam">
-                                <div class="team-list">
+                                <!-- <div class="team-list">
                                   <div class="list-item">
                                     <figure class="coordinatorIcon"></figure>
                                     <div class="right">
@@ -706,12 +748,9 @@
                                       <span class="designation">QA Specialist</span>
                                     </div>
                                   </div>
-                                </div>
-                                <div class="team-list">
+                                </div> -->
+                                <!-- <div class="team-list">
                                   <div class="list-item" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId " >
-                                    <!-- <figure
-                                      style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">
-                                    </figure> -->
                                     <figure style="">
                                     </figure>
                                     <div class="right">
@@ -720,7 +759,8 @@
                                     </div>
                                   </div>
 
-                                </div>
+                                </div> -->
+
                               </div>
                             </li>
                           </ul>

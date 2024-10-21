@@ -326,7 +326,7 @@
               <tbody>
                 <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
                   <td>
-                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }}
+                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }} -staticstring-
                   </td>
                   <td style="font-weight: initial; font-size: initial;">{{invoiceL.invoice_date | globalDtFormat}}</td>
                   <td>{{ invoiceL.invoice_due_date | globalDtFormat }}</td>
@@ -334,13 +334,13 @@
                   <td></td>
                   <td></td>
                   <td>
-                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }}
+                    {{ invoiceL.custom_invoice_number.includes('-') ? invoiceL.custom_invoice_number.split('-')[1] : invoiceL.custom_invoice_number }} -staticstring-
                   </td>
                   <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                   <td>{{ invoiceL.accounting_tripletex}}</td>
                   <td>{{ invoiceL.invoice_date | globalDtFormat}}</td>
                   <td>{{ invoiceL.invoice_number}}</td>
-                  <td>{{ invoiceL.Invoice_cost }}</td>
+                  <td>{{ invoiceL.Invoice_cost | customNumber }} -staticstring-</td>
                   <td>1</td>
                   <td>52</td>
                   <td>{{invoiceL.client_currency}}</td>

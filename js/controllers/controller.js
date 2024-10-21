@@ -4881,7 +4881,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.modalOpen = false;
     // After Linguist login
-    $scope.projectJobdetail = function (jobId, isJobDiscussion) {
+    $scope.projectJobdetail = function (jobId, isJobDiscussion, messageCount=0) {
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         if(jobId){
@@ -4890,7 +4890,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 jobId:jobId,
                 isCommentTab: isJobDiscussion && isJobDiscussion==1 ? true : false
             }
-            if(isJobDiscussion && isJobDiscussion==1){
+            if(isJobDiscussion && isJobDiscussion==1 && messageCount>0){
                 setTimeout(() => {
                     $('.jobcmtclr' + jobId).css("color", "#67bb0a");
                 }, 200);
@@ -30807,31 +30807,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     var projectTeam = [];
-    rest.path = 'contactPerson';
-    rest.model().success(function (data) {
-        
-        angular.forEach(data, function (val, i) {
-            const resPosition = (val?.vResourcePosition || '').toString().split(',')
-            const fullName = val?.vFirstName + ' ' + val?.vLastName
-            // index based on api (project_coordinator,project_manager QA_specialist)
-            if (i===0 && resPosition.includes('3') ) {
-                angular.element('#coordinatorIcon').html(fullName);
-                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                angular.element('.coordinatorIcon').html(coordpic);
-            } 
-            if (i===1 && resPosition.includes('2')) {
-                angular.element('#managerDesignation').html(fullName);
-                console.log('val', val)
-                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                angular.element('.managerIcon').html(managerpic);
-            } 
-            if (i===2 && resPosition.includes('4')) {
-                angular.element('#QASpecialist').html(fullName);
-                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                angular.element('.QAIcon').html(QApic);
-            }
-        })
-    }).error(errorCallback);
+    
 
     $routeParams.id = $routeParams.id;
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
@@ -30890,11 +30866,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         if(tabId ==2){
             $scope.selectScoop = 'select'
+            //$scope.changeLinguistJob(567);
         }
         
     };
 
     $scope.scoopChange = function(id){
+        console.log('id', id)
         if(id && id!='select'){
             $scope.scoopItemId = id;
             console.log('$scope.scoopItemId========', $scope.scoopItemId)
@@ -30920,6 +30898,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }
     }
+    
+    $scope.$watch('itemsDropdown', function(newVal) {
+        if (newVal && newVal.length > 0) {
+            //$scope.selectScoop = newVal[1].itemId;
+            $scope.scoopChange(newVal[0].itemId);
+            setTimeout(() => {
+                $('#selectScoop').val(newVal[0].itemId)
+            }, 500);
+        }
+    });
+
 
     $scope.reloadScoop = function(){
         //$route.reload();
@@ -30951,9 +30940,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     })
-
-    
-
 
     $scope.projectPriceChat = 0;
     $scope.projectScoopStatus = 'Assign';
@@ -31741,8 +31727,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.changeLinguistJob = function(jobId){
+        console.log('jobId', jobId)
         $scope.testcommentsArray = [];
-        const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        //const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        const linstJobid = jobId ? jobId : $('#linguistJob').val();
         console.log('linstJobid', linstJobid)
         if(linstJobid && linstJobid>0){
             $window.localStorage.setItem("isLinguistChat", true);
@@ -31752,6 +31740,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'discussionJobDetails/' + linstJobid;
             rest.get().success(function (data) {
                 $scope.scoopSidebarDetail = data;
+                console.log('$scope.scoopSidebarDetail', $scope.scoopSidebarDetail)
                 $scope.projectScoopStatus = data?.item_status_name || '';
                 $scope.projectPriceChat = data?.total_price || 0;
             })
@@ -31775,7 +31764,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$route.reload();
         },100)
     }
-
+    
 
 }).controller('userstatusController', function ($scope, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -37784,7 +37773,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
         setTimeout(() => {
             // export excel file using sheetjs
-            exportTableToExcel('exportable2Tripletex','Client Invoice Tripletex Report');
+            //exportTableToExcel('exportable2Tripletex','Client Invoice Tripletex Report');
+            exportTableToExcel('exportable2Tripletex','invoice_import_example_new_min',[11], 1)
             
             // on excel download add flag 1 (To display check mark)
             rest.path = 'clientInvoiceExcelStatus';

@@ -261,6 +261,17 @@
   .hideusername {
     display: none;
   }
+
+  ul.select2-choices li {
+    padding: 5px 18px !important;
+  }
+  .intexttab li.active {
+    background-color: #4285F4;
+  }
+  .intexttab li.active a{
+    color: white !important;
+  }
+
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
@@ -295,7 +306,7 @@
             <button class="btn linguistDiscussion" ng-click="changeLinguistJob()"  style="margin-left:20px;"> <i class="fa fa-refresh"></i></button> -->
             <div style="margin-left:50px;">
               <div class="nav-tabs-alt">
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs intexttab">
                   <!-- <li class="active">
                     <a data-target="#tab-1" role="tab" data-toggle="tab" aria-expanded="false">Scoop</a>
                   </li>
@@ -303,10 +314,10 @@
                     <a data-target="#tab-2" role="tab" data-toggle="tab" aria-expanded="true"> Jobs </a>
                   </li> -->
                   <li ng-class="{active: selectedTab === 1}">
-                    <a href="" ng-click="selectTab(1)">Scoops</a>
+                    <a href="" ng-click="selectTab(1)">Internal</a>
                   </li>
                   <li ng-class="{active: selectedTab === 2}">
-                    <a href="" ng-click="selectTab(2)">Jobs</a>
+                    <a href="" ng-click="selectTab(2)">External</a>
                   </li>
                 </ul>
               </div>
@@ -314,7 +325,7 @@
 
           </div>
 
-          <div class="panel-body">
+          <div class="panel-body" style="display: none;">
             <div class="row d-flex">
               <div class="col-sm-8 ">
                 <div class="tab-content">
@@ -322,8 +333,8 @@
                     <div class="d-flex">
                       <div style="margin-left: 30px;width:20%;">
                         <label> Select scoop</label>
-                        <select class="form-control m-b" id="selectScoop" name="selectScoop" ng-model="selectScoop"
-                          ng-init="itemsDropdown.itemId = 'select'" ng-change="scoopChange(selectScoop)">
+                        <select class="form-control m-b" id="selectScoop_tempold" name="selectScoop" ng-model="selectScoop"
+                          ng-init="itemsDropdown.itemId = 'select' " ng-change="scoopChange(selectScoop)">
                           <option value="select">--Please Select scoop--</option>
                           <option ng-repeat="itm in itemsDropdown track by $index" value="{{itm.itemId}}">
                             {{itm.order_no}}-{{itm.item_number | numberFixedLen:3}}</option>
@@ -357,21 +368,29 @@
                 <!-- <div ng-if="selectScoop === 'select' || !linguistJob">
                   <p style="text-align: center;">Please select scoop/job</p>
                 </div> -->
-                <div id="comments-container" ng-show="( selectScoop > 0) || linguistJob > 0 "></div>
+                <!-- <div id="comments-container" ng-show="( selectScoop > 0) || linguistJob > 0 "></div> -->
+                <div id="comments-container"></div>
               </div>
               <div class="col-md-4 statusBox">
-                <div ng-if="( selectScoop > 0) || linguistJob > 0 ">
-                  <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Scoop Detail</b></span>
+                <!-- <div ng-if="( selectScoop > 0) || linguistJob > 0 "> -->
+                <div>
+                  <span style="display: inline-block; padding:0px 20px 10px 20px">
+                    <b> Discussion Board </b>
+                    <button class="btn linguistDiscussion" ng-click="reloadScoop()"  ng-if="selectedTab==1" style="margin-left:20px;"> <i
+                        class="fa fa-refresh" > </i></button>
+                    <button class="btn linguistDiscussion" ng-click="changeLinguistJob()" ng-if="selectedTab==2" style="margin-left:20px;">
+                      <i class="fa fa-refresh"  > </i></button>
+                  </span>
                   <div class="navside white r box-shadow-z0 nav-center" layout="column">
                     <div flex-no-shrink="" style="background:#fff; border-radius: 5px;">
                       <nav ui-nav="">
                         <ul class="nav">
-                          <li>
+                          <!-- <li>
                             <span class="nav-text">
                               <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs"
                                   style="color: {{general.status_color}}"></i> {{projectScoopStatus}}</span>
                               <small class="block text-muted"> </small></span>
-                          </li>
+                          </li> -->
                           <!-- <li>
                             <span class="nav-icon"><i class="fa fa-clock-o"></i></span>
                             <span class="nav-text">{{general.due_date}}<small class="block text-muted">Deadline</small></span>
@@ -384,114 +403,99 @@
                             <span class="nav-icon"><i class="fa fa-indent"></i></span>
                             <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small class="block text-muted">Project Price</small></span>
                         </li> -->
+
+                          <!-- <li class="projectName">
+                          <i class="fa fa-tasks"></i>
+                          <div class="caption">
+                            <div class="name">
+                              {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}}
+                              <label>Project scoop</label></div>
+                          </div>
+                        </li> -->
+                          <!-- <li class="deadline">
+                          <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                          <div class="caption">
+                            <div class="Delivery-date">{{scoopSidebarDetail.due_date | dateFormatDisplayFront }}<label>Due date</label></div>
+                          </div>
+                        </li> -->
                           <li class="projectName">
-                            <i class="fa fa-tasks"></i>
-                            <div class="caption">
-                              <div class="name">
-                                {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}}
-                                <label>Project scoop</label>
+                            <div>
+                              <div> <span style="margin-left: 5px;">{{scoopSidebarDetail.order_no }}</span> </div>
+                              <div class="mt-15" ng-if="selectedTab==1">
+                                <span>Scoop</span>
+                                <select class="form-control m-b" id="selectScoop" name="selectScoop"
+                                  ng-model="selectScoop" ng-init="itemsDropdown.itemId = 'select'"
+                                  ng-change="scoopChange(selectScoop)">
+                                  <option value="select">--Please Select scoop--</option>
+                                  <option ng-repeat="itm in itemsDropdown track by $index" value="{{itm.itemId}}">
+                                    {{itm.order_no}}-{{itm.item_number | numberFixedLen:3}}</option>
+
+                                </select>
                               </div>
+                              <div class="mt-15" ng-if="selectedTab==2">
+                                <span>Job </span>
+                                <input type="text" select2-jobs typeid="{{pageOrderId}}" isMultiple="false" id="linguistJob"
+                                  class="form-control" name="linguistJob" ng-model="linguistJob"
+                                  ng-change="changeLinguistJob(linguistJob)" />
+                              </div>
+
                             </div>
-                          </li>
-                          <li class="deadline">
-                            <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                            <div class="caption">
-                              <div class="Delivery-date">{{scoopSidebarDetail.due_date | dateFormatDisplayFront
-                                }}<label>Due date</label></div>
-                              <!-- <div class="Delivery-date">{{general.due_date }}<label>Due date</label></div> -->
-                              <!-- <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div> -->
-                            </div>
-                          </li>
-                          <li class="task-price">
-                            <div class="caption">
-                              <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                              <label>Project scoop Price</label>
-                            </div>
-                            <!-- <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}</span> -->
-                            <span class="price">{{projectPriceChat | filterCurrencyComma:currencyName }} </span>
 
                           </li>
                           <li class="userSection">
                             <span class="sec-title">Project Members:</span>
-                            <div class="top">
-                              <figure class="managerIcon"></figure>
-                              <div class="user-info">
-                                <div class="user-name">
-                                  <!-- <span id="managerDesignation"> </span> -->
-                                  <span> {{scoopSidebarDetail.pm_fullName }}</span>
-                                  <span class="designation">Project Manager</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="projectTeam">
-                              <div class="team-list">
-                                <div class="list-item">
-                                  <figure class="coordinatorIcon"></figure>
-                                  <div class="right">
-                                    <!-- <strong id="coordinatorIcon"> </strong> -->
-                                    <strong> {{scoopSidebarDetail.pc_fullName }}</strong>
-                                    <span class="designation">Project Coordinator</span>
-                                  </div>
-                                </div>
-                                <div class="list-item">
-                                  <figure class="QAIcon"></figure>
-                                  <div class="right">
-                                    <!-- <strong id="QASpecialist"> - </strong> -->
-                                    <strong> {{scoopSidebarDetail.qa_fullName }}</strong>
-                                    <span class="designation">QA Specialist</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="team-list" >
-                                <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" ng-if="linguistJob > 0 && linguist.job_summmeryId == linguistJob">
-                                  <figure style="">
-                                  </figure>
-                                  <!-- <figure
-                                    style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">
-                                  </figure> -->
-                                  <div class="right" >
-                                    <strong>{{linguist.resource_fullName}}</strong>
-                                    <span class="designation">Linguist</span>
-                                  </div>
-                                </div>
-                                <!-- <div class="list-item" ng-repeat="linguist in jobLinguist" >
-                                <figure style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">  </figure>
-                                <div class="right">
-                                  <strong>{{linguist.vUserName}}</strong>
-                                  <span class="designation">Linguist</span>
-                                </div>
-                              </div> -->
 
+                            <div>
+                              <div class="user-info">
+                                <div>
+                                  <span class="designation"> <strong>Project Manager:</strong> </span>
+                                </div>
+                                <div class="user-name">
+                                  <span> {{scoopSidebarDetail.pm_fullName }}</span>
+                                </div>
                               </div>
                             </div>
-                          </li>
-                          <!-- <li class="projectName">
-                          <i class="fa fa-tasks"></i>
-                          <div class="caption">
-                            <div class="name">{{general.order_no}}<label>Project</label></div>
-                          </div>
-                        </li>
-                        <li class="deadline">
-                          <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                          <div class="caption">
-                            <div class="Delivery-date">{{general.due_date }}<label>Estimated delivery</label></div>
-                            <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div>
-                          </div>
-                        </li>
-                        <li class="task-price">
-                          <div class="caption">
-                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                            <label>Project Price</label>
-                          </div>
-                          <span class="price">{{projectPriceChat | filterCurrencyComma:currencyName }} </span>
-                          
-                        </li>
-                        <li class="userSection">
-                          <span class="sec-title">Project Members:</span>
-                          <div class="top">
+                            <div class="mt-15">
+                              <div class="user-info">
+                                <div>
+                                  <span class="designation"> <strong>Project Coordinator:</strong> </span>
+                                </div>
+                                <div class="user-name">
+                                  <span> {{scoopSidebarDetail.pc_fullName }}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="mt-15">
+                              <div class="user-info">
+                                <div>
+                                  <span class="designation"> <strong>QA Specialist:</strong> </span>
+                                </div>
+                                <div class="user-name">
+                                  <span> {{scoopSidebarDetail.qa_fullName }}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="mt-15">
+                              <div class="user-info">
+                                <div>
+                                  <span class="designation"> <strong>Linguist:</strong> </span>
+                                </div>
+                                <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="selectedTab==1">
+                                  <span> {{linguist.vUserName}} </span>
+                                </div>
+                                <div class="user-name" ng-if="selectedTab==2">
+                                  <span> {{scoopSidebarDetail.resource_name}} </span>
+                                </div>
+                                
+                              </div>
+                            </div>
+
+                            <!-- <div class="top">
                             <figure class="managerIcon"></figure>
                             <div class="user-info">
-                              <div class="user-name"><span id="managerDesignation">Mayank Vadiya</span><span class="designation">Project Manager</span></div>
+                              <div class="user-name">
+                                <span> {{scoopSidebarDetail.pm_fullName }}</span>
+                                <span class="designation">Project Manager</span></div>
                             </div>
                           </div>
                           <div class="projectTeam">
@@ -499,30 +503,50 @@
                               <div class="list-item">
                                 <figure class="coordinatorIcon"></figure>
                                 <div class="right">
-                                  <strong id="coordinatorIcon"> </strong>
+                                  <strong> {{scoopSidebarDetail.pc_fullName }}</strong>
                                   <span class="designation">Project Coordinator</span>
                                 </div>
                               </div>
                               <div class="list-item">
                                 <figure class="QAIcon"></figure>
                                 <div class="right">
-                                  <strong id="QASpecialist"> - </strong>
+                                  <strong> {{scoopSidebarDetail.qa_fullName }}</strong>
                                   <span class="designation">QA Specialist</span>
                                 </div>
                               </div>
                             </div>
                             <div class="team-list">
-                              <div class="list-item" ng-repeat="linguist in jobLinguist" >
-                                <figure style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">  </figure>
+                              <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" ng-if="selectedTab == 2 && linguist.job_summmeryId == (linguistJob.split(',').pop()) ">
+                                <figure style="">  </figure>
                                 <div class="right">
-                                  <strong>{{linguist.vUserName}}</strong>
+                                  <strong>{{linguist.resource_fullName}}</strong>
                                   <span class="designation">Linguist</span>
                                 </div>
                               </div>
                               
                             </div>
-                          </div>
-                        </li> -->
+  
+                          </div> -->
+
+                          </li>
+
+                          <li class="task-price" style="display: block;">
+                            <div>
+                              <div class="caption">
+                                <label>job Type: <span>{{scoopSidebarDetail.project_type_code }} </span> </label>
+                              </div>
+
+                            </div>
+                            <div class="mt-15">
+                              <div class="caption">
+                                <label ng-if="selectedTab==1">scoop Price:  <span> {{projectPriceChat}} {{scoopSidebarDetail.client_currency.split(',')[0] }}</span> </label>
+                                <label ng-if="selectedTab==2">Job Price:  <span> {{scoopSidebarDetail.job_price}}  {{scoopSidebarDetail.linguist_currency.split(',')[0]}}</span> </label>
+                                <!-- <label>scoop Price: <span>{{ projectPriceChat.total_amount |
+                                    filterCurrencyComma:currencyName }} </span> </label> -->
+                              </div>
+
+                            </div>
+                          </li>
 
                         </ul>
                       </nav>

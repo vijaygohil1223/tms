@@ -240,9 +240,9 @@ class discussion {
         $this->_db->join('tms_users AS scoop_cordintr','scoop_cordintr.iUserId = its.coordinator','LEFT');
         $this->_db->join('tms_users AS scoop_cordintr_sub','scoop_cordintr_sub.iUserId = its.subPc','LEFT');
         $this->_db->join('tms_item_status AS tis','its.item_status = tis.item_status_id','LEFT');
-        //$this->_db->join('(SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id) AS cp2','cp2.resource_id = cust.client','LEFT');
-        $results = $this->_db->getOne('tms_items as its','its.itemId, its.order_id, its.item_number, its.total_price, its.total_amount, its.due_date, its.start_date, tis.item_status_name, gen.order_no, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, " ", tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, " ", sub_tu.vLastName ) AS sub_pm_name, CONCAT( scoop_manager_tu.vFirstName, " ", scoop_manager_tu.vLastName ) AS scoopPm_name, CONCAT( sub_scp_tu.vFirstName, " ", sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT(gen_Qa.vFirstName, " ", gen_Qa.vLastName) AS gen_Qa_fullName, CONCAT(sub_gen_Qa.vFirstName, " ", sub_gen_Qa.vLastName) AS gen_sub_Qa_fullName, CONCAT(scp_Qa.vFirstName, " ", scp_Qa.vLastName) AS scp_Qa_fullName, CONCAT(sub_scp_Qa.vFirstName, " ", sub_scp_Qa.vLastName) AS scp_sub_Qa_fullName, CONCAT( P_cordintr.vFirstName, " ", P_cordintr.vLastName ) AS P_cordintr_fullName, CONCAT( P_cordintr_sub.vFirstName, " ", P_cordintr_sub.vLastName ) AS P_cordintr_sub_fullName ');
-        //$results = $this->_db->get('tms_items as its',null , 'its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, " ", tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, " ", sub_tu.vLastName ) AS sub_pm_name, CONCAT( scoop_manager_tu.vFirstName, " ", scoop_manager_tu.vLastName ) AS scoopPm_name, CONCAT( sub_scp_tu.vFirstName, " ", sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT(gen_Qa.vFirstName, " ", gen_Qa.vLastName) AS gen_Qa_fullName, CONCAT(sub_gen_Qa.vFirstName, " ", sub_gen_Qa.vLastName) AS gen_sub_Qa_fullName, CONCAT(scp_Qa.vFirstName, " ", scp_Qa.vLastName) AS scp_Qa_fullName, CONCAT(sub_scp_Qa.vFirstName, " ", sub_scp_Qa.vLastName) AS scp_sub_Qa_fullName, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, GROUP_CONCAT(DISTINCT(jsv.resources)) AS linguistId, GROUP_CONCAT( DISTINCT( CONCAT( jsv.vFirstName, " ", jsv.vLastName ) ) ) AS linguistName, COUNT(td.id) AS comment_status, COUNT(td.id) AS comment_id');
+        $this->_db->join('tms_project_type AS tpt','its.project_type = tpt.pr_type_id','LEFT');
+        $this->_db->join('tms_client AS clt','cust.client = clt.iClientId','LEFT');
+        $results = $this->_db->getOne('tms_items as its','its.itemId, its.order_id, its.item_number, its.total_price, its.total_amount, its.due_date, its.start_date, tis.item_status_name, gen.order_no, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, " ", tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, " ", sub_tu.vLastName ) AS sub_pm_name, CONCAT( scoop_manager_tu.vFirstName, " ", scoop_manager_tu.vLastName ) AS scoopPm_name, CONCAT( sub_scp_tu.vFirstName, " ", sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT(gen_Qa.vFirstName, " ", gen_Qa.vLastName) AS gen_Qa_fullName, CONCAT(sub_gen_Qa.vFirstName, " ", sub_gen_Qa.vLastName) AS gen_sub_Qa_fullName, CONCAT(scp_Qa.vFirstName, " ", scp_Qa.vLastName) AS scp_Qa_fullName, CONCAT(sub_scp_Qa.vFirstName, " ", sub_scp_Qa.vLastName) AS scp_sub_Qa_fullName, CONCAT( P_cordintr.vFirstName, " ", P_cordintr.vLastName ) AS P_cordintr_fullName, CONCAT( P_cordintr_sub.vFirstName, " ", P_cordintr_sub.vLastName ) AS P_cordintr_sub_fullName, tpt.project_name as project_type_name, tpt.code as project_type_code, clt.client_currency  ');
         
         if ($results) {
             $results['pm_fullName'] = !empty($results['scoop_subPm_id']) 
@@ -291,7 +291,7 @@ class discussion {
         }
 
         $this->_db->where("job_summmeryId", $id);
-        $jobData = $this->_db->getOne('tms_summmery_view', 'order_id, item_id,contact_person ');
+        $jobData = $this->_db->getOne('tms_summmery_view', 'order_id, item_id,contact_person, resource, total_price ');
         if (!$jobData) {
             return []; // No job data found
         }
@@ -310,11 +310,19 @@ class discussion {
             // Fetch user data
             $this->_db->where("iUserId", $jobData['contact_person']);
             $userData = $this->_db->getOne('tms_users', 'vFirstName, vLastName');
-    
             if ($userData) {
                 $results['pm_fullName'] = $userData['vFirstName'] . ' ' . $userData['vLastName'];
             } else {
                 $results['pm_fullName'] = ''; // Handle case where user data is not found
+            }
+            $this->_db->where("iUserId", $jobData['resource'] );
+            $userData2 = $this->_db->getOne('tms_users', 'vFirstName, vLastName, freelance_currency');
+
+            $results['job_price'] = $jobData['total_price'];
+            if ($userData2) {
+                $results['resource_name'] = $userData2['vFirstName'] . ' ' . $userData2['vLastName'];
+                $results['linguist_currency'] = $userData2['freelance_currency'];
+                //client_currency
             }
         }
     
