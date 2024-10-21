@@ -37775,6 +37775,35 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
+    $scope.tripletexData = function () {
+        $("#exportableTripletex .dt-loading" ).remove();
+        
+        if($scope.checkedIds.length > 0){
+            $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
+        }    
+        setTimeout(() => {
+            // export excel file using sheetjs
+            exportTableToExcel('exportable2Tripletex','Client Invoice Tripletex Report');
+            
+            // on excel download add flag 1 (To display check mark)
+            rest.path = 'clientInvoiceExcelStatus';
+            rest.post($scope.checkedIds).success(function (data) {
+                if (data.status == 200) {
+                    $route.reload();
+                    //notification('File downloaded successfully', 'success');
+                    $scope.checkedIds = [];
+                }
+            }).error(errorCallback);
+            $scope.getAllInvoice = allInvoiceListArr
+            // Remove selected
+            $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+            $('input[id^=checkAll]:checkbox').removeAttr('checked');
+            
+        }, 500);
+
+    };
+
     // On input change
     $scope.isPaymentDate = false;
     $scope.onInputChange = function(item){
