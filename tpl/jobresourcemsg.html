@@ -121,9 +121,10 @@
         <span ng-bind="fileAttatchName" class="fileAttatchM"></span>
       </div>
     </div><br><br>
-    <div class="form-group"> 
+    <div class="form-group froalaEditorStyle"> 
+      <div froala-editor style="padding-left:18%;"ng-model="cPersonMsg.messageData" id="jobResourceMsg" required></div>
       <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
-      <div style="padding-left:18%;" class="messText" text-angular="text-angular" name="htmlcontent" ng-model="cPersonMsg.messageData"  required> </div>
+      <!-- <div style="padding-left:18%;" class="messText" text-angular="text-angular" name="htmlcontent" ng-model="cPersonMsg.messageData"  required> </div> -->
     </div>
      <div class="pull-right">
           <button class="btn btn-info" ng-click="ok('message_form',cPersonMsg)"><span class="fa fa-envelope"></span> Send</button>
