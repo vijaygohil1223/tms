@@ -29663,6 +29663,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         let projDeadline =  moment($scope.purchaseDetail.due_date).format($window.localStorage.getItem('global_dateFormat') + ' ' + 'HH:mm');
         let poDueDateTime = (projDeadline != 'Invalid date') ? projDeadline : '';
         // replace tempalte variable
+
         var dataReplaceArr = {
             NAME1: $scope.resourceDetail.vFirstName,
             NAME2: $scope.resourceDetail.vLastName,
@@ -35766,7 +35767,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.emailSubject = 'PO | '+ items.jobdetail.po_number + ' | ' + items.companyNameSite  
     }
 
-
     $scope.cPersonMsg = [];
     rest.path = "emailTemplateGetAll" ;
     rest.get().success(function (data) {
@@ -35775,6 +35775,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var emailContentText = data.find( (templt) => templt.template_id == 13);
             let freelanceCurrency = items.jobdetail.freelance_currency ? ' '+items.jobdetail.freelance_currency.split(',')[0] : ' '+ 'EUR'; 
             if(emailContentText){
+                var formattedJobDesc = items.jobdetail.jobDesc.replace(/\n/g, '<br>');
                 const rplcData = {
                     Name1: items.resourceDetail.vFirstName,
                     Name2: items.resourceDetail.vLastName,
@@ -35784,7 +35785,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     JobService: items.jobdetail.project_type_name , // taskname
                     //IndirectCustomer : items.jobdetail.clientName,
                     IndirectCustomer : items.jobdetail.clientAccountName,
-                    JobComment : items.jobdetail.jobDesc,
+                    JobComment : formattedJobDesc,
                     DelivDeadline: items.deadline,
                     CompanyCodeShort: items.companyCodeShort,
                     //Fee: '', // Word count
