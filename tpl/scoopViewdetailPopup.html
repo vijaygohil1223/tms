@@ -748,11 +748,22 @@
                                           <td>
                                              <span>
                                                 <span>
-                                                    <p>
-                                                        <span id="smalltext{{it.job_summmeryId}}">{{ it.description | limitTo: 15 }}</span>
-                                                        <span class="more-text" id="addmoretext{{it.job_summmeryId}}">{{it.description}}</span>
-                                                        <span> <a ng-if="it.description.length > 15" ng-click="toggleReadMore(it.job_summmeryId)" class="read-more-button" id="read-more-button{{it.job_summmeryId}}">Read more</a> </span>
-                                                    </p>
+                                                   <p>
+                                                      <span id="smalltext{{it.job_summmeryId}}">
+                                                          <span ng-bind-html="(it.description | limitTo: 15 | nl2br)"></span>
+                                                      </span>
+                                                      <span class="more-text" id="addmoretext{{it.job_summmeryId}}">
+                                                          <span ng-bind-html="(it.description | nl2br)"></span>
+                                                      </span>
+                                                      <span>
+                                                          <a ng-if="it.description.length > 15"
+                                                             ng-click="toggleReadMore(it.job_summmeryId)"
+                                                             class="read-more-button"
+                                                             id="read-more-button{{it.job_summmeryId}}">
+                                                             Read more
+                                                          </a>
+                                                      </span>
+                                                  </p>
                                                 </span>
                                             </span>
                                           </td>
