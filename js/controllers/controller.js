@@ -37307,6 +37307,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.getInvoicePeriod();
 
+    $scope.defaultPrefix = function (id) {
+        rest.path = "clientInvoiceSetting";
+        rest.get().success(function (settingData) {
+            var filteredData = settingData.filter(function(item) {
+                return item.is_default == 1;
+            });
+    
+            if (filteredData.length > 0) {
+                $scope.invoiceNoPrefix = filteredData[0]['invoiceNoPrefix'];
+            } else {
+                $scope.invoiceNoPrefix = '';  // Set a default value if no data is found
+            }
+        });
+    };
+    
+    $scope.defaultPrefix();
+
+
     $scope.scoopId = [];
     var allInvoiceListArr = [];
     $scope.getAllInvoice = function () {
