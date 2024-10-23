@@ -25159,6 +25159,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.post(data).success(function (dataStatus) {
 
                     if(dataStatus.status == 200){
+                        notification(dataStatus?.msg,'success')
                         console.log(dataStatus,"dataStatus");
                         var dataStatus = dataStatus.data
                         // $window.localStorage.setItem('sessionProjectEditedBy', dataStatus.userName);
@@ -25177,8 +25178,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $location.path('/general/' + dataStatus.order_id);
                         // $window.open($location.absUrl().split('#')[0]+'#/items/'+dataStatus.order_id);
                         },1000)
+                    }else{
+                        notification(dataStatus?.msg,'warning')
                     }
-                });
+                }).error(errorCallback);;
             }
         });
     }
