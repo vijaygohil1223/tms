@@ -1435,6 +1435,13 @@ $app->get('/generalfolder/:id','authenticate', function ($id) use($app) {
     $result = $general->generalfolder($id);
     echoResponse(200, $result);
 });
+
+$app->post('/copyProject','authenticate', function () use($app) {
+    $general = new general ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $general->copyProject($data);
+    echoResponse(200, $result);
+});
 // ------------------ project language section ------------------------//
 $app->post('/prolanguage', 'authenticate',function () use($app) {
     $prolang = new prolang ();
