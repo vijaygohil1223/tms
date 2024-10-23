@@ -30912,14 +30912,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('id', id)
         if(id && id!='select'){
             $scope.scoopItemId = id;
-            console.log('$scope.scoopItemId========', $scope.scoopItemId)
             $scope.scoopSidebarDetail = []
             $scope.projectPriceChat = 0;
             $scope.projectScoopStatus = 'Assign'
             rest.path = 'discussionScoopDetails/' + $scope.scoopItemId;
             rest.get().success(function (data) {
                 $scope.scoopSidebarDetail = data;
-                console.log('scoopDetail', data)
                 $scope.projectScoopStatus = data?.item_status_name || '';
                 $scope.projectPriceChat = data?.total_price || 0;
             })
@@ -31434,6 +31432,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             enablePinging: true,
             currentUserId: loginid,
             enableHashtags: true,
+            tabTypeIntExt: $scope.selectedTab ? $scope.selectedTab : 2,
             textareaPlaceholderText: 'Type message here...',
             getComments: function (success, error) {
                 $timeout(function () {
@@ -45601,6 +45600,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+    var selectedTabType = 1;
 
     $scope.selectedTab = 1; // Default to the first tab
     setTimeout(() => {
@@ -45612,12 +45612,56 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(tabId ==1){
             $scope.linguistJob = ''
             $('#linguistJob').val(0).trigger('change');
+
+            $scope.scoopChange(items.scoopId);
+            
+            setTimeout(() => {
+                $('#selectScoop').val(items.scoopId)
+            }, 500);
+            
         }
         if(tabId ==2){
             $scope.selectScoop = 'select'
         }
+
+        selectedTabType = $scope.selectedTab;
         
     };
+
+    $scope.selectScoop = 'select';
+    rest.path = 'itemsScoopsDropdown/' + items?.orderId;
+    rest.get().success(function (data) {
+        console.log('data', data)
+        $scope.itemsDropdown = data;
+
+        if(data.length){
+            $scope.scoopChange(items.scoopId);
+            
+            setTimeout(() => {
+                $('#selectScoop').val(items.scoopId)
+            }, 500);
+            
+            rest.path = 'discussionScoopDetails/' + data[0].itemId;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                console.log('scoopDetail', data)
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+        }
+    })
+    
+    // $scope.$watch('itemsDropdown', function(newVal) {
+    //     console.log('newVal', newVal)
+    //     if (newVal && newVal.length > 0) {
+    //         //$scope.selectScoop = newVal[1].itemId;
+    //         $scope.scoopChange(newVal[0].itemId);
+    //         setTimeout(() => {
+    //             $('#selectScoop').val(newVal[0].itemId)
+    //         }, 500);
+    //     }
+    // });
+    
 
     $scope.scoopChange = function(id){
         if(id && id!='select'){
@@ -46144,6 +46188,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 enablePinging: true,
                 currentUserId: loginid,
                 enableHashtags: true,
+                tabTypeIntExt: $scope.selectedTab ? $scope.selectedTab : 2,
                 textareaPlaceholderText: 'Type message here...',
                 getComments: function (success, error) {
                     $timeout(function () {
@@ -46436,7 +46481,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.changeLinguistJob = function(jobId){
-        const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        //const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        const linstJobid = jobId ? jobId : $('#linguistJob').val();
         console.log('linstJobid', linstJobid)
         if(linstJobid && linstJobid>0){
             $window.localStorage.setItem("isLinguistChat", true);

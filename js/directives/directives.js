@@ -7347,9 +7347,56 @@ app.directive('customFroalaeditor', ['$timeout', function($timeout) {
         }
     };
 }]);
+
+app.directive('froalaEditor', function ($timeout) {
+    return {
+        restrict: 'A',
+        scope: {
+            ngModel: '='
+        },
+        link: function (scope, element, attrs) {
+            $timeout(function () {
+                element.froalaEditor({
+                    inlineStyles: {
+                        'Big Red': 'font-size: 20px; color: red;',
+                        'Small Blue': 'font-size: 14px; color: blue;',
+                        'Italic': 'font-style: italic;',
+                        'Normal': 'font-style: normal;'
+                    },
+                    theme: 'gray',
+                    zIndex: 2001,
+                    toolbarButtons: [
+                        'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'inlineStyle',
+                        'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertHR',
+                        'clearFormatting', 'undo', 'redo', 'html'
+                    ]
+                }).on('froalaEditor.contentChanged', function (e, editor) {
+                    // Sync Froala editor content with AngularJS model
+                    scope.$apply(function () {
+                        scope.ngModel = editor.html.get();
+                    });
+                }).on('froalaEditor.initialized', function (e, editor) {
+                    // Set Froala editor content from AngularJS model
+                    editor.html.set(scope.ngModel || '');
+                });
+
+                // Watch the ng-model for changes and update Froala editor content
+                scope.$watch('ngModel', function (newValue, oldValue) {
+                    var froalaInstance = element.data('froala.editor');
+                    if (newValue !== oldValue && froalaInstance && froalaInstance.html.get() !== newValue) {
+                        froalaInstance.html.set(newValue);
+                    }
+                });
+
+                angular.element('div.fr-wrapper + div').remove();
+                $('.fr-toolbar').find("button:eq(2)").remove();
+            }, 200);
+        }
+    };
+});
+
 app.filter('nl2br', function() {
     return function(text) {
         return text ? text.replace(/\n/g, '<br/>') : '';
     };
 });
-

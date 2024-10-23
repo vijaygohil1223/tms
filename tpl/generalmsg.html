@@ -107,10 +107,11 @@
           </p> -->
         </div>
       </div><br><br>
-      <div class="form-group">
+      <div class="form-group froalaEditorStyle">
         <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
-        <div style="padding-left:18%;padding-top:5vh;" class="messText" text-angular="text-angular" name="htmlcontent"
-          ng-model="cPersonMsg.messageData" required> </div>
+        <div froala-editor style="padding-left:18%;"ng-model="cPersonMsg.messageData" id="generalMsg" required></div>
+        <!-- <div style="padding-left:18%;padding-top:5vh;" class="messText" text-angular="text-angular" name="htmlcontent"
+          ng-model="cPersonMsg.messageData" required> </div> -->
       </div>
       <div class="pull-right">
         <!-- <button class="btn btn-info" ng-click="ok('message_form', cPersonMsg)"><span class="fa fa-envelope"></span>

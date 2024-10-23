@@ -1,20 +1,14 @@
 <style type="text/css">
-.discussion_page{
-  background: #f4f4fb;
-}
-  .modal-dialog{
-    width: 85%;
-  }
-  .chatbox{
-    padding: 15px;
+  .discussion_page {
+    background: #f4f4fb;
   }
 
-  .jquery-comments .commenting-field.main {
-    /* position: absolute;
-    bottom: -130px;
-    width: 95%;
-    opacity: 1;
-    z-index: 1; */
+  .modal-dialog {
+    width: 85%;
+  }
+
+  .chatbox {
+    padding: 15px;
   }
 
   ul#comment-list,
@@ -238,240 +232,229 @@
   .emojionearea.emojionearea-inline {
     height: auto;
   }
-/* date seperator */
-.seperatordate {
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
-.seperatordate::before,
-.seperatordate::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #b4b6b9;
-}
-.seperatordate:not(:empty)::before {
-  margin-right: .25em;
-}
 
-.seperatordate:not(:empty)::after {
-  margin-left: .25em;
-}
-li.seperatordate.comment {
+  /* date seperator */
+  .seperatordate {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+
+  .seperatordate::before,
+  .seperatordate::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #b4b6b9;
+  }
+
+  .seperatordate:not(:empty)::before {
+    margin-right: .25em;
+  }
+
+  .seperatordate:not(:empty)::after {
+    margin-left: .25em;
+  }
+
+  li.seperatordate.comment {
     width: 100% !important;
     margin: 0 0 30px 0 !important;
     max-width: initial !important;
     color: #b4b6b9 !important;
-}
-.hideusername{
- display: none;
-}   
+  }
+
+  .hideusername {
+    display: none;
+  }
+  .intexttab li.active {
+    background-color: #4285F4;
+  }
+  .intexttab li.active a{
+    color: white !important;
+  }
+
 </style>
 <div class="md-content discussion_page ">
   <div class="wrapper-md ng-scope" style="background: #f4f4fb; padding:0 10px;">
-    
-<div class="modal-header" style="min-height:60px;">
-  <h3 class="modal-title" style="display: block;">
-    <span>Discussion Board</span>
-    <!-- <button class="btn linguistDiscussion" data-sort-key="isLinguist=='true' ? 1 : 0" ng-class=" {'btn-default':!isLinguist, 'btn-success':isLinguist }" ng-click="chatLinguist()"  style="margin-left:20px;">{{  isLinguist ? 'Linguist' : 'Internal' }} Chat</button> -->
-    <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i class="fa fa-refresh"></i></button>
 
-  </h3>
-  <!-- <div ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div> -->
-  <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()" style="font-size: 30px;">×</button>
-</div>
-<div class="modal-body" style="padding:0 15px;">
+    <div class="modal-header" style="min-height:60px;">
+      <h3 class="modal-title" style="display: block;">
+        <span>Discussion Board</span>
+        <!-- <button class="btn linguistDiscussion" data-sort-key="isLinguist=='true' ? 1 : 0" ng-class=" {'btn-default':!isLinguist, 'btn-success':isLinguist }" ng-click="chatLinguist()"  style="margin-left:20px;">{{  isLinguist ? 'Linguist' : 'Internal' }} Chat</button> -->
+        <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i
+            class="fa fa-refresh"></i></button>
+
+      </h3>
+      <!-- <div ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div> -->
+      <button type="button" class="bootbox-close-button close" data-dismiss="modal" 
+        ng-click="cancel()" style="font-size: 30px;">×</button>
+    </div>
+    <div class="modal-body" style="padding:0 15px;">
       <div>
         <div class="col-sm-12"></div>
-          <div style="margin-left:50px;">
-            <div class="nav-tabs-alt">
-              <ul class="nav nav-tabs">
-                <li ng-class="{active: selectedTab === 1}">
-                  <a href="" ng-click="selectTab(1)">Internal </a>
-                </li>
-                <li ng-class="{active: selectedTab === 2}">
-                  <a href="" ng-click="selectTab(2)">External </a>
-                </li>
-              </ul>
-            </div>
+        <div >
+          <div class="nav-tabs-alt">
+            <ul class="nav nav-tabs intexttab">
+              <li ng-class="{active: selectedTab === 1}">
+                <a href="" ng-click="selectTab(1)">Internal </a>
+              </li>
+              <li ng-class="{active: selectedTab === 2}">
+                <a href="" ng-click="selectTab(2)">External </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="col-sm-12">
-          <div class="tab-content">
-            <div class="tab-pane " ng-class="{active: selectedTab === 1}" id="tab-1" ng-show="selectedTab === 1">
-              <div class="d-flex">
-                <div style="margin-left: 30px;width:20%;">
-                  <!-- <label> Select scoop</label>
-                  <select class="form-control m-b" id="selectScoop" name="selectScoop" ng-model="selectScoop"
+      </div>
+      <div class="col-sm-12">
+        <div class="tab-content">
+          <div class="tab-pane " ng-class="{active: selectedTab === 1}" id="tab-1" ng-show="selectedTab === 1">
+            <div class="d-flex">
+              <div style="margin-left: 30px;width:20%;">
+                <!-- <label> Select scoop</label>
+                  <select class="form-control m-b" id="selectScoop2" name="selectScoop" ng-model="selectScoop"
                     ng-init="itemsDropdown.itemId = 'select'" ng-change="scoopChange(selectScoop)">
                     <option value="select">--Please Select scoop--</option>
                     <option ng-repeat="itm in itemsDropdown track by $index" value="{{itm.itemId}}">
                       {{itm.order_no}}-{{itm.item_number | numberFixedLen:3}}</option>
                   </select> -->
-                </div>
-                <!-- <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i class="fa fa-refresh"></i></button> -->
               </div>
-            </div>
-            <div class="tab-pane" id="tab-2" ng-class="{active: selectedTab === 2}" ng-show="selectedTab === 2">
-              <div class="d-flex">
-                <div style="margin-left:30px;margin-bottom:25px;width:30%;">
-                  <label> Select Job  </label>
-                  <input type="text" select2-jobs typeid="{{orderId}}"  scoopItemnumber="{{scoopItemnumber}}" id="linguistJob" class="form-control"
-                    name="linguistJob" ng-model="linguistJob" ng-change="changeLinguistJob(linguistJob)" />
-                </div>
-                <!-- <button class="btn linguistDiscussion" ng-click="changeLinguistJob()" style="margin-left:20px;">
-                  <i class="fa fa-refresh"></i></button> -->
-              </div>
+              <!-- <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i class="fa fa-refresh"></i></button> -->
             </div>
           </div>
+
+          <!-- <div class="tab-pane" id="tab-2" ng-class="{active: selectedTab === 2}" ng-show="selectedTab === 2">
+            <div class="d-flex">
+              <div style="margin-left:30px;margin-bottom:25px;width:30%;">
+                <label> Select Job </label>
+                <input type="text" select2-jobs typeid="{{orderId}}" scoopItemnumber="{{scoopItemnumber}}"
+                  id="linguistJob" class="form-control" name="linguistJob" ng-model="linguistJob"
+                  ng-change="changeLinguistJob(linguistJob)" />
+              </div>
+            </div>
+          </div> -->
+
         </div>
       </div>
-      <div class="panel panel-default" style="background: #f4f4fb;">
-        
-        <!-- <div class="panel-heading">Chat </div> -->
-        <div class="panel-body chatbox">
-          <div class="row d-flex">
-            <div class="col-sm-8 livemsg w-100">
-              <div id="comments-container" ng-hide=" selectedTab == 2 && linguistJob == 0 "></div>
-            </div>
-            <div class="col-md-4 statusBox" style="margin-top:25px;">
-              <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Scoop detail</b></span> 
-              <div class="navside white r box-shadow-z0 nav-center" layout="column">
-                <div flex-no-shrink=""
-                  style="background:#fff; border-radius: 5px;">
-                  <nav ui-nav="">
-                    <ul class="nav">
-                      <!-- <li>
-                          <span class="nav-text">
-                            <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs" style="color: {{general.status_color}}"></i> {{projectScoopStatus}}</span>
-                            <small class="block text-muted"> </small></span>
-                      </li> -->
-                      <li class="projectName">
-                        <i class="fa fa-tasks"></i>
-                        <div class="caption">
-                          <div class="name">
-                            {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}}
-                            <label>Project scoop</label></div>
+    </div>
+    <div class="panel panel-default" style="background: #f4f4fb;">
+
+      <!-- <div class="panel-heading">Chat </div> -->
+      <div class="panel-body chatbox">
+        <div class="row d-flex">
+          <div class="col-sm-8 livemsg w-100">
+            <div id="comments-container" ng-show=" selectedTab == 2 || selectedTab == 1 "></div>
+            <!-- <div id="comments-container" ng-hide=" selectedTab == 2 && linguistJob == 0 "></div> -->
+          </div>
+          <div class="col-md-4 statusBox" style="margin-top:25px;">
+            <span style="display: inline-block; padding:0px 20px 10px 20px"><b> Discussion Board </b></span>
+            <div class="navside white r box-shadow-z0 nav-center" layout="column">
+              <div flex-no-shrink="" style="background:#fff; border-radius: 5px;">
+                <nav ui-nav="">
+                  <ul class="nav">
+                    <li class="projectName">
+                      <div>
+                        <div> <span style="margin-left: 5px;">{{scoopSidebarDetail.order_no }} </span> </div>
+                        <div class="mt-15" ng-if="selectedTab==1">
+                          <span>Scoop</span>
+                          <select class="form-control m-b" id="selectScoop" name="selectScoop" ng-model="selectScoop"
+                             ng-change="scoopChange(selectScoop)">
+                            <option value="select">--Please Select scoop-- </option>
+                            <option ng-repeat="itm in itemsDropdown track by $index" value="{{itm.itemId}}">
+                              {{itm.order_no}}-{{itm.item_number | numberFixedLen:3}}</option>
+
+                          </select>
                         </div>
-                      </li>
-                      <!-- <li class="deadline">
-                        <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                        <div class="caption">
-                          <div class="Delivery-date">{{scoopSidebarDetail.due_date | dateFormatDisplayFront }}<label>Due date</label></div>
-                        </div>
-                      </li> -->
-                      <li class="userSection">
-                        <span class="sec-title">Project Members:</span>
-                        
-                        <div>
-                          <div class="user-info">
-                            <div>
-                              <span class="designation"> <strong>Project Manager:</strong> </span>
-                            </div>
-                            <div class="user-name">
-                              <span> {{scoopSidebarDetail.pm_fullName }}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mt-15">
-                          <div class="user-info">
-                            <div>
-                              <span class="designation"> <strong>Project Coordinator:</strong> </span>
-                            </div>
-                            <div class="user-name">
-                              <span> {{scoopSidebarDetail.pc_fullName }}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mt-15">
-                          <div class="user-info">
-                            <div>
-                              <span class="designation"> <strong>QA Specialist:</strong> </span>
-                            </div>
-                            <div class="user-name">
-                              <span> {{scoopSidebarDetail.qa_fullName }}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mt-15">
-                          <div class="user-info">
-                            <div>
-                              <span class="designation"> <strong>Linguist:</strong> </span>
-                            </div>
-                            <div class="user-name" ng-repeat="linguist in jobLinguist" >
-                              <span> {{linguist.vUserName}} </span>
-                            </div>
-                          </div>
+                        <div class="mt-15" ng-if="selectedTab==2">
+                          <span>Job </span>
+                          <!-- removed scoopItemnumber="{{scoopItemnumber}}" -->
+                          <input type="text" select2-jobs typeid="{{orderId}}" isMultiple="false" id="linguistJob"
+                            class="form-control" name="linguistJob" ng-model="linguistJob"
+                            ng-change="changeLinguistJob(linguistJob)" />
                         </div>
 
-                        <!-- <div class="top">
-                          <figure class="managerIcon"></figure>
-                          <div class="user-info">
-                            <div class="user-name">
-                              <span> {{scoopSidebarDetail.pm_fullName }}</span>
-                              <span class="designation">Project Manager</span></div>
+                      </div>
+
+                    </li>
+                    <li class="userSection">
+                      <span class="sec-title">Project Members:</span>
+
+                      <div>
+                        <div class="user-info">
+                          <div>
+                            <span class="designation"> <strong>Project Manager:</strong> </span>
+                          </div>
+                          <div class="user-name">
+                            <span> {{scoopSidebarDetail.pm_fullName }}</span>
                           </div>
                         </div>
-                        <div class="projectTeam">
-                          <div class="team-list">
-                            <div class="list-item">
-                              <figure class="coordinatorIcon"></figure>
-                              <div class="right">
-                                <strong> {{scoopSidebarDetail.pc_fullName }}</strong>
-                                <span class="designation">Project Coordinator</span>
-                              </div>
-                            </div>
-                            <div class="list-item">
-                              <figure class="QAIcon"></figure>
-                              <div class="right">
-                                <strong> {{scoopSidebarDetail.qa_fullName }}</strong>
-                                <span class="designation">QA Specialist</span>
-                              </div>
-                            </div>
+                      </div>
+                      <div class="mt-15">
+                        <div class="user-info">
+                          <div>
+                            <span class="designation"> <strong>Project Coordinator:</strong> </span>
                           </div>
-                          <div class="team-list">
-                            <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" ng-if="selectedTab == 2 && linguist.job_summmeryId == (linguistJob.split(',').pop()) ">
-                              <figure style="">  </figure>
-                              <div class="right">
-                                <strong>{{linguist.resource_fullName}}</strong>
-                                <span class="designation">Linguist</span>
-                              </div>
-                            </div>
-                            
+                          <div class="user-name">
+                            <span> {{scoopSidebarDetail.pc_fullName }}</span>
                           </div>
-
-                        </div> -->
-
-                      </li>
-
-                      <li class="task-price" style="display: block;">
-                        <div>
-                          <div class="caption">
-                            <label>job Type: <span>{{scoopSidebarDetail.project_type_code }} </span> </label>
-                          </div>
-                          
                         </div>
-                        <div class="mt-15">
-                          <div class="caption">
-                            <!-- <i class="fa fa-snowflake-o" aria-hidden="true"></i> -->
-                            <label>scoop Price: <span>{{ scoopSidebarDetail.total_amount | filterCurrencyComma:currencyName }} </span> </label>
+                      </div>
+                      <div class="mt-15">
+                        <div class="user-info">
+                          <div>
+                            <span class="designation"> <strong>QA Specialist:</strong> </span>
                           </div>
-                          
+                          <div class="user-name">
+                            <span> {{scoopSidebarDetail.qa_fullName }}</span>
+                          </div>
                         </div>
-                      </li>
+                      </div>
+                      <div class="mt-15">
+                        <div class="user-info">
+                          <div>
+                            <span class="designation"> <strong>Linguist:</strong> </span>
+                          </div>
+                          <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="selectedTab==1">
+                            <span> {{linguist.vUserName}} </span>
+                          </div>
+                          <div class="user-name" ng-if="selectedTab==2">
+                            <span> {{scoopSidebarDetail.resource_name}} </span>
+                          </div>
 
-                    </ul>
-                  </nav>
-                </div>
+                        </div>
+                      </div>
+
+                    </li>
+
+                    <li class="task-price" style="display: block;">
+                      <div>
+                        <div class="">
+                          <label>job Type: <span>{{scoopSidebarDetail.project_type_code }} </span> </label>
+                        </div>
+
+                      </div>
+                      <div class="mt-15">
+                        <div class="">
+                          <label ng-if="selectedTab==1">scoop Price: <span> {{projectPriceChat}}
+                              {{scoopSidebarDetail.client_currency.split(',')[0] }}</span> </label>
+                          <label ng-if="selectedTab==2">Job Price: <span> {{scoopSidebarDetail.job_price}}
+                              {{scoopSidebarDetail.linguist_currency.split(',')[0]}}</span> </label>
+                          <!-- <label>scoop Price: <span>{{ projectPriceChat.total_amount |
+                                filterCurrencyComma:currencyName }} </span> </label> -->
+                        </div>
+
+                      </div>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
-            
-
-            </div>
           </div>
-        </div>
 
-            
+
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>
 </div>
@@ -480,8 +463,8 @@ li.seperatordate.comment {
 </div> -->
 </div>
 <script>
-  
-  $( document ).ready(function() {  
+
+  $(document).ready(function () {
     setTimeout(() => {
       // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
       // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);

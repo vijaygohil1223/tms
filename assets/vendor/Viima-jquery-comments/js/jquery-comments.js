@@ -1686,7 +1686,8 @@
                 var saveButtonText = this.options.textFormatter(this.options.sendText);
 
                 // Add upload button if attachments are enabled
-                if (this.options.enableAttachments && loginUserType == 1 ) {
+                
+                if (this.options.enableAttachments && ( loginUserType == 1 && this.options.tabTypeIntExt==1 ) ) {
                     var uploadButton = $('<span/>', {
                         'class': 'enabled upload'
                     });
@@ -1990,7 +1991,8 @@
                 attachmentsIcon.css('background-image', 'url("' + this.options.attachmentIconURL + '")');
                 attachmentsIcon.addClass('image');
             }
-            if(loginUserType == 1){
+
+            if(loginUserType == 1 && this.options.tabTypeIntExt==1 ){
                 attachments.prepend(attachmentsIcon);
                 attachments.prepend(attachmentsCount);
             }
@@ -2023,7 +2025,7 @@
                 navigationWrapper.append(popular);
                 dropdownNavigation.append(popular.clone());
             }
-            if (this.options.enableAttachments && loginUserType == 1 ) {
+            if (this.options.enableAttachments && ( loginUserType == 1 && this.options.tabTypeIntExt==1 ) ) {
                 navigationWrapper.append(attachments);
                 dropdownNavigationWrapper.append(attachments.clone());
             }
