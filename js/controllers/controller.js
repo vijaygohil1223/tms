@@ -35706,44 +35706,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
     }, 500);
 
-    // $timeout(function () {
-    //     angular.element('#jobPO').froalaEditor({
-    //         // Set the image upload URL.
-    //         inlineStyles: {
-    //             'Big Red': 'font-size: 20px; color: red;',
-    //             'Small Blue': 'font-size: 14px; color: blue;',
-    //             'Italic': 'font-style: italic;',
-    //             'Normal': 'font-style: normal;'
-    //         },
-    //         theme: 'gray',
-    //         //height: 250,
-    //         zIndex: 2001,
-    //         toolbarButtons: [
-    //             'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'inlineStyle',
-    //             'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertHR',
-    //             'clearFormatting', 'undo', 'redo', 'html'  
-    //         ]
-    //     }).on('froalaEditor.contentChanged', function (e, editor) {
-    //         // Sync Froala editor content with AngularJS model
-    //         $scope.$apply(function () {
-    //             $scope.cPersonMsg.messageData = editor.html.get();
-    //         });
-    //     }).on('froalaEditor.initialized', function (e, editor) {
-    //         // Set Froala editor content from AngularJS model
-    //         editor.html.set($scope.cPersonMsg.messageData || '');
-    //     });
+    $timeout(function () {
+        angular.element('#jobPO').froalaEditor({
+            // Set the image upload URL.
+            inlineStyles: {
+                'Big Red': 'font-size: 20px; color: red;',
+                'Small Blue': 'font-size: 14px; color: blue;',
+                'Italic': 'font-style: italic;',
+                'Normal': 'font-style: normal;'
+            },
+            theme: 'gray',
+            //height: 250,
+            zIndex: 2001,
+            toolbarButtons: [
+                'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'inlineStyle',
+                'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertHR',
+                'clearFormatting', 'undo', 'redo', 'html'  
+            ]
+        }).on('froalaEditor.contentChanged', function (e, editor) {
+            // Sync Froala editor content with AngularJS model
+            $scope.$apply(function () {
+                $scope.cPersonMsg.messageData = editor.html.get();
+            });
+        }).on('froalaEditor.initialized', function (e, editor) {
+            // Set Froala editor content from AngularJS model
+            editor.html.set($scope.cPersonMsg.messageData || '');
+        });
     
-    //     // Watch the ng-model for changes and update Froala editor content
-    //     $scope.$watch('cPersonMsg.messageData', function (newValue, oldValue) {
-    //         var froalaInstance = angular.element('#jobPO').data('froala.editor');
-    //         if (newValue !== oldValue && froalaInstance && froalaInstance.html.get() !== newValue) {
-    //             froalaInstance.html.set(newValue);
-    //         }
-    //     });
+        // Watch the ng-model for changes and update Froala editor content
+        $scope.$watch('cPersonMsg.messageData', function (newValue, oldValue) {
+            var froalaInstance = angular.element('#jobPO').data('froala.editor');
+            if (newValue !== oldValue && froalaInstance && froalaInstance.html.get() !== newValue) {
+                froalaInstance.html.set(newValue);
+            }
+        });
     
-    //     angular.element('div.fr-wrapper + div').remove();
-    //     $('.fr-toolbar').find("button:eq(2)").remove();
-    // }, 200);
+        angular.element('div.fr-wrapper + div').remove();
+        $('.fr-toolbar').find("button:eq(2)").remove();
+    }, 200);
 
 
     $scope.getFile = function (file) {
