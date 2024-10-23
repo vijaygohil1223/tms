@@ -107,11 +107,14 @@
         <span ng-bind="fileAttatchName" class="fileAttatchM"></span>
       </div>
     </div><br><br>
-    <div class="form-group froalaEditorStyle" style="margin-top: 30px;"> 
-      <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
-      <div froala-editor style="padding-left:18%;"ng-model="cPersonMsg.messageData" id="generalMessage" required></div>
-      <!-- <div  class="messText" text-angular="text-angular" name="htmlcontent" ng-model="message.messageData"  required> </div> -->
+    <div class="col-sm-12">
+      <div class="form-group froalaEditorStyle" style="margin-top: 30px;"> 
+        <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
+        <div froala-editor style="padding-left:17%;"ng-model="cPersonMsg.messageData" id="generalMessage" required></div>
+        <!-- <div  class="messText" text-angular="text-angular" name="htmlcontent" ng-model="message.messageData"  required> </div> -->
+      </div>
     </div>
+    
      <div class="pull-right">
           <button class="btn btn-info" ng-click="ok('message_form', message)"><span class="fa fa-envelope"></span> Send</button>
           <button class="btn btn-info" ng-click="cancel()"><span class="fa fa-times"></span> Cancel</button>
