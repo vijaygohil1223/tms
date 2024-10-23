@@ -172,4 +172,70 @@ class general {
         $results = $this->_db->update('tms_general', $data);
         return $results;
     }
+
+    public function copyProject($info) {
+
+        //get Order Table Data
+        $this->_db->where("order_id", $info['orderID']);
+        $orderData = $this->_db->getOne('tms_order');
+
+        //Copy and insert value of old order to new
+        unset($orderData['order_number']);
+        unset($orderData['order_id']);
+        $order = new order;
+        $oNumber = $order->orderNumberget($orderData['abbrivation']);
+
+        $orderData['order_number'] =  $oNumber;
+        $orderData['created_date'] = date('Y-m-d H:i:s');
+        $orderData['modified_date'] = date('Y-m-d H:i:s');
+
+        $orderId = $this->_db->insert('tms_order', $orderData);
+
+        if ($orderId) {
+            $this->_db->where("order_id", $orderId);
+            $newOrder = $this->_db->getOne('tms_order');
+
+            //get General Table Data
+            $this->_db->where("order_id", $info['orderID']);
+            $generalData = $this->_db->getOne('tms_general');
+
+            unset($generalData['general_id']);
+            unset($generalData['order_id']);
+            unset($generalData['order_no']);
+
+            if($newOrder['abbrivation']){
+                $order = new order;
+                $oNumber = $order->orderNumberget($newOrder['abbrivation']);
+                $oNumber = $oNumber ? $oNumber : 0;
+                $newOrderNumber = $newOrder['abbrivation']. str_pad($oNumber + 1, 4, '0', STR_PAD_LEFT);
+                $generalData['order_no'] = $newOrderNumber;
+            }
+            $generalData['order_id'] = $newOrder['order_id'];
+            $generalData['created_date'] = date('Y-m-d H:i:s');
+            $generalData['modified_date'] = date('Y-m-d H:i:s');
+            $this->_db->insert('tms_general', $generalData);
+
+            //get General Table Data
+            $this->_db->where("order_id", $info['orderID']);
+            $customerData = $this->_db->getOne('tms_customer');
+
+            unset($customerData['c_id']);
+            unset($customerData['order_id']);
+            $customerData['order_id'] = $newOrder['order_id'];
+            $customerData['created_date'] = date('Y-m-d H:i:s');
+            $customerData['modified_date'] = date('Y-m-d H:i:s');
+            // $customerId = $this->_db->insert('tms_customer', $customerData);
+
+            $customer = new customer();
+            $customerId = $customer->save($customerData);
+           
+            $return['data'] = $newOrder;
+            $return['status'] = 200;
+            $return['msg'] = 'Project Successfully copied.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not Copied.';
+        }
+        return $return;
+    }
 }

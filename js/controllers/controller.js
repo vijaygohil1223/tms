@@ -25146,6 +25146,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         localStorage.setItem('copyProjectData', JSON.stringify(copyObj))
     }
+
+    $scope.copyProjectData1 = function(orderID){
+       
+        var copyMessage = "<p> Are you sure you want to copy this project? </p><p> It will create new project as a copy of this project.</p> ";
+        
+        bootbox.confirm(copyMessage, function (result) {
+            copyMessage = '';
+            if (result == true) {
+                var data  = {orderID: orderID};
+                rest.path = 'copyProject';
+                rest.post(data).success(function (dataStatus) {
+
+                    if(dataStatus.status == 200){
+                        console.log(dataStatus,"dataStatus");
+                        var dataStatus = dataStatus.data
+                        // $window.localStorage.setItem('sessionProjectEditedBy', dataStatus.userName);
+                        $window.localStorage.setItem('sessionProjectEditedId', dataStatus.order_id);
+                        $window.localStorage.setItem('sessionProjectUserId', dataStatus.edited_by);
+    
+                        $window.localStorage.orderNo = dataStatus.order_number;
+                        $window.localStorage.abbrivation = dataStatus.abbrivation;
+                        $window.localStorage.orderID = dataStatus.order_id;
+                        $window.localStorage.iUserId = dataStatus.order_id;
+                        $window.localStorage.userType = 3;
+                        $window.localStorage.genfC = 1;
+    
+                        $window.localStorage.setItem("isNewProject", "false");
+                        $timeout(function () {
+                        $location.path('/general/' + dataStatus.order_id);
+                        // $window.open($location.absUrl().split('#')[0]+'#/items/'+dataStatus.order_id);
+                        },1000)
+                    }
+                });
+            }
+        });
+    }
     $scope.genPasteProjectData = function(){
         //$scope.general = $('#due_date').val()
         const pasteProjectData = localStorage.getItem('copyProjectData')
