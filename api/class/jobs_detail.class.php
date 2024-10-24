@@ -1395,25 +1395,41 @@ class jobs_detail
                 ? $base_currency_rate[0]['current_curency_rate']
                 : 1;
         }
-        $this->_db->where('job_summmeryId', $id);
-        $update = $this->_db->update('tms_summmery_view', $data);
-
-        if ($update && isset($data['order_id'])) {
+        
+        //if ($update && isset($data['order_id'])) {
             // $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
             // $res_exist = $this->_db->rawQuery($qry);
             // if ($res_exist && $res_exist[0]['count'] == 0) {
             //     $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
             //     $this->_db->rawQuery($qry_up);
             // }
+        //}
+        $invoiceCreated = 'SELECT * FROM tms_invoice WHERE JSON_CONTAINS(job_id, \'{"id": ' . $id . '}\', "$")';
+        $checkInvoiceExist = $this->_db->rawQuery($invoiceCreated);
+        
+        if (!empty($checkInvoiceExist)) {
+            // Invoice exists
+            $return['status'] = 200;
+            $return['is_invoice_exist'] = 1;
+            $return['msg'] = 'Invoice already exists.';
+        } else {
+            // Invoice doesn't exist, proceed to update
+            $this->_db->where('job_summmeryId', $id);
+            $update = $this->_db->update('tms_summmery_view', $data);
+        
+            if ($update) {
+                $return['status'] = 200;
+                $return['msg'] = 'Successfully Updated.';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not Updated.';
+            }
+        
+            // Always return this key for consistency
+            $return['is_invoice_exist'] = 0;
         }
 
-        if ($id) {
-            $return['status'] = 200;
-            $return['msg'] = 'Successfully Updated.';
-        } else {
-            $return['status'] = 422;
-            $return['msg'] = 'Not Updated.';
-        }
+        
 
         return $return;
     }

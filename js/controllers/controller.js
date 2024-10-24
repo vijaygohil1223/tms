@@ -6345,25 +6345,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
             rest.put($scope.jobdetail).success(function (data) {
-                //log file start
-                $scope.logMaster = {};
-                $scope.logMaster.log_type_id = $scope.jobdetail.order_id;
-                $scope.logMaster.task_id = $routeParams.id;
-                if (!$scope.jobdetail.po_number) {
-                    $scope.logMaster.log_title = $scope.jobdetail.tmp_po_number;
-                } else {
-                    $scope.logMaster.log_title = $scope.jobdetail.po_number;
+                console.log('data', data)
+                if(data && data.status ==200 && data.is_invoice_exist == 1){
+                    notification('Invoice already created for this job.', 'warning');
+                    setTimeout(() => {
+                        //$route.reload();
+                        $uibModalInstance.dismiss('cancel');
+                    }, 200);
+                }else{
+                    //log file start
+                    $scope.logMaster = {};
+                    $scope.logMaster.log_type_id = $scope.jobdetail.order_id;
+                    $scope.logMaster.task_id = $routeParams.id;
+                    if (!$scope.jobdetail.po_number) {
+                        $scope.logMaster.log_title = $scope.jobdetail.tmp_po_number;
+                    } else {
+                        $scope.logMaster.log_title = $scope.jobdetail.po_number;
+                    }
+                    $scope.logMaster.log_type = "update";
+                    $scope.logMaster.log_status = "task";
+                    $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                    rest.path = "saveLog";
+                    rest.post($scope.logMaster).success(function (data) { });
+                    //log file end - 
+                    //$location.path('jobs-detail/' + $scope.DetailId);
+                    notification('Job successfully updated.', 'success');
+                    $uibModalInstance.dismiss('cancel');
+                    $route.reload();
                 }
-                $scope.logMaster.log_type = "update";
-                $scope.logMaster.log_status = "task";
-                $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
-                rest.path = "saveLog";
-                rest.post($scope.logMaster).success(function (data) { });
-                //log file end - 
-                //$location.path('jobs-detail/' + $scope.DetailId);
-                notification('Job successfully updated.', 'success');
-                $uibModalInstance.dismiss('cancel');
-                $route.reload();
             }).error( function(data,error,status){
                 if($scope.jobdetail && $scope.jobdetail.due_date){
                     var due_timeval_e = $scope.jobdetail.due_date.split(" ")[1];
@@ -25237,6 +25246,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+    
     $scope.genPasteProjectData = function(){
         //$scope.general = $('#due_date').val()
         const pasteProjectData = localStorage.getItem('copyProjectData')
@@ -25264,6 +25274,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 100);
         }
         
+    }
+    $scope.copypasteProjectDatail = function () {
+        
+        $window.localStorage.setItem('copiedProjectId', $scope.routeOrderID);
+        setTimeout(() => {
+            $window.localStorage.orderID = '';
+            $window.localStorage.setItem('projectOrderName', '');
+            $window.localStorage.setItem("isNewProject", "true");
+            $location.path('/general');
+        }, 200);
     }
 
     //Setting Project Status when Create new END
@@ -25478,10 +25498,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.userType = 3;
             //$route.reload(); //hide to create project multitab in browser 
         }).error(errorCallback);
+
+        console.log('$window.localStorage.getItem(\'copiedProjectId\')', $window.localStorage.getItem('copiedProjectId'))
+        // setTimeout(() => {
+        //     $scope.getContact(10, 'conatct-person')
+        // }, 100);
+
     }
 
     console.log('$routeParams.id===========>',$routeParams.id)
     $scope.getContact = function (id, element) {
+        console.log('id====>', id)
         if(id && id != undefined){
             var id = id.toString().split(',').pop();
             $window.localStorage.setItem('directClientIdStore', id);
