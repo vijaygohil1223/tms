@@ -25147,6 +25147,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         localStorage.setItem('copyProjectData', JSON.stringify(copyObj))
     }
 
+    $scope.isEditIdUrl = false;
+
+    $scope.$watch(function() {
+        return $location.path();
+    }, function(newPath) {
+        // Check if the URL contains an ID (anything after /general/)
+        var pathParts = newPath.split('/');
+        if (pathParts[1] === 'general' && pathParts[2]) {
+            $scope.isEditIdUrl = true; // URL contains /general/id
+        } else {
+            $scope.isEditIdUrl = false; // URL is only /general
+        }
+    });
+
     $scope.copyProjectData1 = function(orderID){
        
         var copyMessage = "<p> Are you sure you want to copy this project? </p><p> It will create new project as a copy of this project.</p> ";
@@ -25159,6 +25173,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.post(data).success(function (dataStatus) {
 
                     if(dataStatus.status == 200){
+                        notification(dataStatus?.msg,'success')
                         console.log(dataStatus,"dataStatus");
                         var dataStatus = dataStatus.data
                         // $window.localStorage.setItem('sessionProjectEditedBy', dataStatus.userName);
@@ -25177,8 +25192,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $location.path('/general/' + dataStatus.order_id);
                         // $window.open($location.absUrl().split('#')[0]+'#/items/'+dataStatus.order_id);
                         },1000)
+                    }else{
+                        notification(dataStatus?.msg,'warning')
                     }
-                });
+                }).error(errorCallback);;
             }
         });
     }
