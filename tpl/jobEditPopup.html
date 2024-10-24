@@ -168,7 +168,7 @@
             style="margin-right:50px;display:none;" ng-click="cancel()">×</button>
         <h3 class="modal-title" style="float:left;">Edit job</h3>
 
-        <a class="btn btn-info" ng-click="savejobDetail('jobDetails-form');"><i class="fa fa-floppy-o"
+        <a class="btn btn-info" ng-click="savejobDetail('jobDetails-form');" ng-disabled="checkInvoice"><i class="fa fa-floppy-o"
                 aria-hidden="true"></i> Save</a>
         <button class="btn btn-info" style="margin-left: 10px; padding: 8px 15px;" ng-click="cancel()"><span
                 class="fa fa-times"></span></button>
@@ -184,7 +184,8 @@
                             <div class="col-sm-12">
                                 <div class="panel panel-default">
                                     <div class="panel-heading font-bold">
-                                        <h4>Job details</h4>
+                                        <h4 style="display: inline-block;">Job details</h4>
+                                        <span ng-if="checkInvoice" style="float: right;">Note: An invoice has been created for this job, so you cannot update the job details.</span>
                                     </div>
                                     <div class="panel-body">
                                         <div class="col-sm-12 p-0 projectDetailsbox">

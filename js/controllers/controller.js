@@ -5595,6 +5595,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
+            $scope.checkInvoice = Array.isArray(data['checkInvoice']) && data['checkInvoice'].length === 0 ? false : true;
             console.log('$scope.jobdetail', $scope.jobdetail)
 
             // purchase order setting Data data fn 
