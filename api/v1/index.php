@@ -3298,11 +3298,17 @@ $app->get('/itemsScoopsDropdown/:id','authenticate', function($id) {
     $result = $items->itemsScoopsDropdown($id);
     echoResponse(200, $result);
 });
+
 //---------Comment Read Unread--------- //
 $app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) use($app) {
     $discuss = new discussion ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $discuss->discussionCommentread($data, $orderId);
+    echoResponse(200, $result);
+});
+$app->get('/getDiscussionMessageRead/:id','authenticate', function($id) {
+    $discuss = new discussion ();
+    $result = $discuss->getDiscussionMessageRead($id);
     echoResponse(200, $result);
 });
 

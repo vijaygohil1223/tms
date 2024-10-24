@@ -352,9 +352,9 @@
                   <ul class="nav">
                     <li class="projectName">
                       <div>
-                        <div> <span style="margin-left: 5px;">{{scoopSidebarDetail.order_no }} </span> </div>
-                        <div class="mt-15" ng-if="selectedTab==1">
-                          <span>Scoop</span>
+                        <div> <span>Project:  </span> <span style="margin-left: 5px;">{{scoopSidebarDetail.order_no }} </span> </div>
+                        <div class="mt-15 d-flex" ng-if="selectedTab==1">
+                          <span style="padding: 6px 6px 0 0;">Scoop</span>
                           <select class="form-control m-b" id="selectScoop" name="selectScoop" ng-model="selectScoop"
                              ng-change="scoopChange(selectScoop)">
                             <option value="select">--Please Select scoop-- </option>

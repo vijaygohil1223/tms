@@ -303,6 +303,7 @@
                                                             <th>Target <!-- Target --> </th>
                                                             <th>Action</th>
                                                             <th>Job Comment</th>
+                                                            <th>Message</th>
                                                         </tr>
                                                     </thead>
                                                     <!-- ui-sortable="sortableOptions" ng-model="itemList" 
@@ -563,6 +564,11 @@
                                                                         </p>
                                                                     </span>
                                                                 </span>
+                                                            </td>
+                                                            <td>
+                                                                <a href="javascript:void(0)"  ng-click="goTocommentChat(it.order_id, it.scoopID, it.job_summmeryId, it.discussion_job_id )" style="color: {{ it.discussion_job_id == null ? 'grey' : ( (it.discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}" >
+                                                                    <i class="fa fa-commenting-o fa-2x cmtclr{{it.job_summmeryId}}"> </i> 
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                         <tr ng-show="!itemListFinal[$index].length">

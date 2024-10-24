@@ -206,11 +206,27 @@ class jobs_detail
         $this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
 
         $this->_db->join('tms_users tsu', 'tsv.contact_person = tsu.iUserId', 'LEFT');
-
+        $this->_db->join('tms_items ti', 'ti.order_id = tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
+        //$this->_db->join('tms_discussion td', 'td.job_id = tsv.job_summmeryId AND td.externalChat = 1 ', 'LEFT');
         $this->_db->where('tsv.order_id', $id);
-
-        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
-
+        //$this->_db->groupBy('tsv.job_summmeryId');
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId, ti.itemId as scoopID ');
+        
+        foreach ($data as &$row) {
+            $jobid = $row['job_summmeryId'];
+            $discussion = $this->_db->rawQueryNew("select id as discussion_id, job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where externalChat =1 and job_id=$jobid ORDER BY id DESC limit 1  ");
+            $discussion = count($discussion)> 0 ? $discussion[0] : [];
+            
+            if ($discussion) {
+                $row['discussion_id'] = $discussion['discussion_id'];
+                $row['discussion_job_id'] = $discussion['discussion_job_id'];
+                $row['discussionReadId'] = $discussion['discussionReadId'];
+            } else {
+                $row['discussion_id'] = null;
+                $row['discussion_job_id'] = null;
+                $row['discussionReadId'] = '';
+            }
+        }
         //echo $this->_db->getLastQuery();exit;
 
         return $data;
@@ -2489,10 +2505,28 @@ class jobs_detail
 
         $this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
         $this->_db->join('tms_users tsu', 'tsv.contact_person = tsu.iUserId', 'LEFT');
+        $this->_db->join('tms_items ti', 'ti.order_id = tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
+        //$this->_db->join('tms_discussion td', 'td.job_id = tsv.job_summmeryId AND td.externalChat = 1 ', 'LEFT');
         $this->_db->where('tsv.order_id', $orderId);
         $this->_db->where('tsv.item_id', $itemNumber);
-        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
+        $this->_db->groupBy('tsv.job_summmeryId');
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId, ti.itemId as scoopID ');
         //echo $this->_db->getLastQuery();exit;
+        foreach ($data as &$row) {
+            $jobid = $row['job_summmeryId'];
+            $discussion = $this->_db->rawQueryNew("select id as discussion_id, job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where externalChat =1 and job_id=$jobid ORDER BY id DESC limit 1  ");
+            $discussion = count($discussion)> 0 ? $discussion[0] : [];
+            
+            if ($discussion) {
+                $row['discussion_id'] = $discussion['discussion_id'];
+                $row['discussion_job_id'] = $discussion['discussion_job_id'];
+                $row['discussionReadId'] = $discussion['discussionReadId'];
+            } else {
+                $row['discussion_id'] = null;
+                $row['discussion_job_id'] = null;
+                $row['discussionReadId'] = '';
+            }
+        }
         return $data;
     }
 

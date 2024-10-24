@@ -337,7 +337,23 @@ class discussion {
         return $data;
     }
     
-        
+    public function getDiscussionMessageRead($scoopid){
+
+        $discussion = $this->_db->rawQueryNew("select id as discussion_id, scoop_id as discussion_scoop_id,job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where scoop_id=$scoopid ORDER BY id DESC limit 1  ");
+        $discussion = count($discussion)> 0 ? $discussion[0] : [];
+
+        $returnData['discussion_id'] = null;
+        $returnData['discussion_job_id'] = null;
+        $returnData['discussion_scoop_id'] = null;
+        $returnData['discussionReadId'] = '';    
+        if ($discussion) {
+            $returnData['discussion_id'] = $discussion['discussion_id'];
+            $returnData['discussion_job_id'] = $discussion['discussion_job_id'];
+            $returnData['discussion_scoop_id'] = $discussion['discussion_scoop_id'];
+            $returnData['discussionReadId'] = $discussion['discussionReadId'];
+        }
+        return $returnData;
+    }        
 
 
 }

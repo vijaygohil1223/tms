@@ -2335,8 +2335,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     };
     
+    
+    $scope.goTocommentChat = function (orderId, scoopId, jobId, isMessageExist=0 ) {
+        if (orderId && scoopId) {
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+        
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/commentchatPopup.html',
+                controller: 'commentchatController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return { orderId: orderId, scoopId:scoopId, jobId:0 };
+                    }
+                }
+            });
 
-    $scope.goTocommentChat = function (orderId, scoopId) {
+            setTimeout(() => {
+                if(isMessageExist > 0){
+                    console.log('isMessageExist', isMessageExist)
+                    $('.cmtclr' + scoopId).css("color", "#67bb0a");
+                }
+            }, 200);
+            modalInstance.result.then(function () {
+                setTimeout(() => {
+                    if(isMessageExist > 0){
+                        console.log('isMessageExist', isMessageExist)
+                        $('.cmtclr' + scoopId).css("color", "#67bb0a");
+                    }
+                }, 200);
+            }, function () {
+                // Modal dismissed - handle if needed
+            });
+
+        }
+    }
+
+    $scope.goTocommentChat__ = function (orderId, scoopId) {
         if (orderId && scoopId) {
             $window.localStorage.setItem("isLinguistChat", false);
             $window.localStorage.setItem("jobIdLinguistChat", 0)
@@ -26354,6 +26391,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     $scope.decimalNumber = $window.localStorage.getItem("DecimalNumber") ? $window.localStorage.getItem("DecimalNumber") : 2;
     $scope.btnDisabled = false;
+    $scope.discussionScoopRead = [];
+    $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+
     if($routeParams.id){
         $window.localStorage.orderID = $routeParams.id;
         $window.localStorage.setItem("isNewProject", "false");
@@ -28143,7 +28183,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     }
                 // }).error(errorCallback);
 
-
+                rest.path = 'getDiscussionMessageRead/' + val.itemId;
+                rest.get().success(function (data) {
+                    $scope.discussionScoopRead[val.itemId] = data;
+                    console.log('$scope.discussionScoopRead', $scope.discussionScoopRead)
+                })
 
             })
         });
@@ -28462,6 +28506,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    $scope.goTocommentChat = function (orderId, scoopId, jobId, isMessageExist=0 ) {
+        if (orderId && scoopId) {
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+        
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/commentchatPopup.html',
+                controller: 'commentchatController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return { orderId: orderId, scoopId:scoopId, jobId:jobId };
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                if(isMessageExist > 0){
+                    console.log('isMessageExist', isMessageExist)
+                    $('.cmtclr' + scoopId).css("color", "#67bb0a");
+                }
+            }, 200);
+            modalInstance.result.then(function () {
+                setTimeout(() => {
+                    if(isMessageExist > 0){
+                        console.log('isMessageExist', isMessageExist)
+                        $('.cmtclr' + scoopId).css("color", "#67bb0a");
+                    }
+                }, 200);
+            }, function () {
+                // Modal dismissed - handle if needed
+            });
+
+        }
+    }
+
+
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.contactMsgId;
@@ -28550,6 +28632,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('jobDetailController', function ($interval, $filter, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location, DTOptionsBuilder, $cookieStore, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
+    $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     //$scope.projectOrderName = projectOrderName ? projectOrderName : $window.localStorage.getItem('projectOrderName');
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     if ($scope.isNewProject === 'true') {
@@ -30810,6 +30893,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }    
     }  
+
+    $scope.goTocommentChat = function (orderId, scoopId, jobId, isMessageExist=0 ) {
+        if (orderId && scoopId) {
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+        
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/commentchatPopup.html',
+                controller: 'commentchatController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return { orderId: orderId, scoopId:scoopId, jobId:jobId };
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                if(isMessageExist > 0){
+                    console.log('isMessageExist', isMessageExist)
+                    $('.cmtclr' + jobId).css("color", "#67bb0a");
+                }
+            }, 200);
+            modalInstance.result.then(function () {
+                setTimeout(() => {
+                    if(isMessageExist > 0){
+                        console.log('isMessageExist', isMessageExist)
+                        $('.cmtclr' + jobId).css("color", "#67bb0a");
+                    }
+                }, 200);
+            }, function () {
+                // Modal dismissed - handle if needed
+            });
+
+        }
+    }
 
 }).controller('commentController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -41574,6 +41694,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.scoopItemNumber = items?.scoopItemNumber || 0;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.newchildPriceArr = [];
+    $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     
     if ($scope.order_id) {
         console.log('items-popup',items)
@@ -42818,6 +42939,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('.more-text').addClass('none');
                 }, 2500)
 
+                rest.path = 'getDiscussionMessageRead/' + val.itemId;
+                rest.get().success(function (data) {
+                    $scope.discussionScoopRead = data;
+                    console.log('$scope.discussionScoopRead', $scope.discussionScoopRead)
+                })
+
+
             })
         });
     }
@@ -43603,6 +43731,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         }
     }
+    
+    $scope.goTocommentChat = function (orderId, scoopId, jobId, isMessageExist=0, isJobChat=0 ) {
+        console.log('isMessageExist', isMessageExist)
+        if (orderId && scoopId) {
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+        
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/commentchatPopup.html',
+                controller: 'commentchatController',
+                size: '',   
+                resolve: {
+                    items: function () {
+                        return { orderId: orderId, scoopId:scoopId, jobId:jobId };
+                    }
+                }
+            });
+
+            const scoopIdJobId = jobId > 0 ? jobId : scoopId
+            console.log('scoopIdJobId', scoopIdJobId)
+            setTimeout(() => {
+                if(isMessageExist > 0){
+                    console.log('isMessageExist', isMessageExist)
+                    console.log('isMessageExist', isMessageExist)
+                    $('.cmtclr' + scoopIdJobId).css("color", "#67bb0a");
+                }
+            }, 200);
+            modalInstance.result.then(function () {
+                setTimeout(() => {
+                    if(isMessageExist > 0){
+                        console.log('isMessageExist', isMessageExist)
+                        $('.cmtclr' + scoopIdJobId).css("color", "#67bb0a");
+                    }
+                }, 200);
+            }, function () {
+                // Modal dismissed - handle if needed
+            });
+
+        }
+    }
+
 
 }).controller('resourceAdvanceSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -45618,14 +45788,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
-    var selectedTabType = 1;
 
-    $scope.selectedTab = 1; // Default to the first tab
+    $scope.externalChatJobId = (items && items.jobId > 0) ? items.jobId : 0;
+
+    $scope.selectedTab = (items && items.jobId > 0) ? 2 : 1;  // Default to the first tab
     setTimeout(() => {
         $('#linguistJob').val(0).trigger('change');
     }, 1000);
     $scope.selectTab = function(tabId) {
-        console.log('tabId', tabId)
         $scope.selectedTab = tabId;
         if(tabId ==1){
             $scope.linguistJob = ''
@@ -45641,8 +45811,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(tabId ==2){
             $scope.selectScoop = 'select'
         }
-
-        selectedTabType = $scope.selectedTab;
         
     };
 
@@ -46533,6 +46701,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$route.reload();
         },100)
     }
+
+    if(items && items.jobId){
+        //$scope.changeLinguistJob(items.jobId);
+        // setTimeout(() => {
+        //     //$('#linguistJob').val(items.jobId)
+        // }, 500);
+    }
+    
 
 }).controller('workInstructionsController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     //debugger;
