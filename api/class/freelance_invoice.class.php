@@ -55,10 +55,13 @@ class Freelance_invoice
 
             //echo $this->_db->getLastQuery();
             //exit;
+            $data['companyName'] = "";
+            if(isset($data['company_code'])){
+                $companyName = self::getAll('abbrivation', substr($data['company_code'], 0, -2), 'tms_centers');
 
-            $companyName = self::getAll('abbrivation', substr($data['company_code'], 0, -2), 'tms_centers');
-
-            $data['companyName'] = $companyName[0]['name'];
+                $data['companyName'] = $companyName[0]['name'];
+            }
+           
 
             //payment due date number of day
             $data['number_of_days'] = $paymentDue[0]['number_of_days'];
@@ -91,6 +94,7 @@ class Freelance_invoice
         }
         return $infoD;
     }
+    
 
     //invoice and draft save
     public function saveInvoice($data)
@@ -184,6 +188,7 @@ class Freelance_invoice
             }
             //$data['currency_rate'] = (isset($data['currency_rate'])) ? $data['currency_rate'] : 1;
             $id = $this->_db->insert('tms_invoice', $data);
+           
             if ($id && $jobData) {
                 foreach ($jobData as $item) {
                     $jbupData['updated_date'] = date('Y-m-d H:i:s');
@@ -193,8 +198,24 @@ class Freelance_invoice
                         $jbupData['item_status'] = 'Invoiced';
                     $this->_db->where('job_summmeryId', $item['id']);
                     $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
+                    $jobDetail = $this->_db->getOne('tms_summmery_view');
+                    try{
+                         //insert value in tms_invoice_jobs
+                        $iJobdata['invc_Id'] =  $id;
+                        $iJobdata['invc_job_id'] = $item['id'];
+                        $iJobdata['job_price'] =  $jobDetail['total_price'];
+                        $iJobdata['created_date'] = date('Y-m-d');
+                        $iJobdata['updated_date'] = date('Y-m-d');
+                        $this->_db->insert('tms_invoice_jobs', $iJobdata);
+                    } catch (Exception $e) {
+                    }
+                   
                 }
+               
             }
+
+          
+
             if ($id) {
                 $result['status'] = 200;
                 $result['inserted_id'] = $id;
@@ -212,6 +233,36 @@ class Freelance_invoice
 
     }
 
+    public function invoicejobsSaveTemporary() {
+        // Fetch all invoice data from tms_invoice table
+        $this->_db->where('is_deleted ', 0);
+        $invData = $this->_db->get('tms_invoice');
+        
+        foreach ($invData as $value) {
+            // Ensure job_id is in array format to handle multiple job IDs
+            $jobIds = json_decode($value['job_id'], true);
+            if (is_array($jobIds)) {
+                foreach ($jobIds as $job) {
+                    // Check if 'id' key exists in each job entry to avoid undefined index errors
+                    if (isset($job['id'])) {
+                        $this->_db->where('job_summmeryId ', $job['id']);
+                        $jobPrice = $this->_db->getOne('tms_summmery_view');
+                        $iJobdata = [
+                            'invc_Id' => $value['invoice_id'],
+                            'invc_job_id' => $job['id'],
+                            'job_price' => $jobPrice['total_price'],
+                            'created_date' => date('Y-m-d'),
+                            'updated_date' => date('Y-m-d')
+                        ];
+    
+                        // Insert job data into tms_invoice_jobs table
+                        $this->_db->insert('tms_invoice_jobs', $iJobdata);
+                    }
+                }
+            }
+        }
+    }
+    
     //display invoice
     public function viewAllInvoice($type, $userId)
     {

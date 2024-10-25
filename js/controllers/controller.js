@@ -40658,11 +40658,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceData = {};
         }
         
-        if(! $scope.invoiceDetail.custom_invoice_no || !$scope.invoiceDetail.custom_invoice_no.replace($scope.invoiceNoPrefix, '') ){
+        if(! $scope.invoiceDetail?.custom_invoice_no || !$scope.invoiceDetail?.custom_invoice_no.replace($scope.invoiceNoPrefix, '') ){
             notification('Please enter custom invoice Number.', 'warning');
             return false;
         }
-        if($scope.invoiceDetail.custom_invoice_no.indexOf('#') !== -1){
+        if($scope.invoiceDetail?.custom_invoice_no.indexOf('#') !== -1){
             notification('Custom invoice numbers cannot include the symbol "#."', 'warning');
             return false;
         }
