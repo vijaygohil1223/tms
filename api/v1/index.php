@@ -3583,6 +3583,12 @@ $app->post('/invoiceSave', 'authenticate',function () use($app) {
     $result = $invoice->saveInvoice($data);
     echoResponse(200, $result);
 });
+$app->post('/invoicejobsSaveTemprory',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->invoicejobsSaveTemporary();
+    echoResponse(200, $result);
+});
+
 $app->get('/viewAllInvoice/:type/:userId', 'authenticate',function($type,$userId) {
     $invoice = new Freelance_invoice ();
     $result = $invoice->viewAllInvoice($type,$userId);
