@@ -1404,7 +1404,7 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
 
                     setTimeout(() => {
                         if(scope.selectedTab ==2 ){
-                            const firstOptionId = prType[0].id;
+                            const firstOptionId = (scope.externalChatJobId && scope.externalChatJobId) > 0 ? scope.externalChatJobId : prType[0].id ;
                             console.log('firstOptionId', firstOptionId)
                             element.val(firstOptionId).trigger('change');
                             if(firstOptionId && firstOptionId >0 ){

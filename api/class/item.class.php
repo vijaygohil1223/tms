@@ -112,6 +112,7 @@ class item {
     public function itemsGetSingleScoop($id) {
         // to solve in case order no duplicate
         $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name,tg.specialization, tis.item_status_name  FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id LEFT JOIN tms_item_status As tis ON ti.item_status = tis.item_status_id WHERE ti.itemId = $id GROUP BY ti.itemId ");
+
         return $data;
     }
 
@@ -625,7 +626,7 @@ class item {
         // Return null if the date is invalid or empty.
         return null;
     }
-
+    
 
 }
 

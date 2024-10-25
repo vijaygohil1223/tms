@@ -30,7 +30,8 @@
                   <a data-target="#tab-1" role="tab" data-toggle="tab" aria-expanded="false">Scoop Info</a>
                </li>
                <li>
-                  <a data-target="#tab-2" role="tab" data-toggle="tab" aria-expanded="true" ng-click="jobDetailsData()"> Jobs </a>
+                  <a data-target="#tab-2" role="tab" data-toggle="tab" aria-expanded="true" ng-click="jobDetailsData()">
+                     Jobs </a>
                </li>
             </ul>
          </div>
@@ -70,10 +71,17 @@
                                           <div>
                                              <div style="margin-top: 6px; margin-left:5px;"> {{ clientName }} </div>
                                           </div>
-                                          <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)"
-                                             title="delete" style="padding:8px 10px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="goTocommentChat(it.order_id, it.itemId, 0, discussionScoopRead.discussion_scoop_id, 0 )"
+                                             style="color: {{ discussionScoopRead.discussion_scoop_id == null ? 'grey' : ( (discussionScoopRead.discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}">
+                                             <i class="fa fa-commenting-o fa-2x cmtclr{{it.itemId}}"> </i>
+                                          </a>
+                                          <a href="javascript:void(0)"
+                                             ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete"
+                                             style="padding:8px 10px;">
                                              <i class="iconDelete glyph-icon fa-times"></i>
                                           </a>
+
                                        </div>
                                        <div class="panel-body p-0">
                                           <div class="col-sm-12 p-0">
@@ -113,12 +121,14 @@
                                                                <div class="col-sm-2">Unit Price</div>
                                                                <div class="col-sm-2">Prices</div>
                                                             </div>
-                                                            <div ng-repeat="it1 in itemPriceUni[it.itemId] track by $index"
+                                                            <div
+                                                               ng-repeat="it1 in itemPriceUni[it.itemId] track by $index"
                                                                class="col-sm-12" id="totalItem_{{it.itemId}}">
                                                                <div class="col-sm-2">
                                                                   <div class="form-group">
                                                                      <input type="text" class="form-control"
-                                                                        name="itemQuantity" id="itemQuantity{{it.itemId}}"
+                                                                        name="itemQuantity"
+                                                                        id="itemQuantity{{it.itemId}}"
                                                                         ng-change="changeItemField(it.itemId,$index,$parent.$index)"
                                                                         ng-model="it1.quantity"
                                                                         allow-decimal-comma-number />
@@ -252,8 +262,9 @@
                                                          <div class="col-sm-12 mt-15" style="margin-bottom: 15px;">
                                                             <div class="form-group">
                                                                <a href="javascript:void(0);"
-                                                                  ng-click="itemfolderOpen(it.itemId)" style="float: left;"><i
-                                                                     class="itemFolder" title="Item file folder"></i></a>
+                                                                  ng-click="itemfolderOpen(it.itemId)"
+                                                                  style="float: left;"><i class="itemFolder"
+                                                                     title="Item file folder"></i></a>
                                                                <p id="filescount{{it.itemId}}"
                                                                   style="background-color: #3615a0; border: 2px solid #fff; float: right;    position:absolute;margin: -5px 0 0 -11px"
                                                                   class="badge"></p>
@@ -264,16 +275,19 @@
                                                                <label class="control-label">Project Type:</label>
                                                                <input select2-proj-type type="text" class="form-control"
                                                                   name="project_type" ng-model="it.project_type"
-                                                                  id="project_type{{it.itemId}}" required ng-disabled="scoopInvoice[it.itemId].invoiceId">
+                                                                  id="project_type{{it.itemId}}" required
+                                                                  ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
                                                             <div class="form-group clientSelect2">
                                                                <label class="control-label">Price List:</label>
-                                                               <input select2-client-price type="text" class="form-control"
-                                                                  name="project_pricelist" ng-model="it.project_pricelist"
+                                                               <input select2-client-price type="text"
+                                                                  class="form-control" name="project_pricelist"
+                                                                  ng-model="it.project_pricelist"
                                                                   id="project_pricelist{{it.itemId}}"
-                                                                  ng-change="changeClientPrice(it.project_pricelist, it.itemId)" ng-disabled="scoopInvoice[it.itemId].invoiceId">
+                                                                  ng-change="changeClientPrice(it.project_pricelist, it.itemId)"
+                                                                  ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
@@ -281,8 +295,9 @@
                                                                <span>Upcoming Date</span>
                                                                <label class="i-checks i-checks-sm"
                                                                   style="margin-top: 7px;">
-                                                                  <input type="checkbox" name="heads_up" ng-true-value="1"
-                                                                     ng-false-value="0" ng-model="it.heads_up"
+                                                                  <input type="checkbox" name="heads_up"
+                                                                     ng-true-value="1" ng-false-value="0"
+                                                                     ng-model="it.heads_up"
                                                                      ng-checked="it.heads_up == 1">
                                                                   <i></i>
                                                                </label>
@@ -307,27 +322,38 @@
                                                             <div class="form-group">
                                                                <label>Due Time</label>
                                                                <input timepicker1 id="due_time{{$index}}" type="text"
-                                                                  class="form-control" name="due_time" ng-model="due_time"
-                                                                  required onkeydown="return true" allowtimefrmt />
+                                                                  class="form-control" name="due_time"
+                                                                  ng-model="due_time" required onkeydown="return true"
+                                                                  allowtimefrmt />
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
                                                             <div class="form-group">
-                                                               <label>PO number <span> &nbsp; <input type="checkbox" name="PO_missing" ng-true-value="1" ng-false-value="0" ng-model="it.PO_missing" ng-checked="it.PO_missing == 1" id="PO_missing{{it.itemId}}" title="Check if the final PO number is receive."> </span> </label>
+                                                               <label>PO number <span> &nbsp; <input type="checkbox"
+                                                                        name="PO_missing" ng-true-value="1"
+                                                                        ng-false-value="0" ng-model="it.PO_missing"
+                                                                        ng-checked="it.PO_missing == 1"
+                                                                        id="PO_missing{{it.itemId}}"
+                                                                        title="Check if the final PO number is receive.">
+                                                                  </span> </label>
                                                                <input type="text" class="form-control"
-                                                                  id="po_number{{it.itemId}}" name="po_number{{it.itemId}}"
-                                                                  ng-model="it.po_number"
+                                                                  id="po_number{{it.itemId}}"
+                                                                  name="po_number{{it.itemId}}" ng-model="it.po_number"
                                                                   ng-change="checkPoNumberExist(it.itemId,it.po_number)" />
                                                                <label for="po_number{{it.itemId}}" class="error"
                                                                   id="po_numberErr{{it.itemId}}"></label>
                                                             </div>
                                                          </div>
-                                                         <div class="col-sm-12" ng-if="scoopInvoice[it.itemId].invoiceId">
+                                                         <div class="col-sm-12"
+                                                            ng-if="scoopInvoice[it.itemId].invoiceId">
                                                             <div class="form-group">
                                                                <label>Invoice </label>
                                                                <br />
-                                                               <a href="#/client-invoice-show/{{ scoopInvoice[it.itemId].invoiceId }}">{{ scoopInvoice[it.itemId].invoiceNumber }}</a>
-                                                               <span>( {{scoopInvoice[it.itemId].invoice_date | globalDtFormat }} )</span>
+                                                               <a
+                                                                  href="#/client-invoice-show/{{ scoopInvoice[it.itemId].invoiceId }}">{{
+                                                                  scoopInvoice[it.itemId].invoiceNumber }}</a>
+                                                               <span>( {{scoopInvoice[it.itemId].invoice_date |
+                                                                  globalDtFormat }} )</span>
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
@@ -337,7 +363,8 @@
                                                                   class="form-control contactperson"
                                                                   id="contactPerson{{it.itemId}}"
                                                                   name="contact_person{{it.itemId}}"
-                                                                  ng-model="it.contact_person" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
+                                                                  ng-model="it.contact_person" required
+                                                                  ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
@@ -362,9 +389,10 @@
                                                             <label class="control-label">Add new job/workflow</label>
                                                             <select class="form-control m-b "
                                                                ng-init="jobi.jobSummery = 'select'"
-                                                               name="jobchainName{{it.itemId}}" ng-model="jobi.jobSummery"
+                                                               name="jobchainName{{it.itemId}}"
+                                                               ng-model="jobi.jobSummery"
                                                                ng-change="changeWorkflow({{it.itemId}})"
-                                                               id="jobchainName{{it.itemId}}" >
+                                                               id="jobchainName{{it.itemId}}">
                                                                <option value="select">--Please Select--</option>
                                                                <optgroup label="Job Chain">
                                                                   <option class="summertablebc "
@@ -396,7 +424,8 @@
                                                                      ng-model="it.item_status" disabled required /> -->
                                                                <input type="text" select2-scoop-detailitm-status
                                                                   class="form-control" id="itemstatus" name="status"
-                                                                  ng-model="it.item_status" required ng-disabled="scoopInvoice[it.itemId].invoiceId" />
+                                                                  ng-model="it.item_status" required
+                                                                  ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                             </div>
                                                          </div>
 
@@ -425,13 +454,17 @@
                                                                            class="no-wrap m-0 checksub">Substitute</label>
                                                                         <input type="text"
                                                                            class="form-control ProCoordinator"
-                                                                           name="Coordinator" id="coordinator{{it.itemId}}"
-                                                                           select2-coordinator ng-model="it.coordinator" />
+                                                                           name="Coordinator"
+                                                                           id="coordinator{{it.itemId}}"
+                                                                           select2-coordinator
+                                                                           ng-model="it.coordinator" />
                                                                         <div ng-if="checksubPc[$index]" class="mt-15">
                                                                            <input type="text" id="subPc{{it.itemId}}"
                                                                               class="form-control"
-                                                                              name="subPc{{it.itemId}}" select2-coordinator
-                                                                              ng-model="it.subPc" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
+                                                                              name="subPc{{it.itemId}}"
+                                                                              select2-coordinator ng-model="it.subPc"
+                                                                              required
+                                                                              ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                         </div>
                                                                      </div>
                                                                   </td>
@@ -455,23 +488,27 @@
                                                                         <input type="text" id="manager{{it.itemId}}"
                                                                            class="form-control ProManager"
                                                                            name="vProjectManager" select2-manager
-                                                                           ng-model="it.manager" ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
+                                                                           ng-model="it.manager"
+                                                                           ng-disabled="scoopInvoice[it.itemId].invoiceId" />
 
                                                                         <div ng-if="checksubPm[$index]" class="mt-15">
                                                                            <input type="text" id="subPm{{it.itemId}}"
                                                                               class="form-control"
                                                                               name="subPm{{it.itemId}}" select2-manager
-                                                                              ng-model="it.subPm" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
+                                                                              ng-model="it.subPm" required
+                                                                              ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                         </div>
                                                                      </div>
                                                                   </td>
                                                                   <td>
                                                                      <div class="form-group">
-                                                                        <label class="control-label">QA Specialist</label>
+                                                                        <label class="control-label">QA
+                                                                           Specialist</label>
                                                                         <!-- <label class="i-checks i-checks-sm checksubQa[$index]"
                                                                            style="margin-left: 10px;" ng-hide="subqahide"> -->
-                                                                        <label class="i-checks i-checks-sm checksubQa[$index]"
-                                                                           style="margin-left: 10px;">   
+                                                                        <label
+                                                                           class="i-checks i-checks-sm checksubQa[$index]"
+                                                                           style="margin-left: 10px;">
                                                                            <input type="checkbox" name="checksubQa"
                                                                               ng-true-value="1" ng-false-value="0"
                                                                               ng-model="checksubQa[$index]"
@@ -480,18 +517,21 @@
                                                                            <i></i>
                                                                         </label>
                                                                         <!-- <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label> -->
-                                                                        <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label>
+                                                                        <label class="no-wrap m-0 checksub"
+                                                                           ng-hide="subqahide">Substitute</label>
 
                                                                         <input type="text"
                                                                            class="form-control QA_specialist"
                                                                            name="Coordinator" select2-qaspa
                                                                            id="QA_specialist{{it.itemId}}"
-                                                                           ng-model="it.qaSpecialist"ng-disabled="scoopInvoice[it.itemId].invoiceId" />
+                                                                           ng-model="it.qaSpecialist"
+                                                                           ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                         <div ng-if="checksubQa[$index]" class="mt-15">
                                                                            <input type="text" id="subQa{{it.itemId}}"
                                                                               class="form-control"
                                                                               name="subQa{{it.itemId}}" select2-qaspa
-                                                                              ng-model="it.subQa" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
+                                                                              ng-model="it.subQa" required
+                                                                              ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                         </div>
 
                                                                      </div>
@@ -503,10 +543,10 @@
                                                                         <label class="control-label">PM Deadline</label>
                                                                         <input ng-Datepicker2
                                                                            id="pm_deadline{{it.itemId}}" type="text"
-                                                                           class="form-control end_date pm_deadline_class{{$index}}" name="pm_deadline"
-                                                                           ng-model="it.pm_deadline" autocomplete=""
-                                                                           onkeydown="return false" />
-      
+                                                                           class="form-control end_date pm_deadline_class{{$index}}"
+                                                                           name="pm_deadline" ng-model="it.pm_deadline"
+                                                                           autocomplete="" onkeydown="return false" />
+
                                                                      </div>
                                                                   </td>
                                                                   <td>
@@ -514,17 +554,24 @@
                                                                         <label class="control-label">QA Deadline</label>
                                                                         <input ng-Datepicker2
                                                                            id="qa_deadline{{it.itemId}}" type="text"
-                                                                           class="form-control end_date qa_deadline_class{{$index}}" name="qa_deadline"
-                                                                           ng-model="it.qa_deadline" autocomplete=""
-                                                                           onkeydown="return false" />
+                                                                           class="form-control end_date qa_deadline_class{{$index}}"
+                                                                           name="qa_deadline" ng-model="it.qa_deadline"
+                                                                           autocomplete="" onkeydown="return false" />
                                                                      </div>
                                                                   </td>
                                                                </tr>
                                                                <tr>
                                                                   <td class="pl-0">
                                                                      <div class="form-group">
-                                                                        <label class="control-label">Accounting Comment</label>
-                                                                        <textarea id="accounting_inv_comment{{it.itemId}}" name="accounting_inv_comment{{it.itemId}}" ng-model="it.accounting_inv_comment" class="form-control" rows="3" style="resize: none;" aria-invalid="false"></textarea>
+                                                                        <label class="control-label">Accounting
+                                                                           Comment</label>
+                                                                        <textarea
+                                                                           id="accounting_inv_comment{{it.itemId}}"
+                                                                           name="accounting_inv_comment{{it.itemId}}"
+                                                                           ng-model="it.accounting_inv_comment"
+                                                                           class="form-control" rows="3"
+                                                                           style="resize: none;"
+                                                                           aria-invalid="false"></textarea>
                                                                      </div>
                                                                   </td>
                                                                   <td colspan="4"></td>
@@ -536,7 +583,8 @@
                                                    <tr>
                                                       <td colspan="4">
                                                          <button class="btn btn-info"
-                                                            ng-click="saveitems(it.itemId,$index);" ng-disabled="btnDisabled || scoopInvoice[it.itemId].invoiceId"><i
+                                                            ng-click="saveitems(it.itemId,$index);"
+                                                            ng-disabled="btnDisabled || scoopInvoice[it.itemId].invoiceId"><i
                                                                class="fa fa-floppy-o" aria-hidden="true"></i>
                                                             Save</button>
 
@@ -564,7 +612,7 @@
                      <div ng-repeat="itemL in itemjobList" class="mainTable">
                         <!-- <div class="row" ng-hide="joblist"> -->
                         <div class="row">
-                              <div class="panel-body">
+                           <div class="panel-body">
                               <div class="table-responsive" ng-hide="tableshowAll">
                                  <div loading-widget ng-show="showDataLoaderJob"></div>
                                  <table class="mb-0 table table-striped b-t b-b table-bordered ta{{$index}}">
@@ -588,13 +636,14 @@
                                           </th>
                                           <th>Action</th>
                                           <th>Job Comment</th>
+                                          <th>Chat</th>
                                        </tr>
                                     </thead>
                                     <!-- ui-sortable="sortableOptions" ng-model="itemList" 
                                                 ui-sortable="sortableOptions" ng-model="itemListFinal['number{{itemL.item_number}}']" 
                                             -->
                                     <!-- <tbody ng-model="itemListFinal[$index]"> -->
-                                    <tbody>   
+                                    <tbody>
                                        <!-- <tr ng-repeat="it in itemListFinal[$index]" class="tableRowId"> -->
                                        <tr ng-repeat="it in itemListFinal" class="tableRowId">
                                           <td>{{$index + 1 }} </td>
@@ -628,7 +677,7 @@
                                           <td class="nowrap">
                                              <label ng-hide="it.job_summmeryId==id || job[{{$index}}]"
                                                 ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date|
-                                                 dateFormat2}}</label>
+                                                dateFormat2}}</label>
                                           </td>
                                           <td>
                                              <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
@@ -750,23 +799,32 @@
                                                 <span>
                                                    <p>
                                                       <span id="smalltext{{it.job_summmeryId}}">
-                                                          <span ng-bind-html="(it.description | limitTo: 15 | nl2br)"></span>
+                                                         <span
+                                                            ng-bind-html="(it.description | limitTo: 15 | nl2br)"></span>
                                                       </span>
                                                       <span class="more-text" id="addmoretext{{it.job_summmeryId}}">
-                                                          <span ng-bind-html="(it.description | nl2br)"></span>
+                                                         <span ng-bind-html="(it.description | nl2br)"></span>
                                                       </span>
                                                       <span>
-                                                          <a ng-if="it.description.length > 15"
-                                                             ng-click="toggleReadMore(it.job_summmeryId)"
-                                                             class="read-more-button"
-                                                             id="read-more-button{{it.job_summmeryId}}">
-                                                             Read more
-                                                          </a>
+                                                         <a ng-if="it.description.length > 15"
+                                                            ng-click="toggleReadMore(it.job_summmeryId)"
+                                                            class="read-more-button"
+                                                            id="read-more-button{{it.job_summmeryId}}">
+                                                            Read more
+                                                         </a>
                                                       </span>
-                                                  </p>
+                                                   </p>
                                                 </span>
-                                            </span>
+                                             </span>
                                           </td>
+                                          <td>
+                                             <a href="javascript:void(0)"
+                                                ng-click="goTocommentChat(it.order_id, it.scoopID, it.job_summmeryId, it.discussion_job_id, 1 )"
+                                                style="color: {{ it.discussion_job_id == null ? 'grey' : ( (it.discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}">
+                                                <i class="fa fa-commenting-o fa-2x cmtclr{{it.job_summmeryId}}"> </i>
+                                             </a>
+                                          </td>
+
                                        </tr>
                                        <!-- <tr ng-show="!itemListFinal[$index].length">
                                           <td colspan="9" ng-bind="dataNotFound"></td>

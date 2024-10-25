@@ -780,10 +780,15 @@ td { font-size: 11px; } */
                                   <span ng-if="!order.jobLinguist.length"> - </span>
                                 </td>
                                 <td>
-                                  <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId, order.itemId )">
+                                  <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId, order.itemId, 0, order.discussion_id )" >
                                     <i style="color:{{order.comment}}"
-                                      class="fa fa-commenting-o fa-2x cmtclr{{order.itemId}}"></i>
+                                      class="fa fa-commenting-o fa-2x cmtclr{{order.itemId}}"></i> 
                                   </a>
+                                  <!-- 
+                                  <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId, order.itemId, 0, order.discussion_id )" style="color: {{ order.discussion_id == null ? 'grey' : ( (order.discussion_read).includes(userLoginID) ? '#67bb0a' : 'red') }}" >
+                                    <i class="fa fa-commenting-o fa-2x cmtclr{{order.itemId}}"></i>
+                                  </a>
+                                  -->
                                 </td>
                                 <td
                                   ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1 ">

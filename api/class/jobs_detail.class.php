@@ -206,11 +206,27 @@ class jobs_detail
         $this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
 
         $this->_db->join('tms_users tsu', 'tsv.contact_person = tsu.iUserId', 'LEFT');
-
+        $this->_db->join('tms_items ti', 'ti.order_id = tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
+        //$this->_db->join('tms_discussion td', 'td.job_id = tsv.job_summmeryId AND td.externalChat = 1 ', 'LEFT');
         $this->_db->where('tsv.order_id', $id);
-
-        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
-
+        //$this->_db->groupBy('tsv.job_summmeryId');
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId, ti.itemId as scoopID ');
+        
+        foreach ($data as &$row) {
+            $jobid = $row['job_summmeryId'];
+            $discussion = $this->_db->rawQueryNew("select id as discussion_id, job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where externalChat =1 and job_id=$jobid ORDER BY id DESC limit 1  ");
+            $discussion = count($discussion)> 0 ? $discussion[0] : [];
+            
+            if ($discussion) {
+                $row['discussion_id'] = $discussion['discussion_id'];
+                $row['discussion_job_id'] = $discussion['discussion_job_id'];
+                $row['discussionReadId'] = $discussion['discussionReadId'];
+            } else {
+                $row['discussion_id'] = null;
+                $row['discussion_job_id'] = null;
+                $row['discussionReadId'] = '';
+            }
+        }
         //echo $this->_db->getLastQuery();exit;
 
         return $data;
@@ -1045,6 +1061,9 @@ class jobs_detail
         $qry = "SELECT tsv.*, tsv.description AS jobDesc, tg.due_date AS ProjectDueDate, tg.order_no AS company_code, tf.fmanager_id, CONCAT( ti.source_lang, '>', ti.target_lang ) AS ItemLanguage, ti.item_name AS description, ti.project_type, ti.source_lang AS scoop_source_lang, ti.target_lang AS scoop_target_lang, concat(tu.vFirstName, ' ', tu.vLastName) AS userName, tpc.vUserName AS contactPerson, tg.project_name projectName, tg.specialization AS proj_specialization, tpt.project_name AS project_type_name, tpm.vUserName projectManager, tu.freelance_currency, tcl.vUserName AS clientName, tcl.vCenterid, tic.vUserName as clientAccountName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_filemanager AS tf ON tsv.job_summmeryId = tf.job_id LEFT JOIN tms_items AS ti ON tsv.order_id = ti.order_id AND tsv.item_id = ti.item_number LEFT JOIN tms_proj_language AS tpl ON ti.item_language = tpl.pl_id LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person INNER JOIN tms_customer tc ON tc.order_id = tsv.order_id LEFT JOIN tms_client_indirect tic ON tc.indirect_customer = tic.iClientId INNER JOIN tms_users tpm ON tpm.iUserId = tc.project_manager LEFT JOIN tms_project_type AS tpt ON ti.project_type = tpt.pr_type_id LEFT JOIN tms_client tcl ON tcl.iClientId = tc.client WHERE tsv.job_summmeryId = '" . $id . "'";
         $data = $this->_db->rawQuery($qry);
 
+        $qry = 'SELECT * FROM tms_invoice WHERE JSON_CONTAINS(job_id, \'{"id": ' . $id . '}\', "$")';
+        $data['checkInvoice'] = $this->_db->rawQuery($qry);
+
         return $data;
     }
 
@@ -1376,25 +1395,41 @@ class jobs_detail
                 ? $base_currency_rate[0]['current_curency_rate']
                 : 1;
         }
-        $this->_db->where('job_summmeryId', $id);
-        $update = $this->_db->update('tms_summmery_view', $data);
-
-        if ($update && isset($data['order_id'])) {
+        
+        //if ($update && isset($data['order_id'])) {
             // $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
             // $res_exist = $this->_db->rawQuery($qry);
             // if ($res_exist && $res_exist[0]['count'] == 0) {
             //     $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
             //     $this->_db->rawQuery($qry_up);
             // }
+        //}
+        $invoiceCreated = 'SELECT * FROM tms_invoice WHERE JSON_CONTAINS(job_id, \'{"id": ' . $id . '}\', "$")';
+        $checkInvoiceExist = $this->_db->rawQuery($invoiceCreated);
+        
+        if (!empty($checkInvoiceExist)) {
+            // Invoice exists
+            $return['status'] = 200;
+            $return['is_invoice_exist'] = 1;
+            $return['msg'] = 'Invoice already exists.';
+        } else {
+            // Invoice doesn't exist, proceed to update
+            $this->_db->where('job_summmeryId', $id);
+            $update = $this->_db->update('tms_summmery_view', $data);
+        
+            if ($update) {
+                $return['status'] = 200;
+                $return['msg'] = 'Successfully Updated.';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not Updated.';
+            }
+        
+            // Always return this key for consistency
+            $return['is_invoice_exist'] = 0;
         }
 
-        if ($id) {
-            $return['status'] = 200;
-            $return['msg'] = 'Successfully Updated.';
-        } else {
-            $return['status'] = 422;
-            $return['msg'] = 'Not Updated.';
-        }
+        
 
         return $return;
     }
@@ -2486,10 +2521,28 @@ class jobs_detail
 
         $this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
         $this->_db->join('tms_users tsu', 'tsv.contact_person = tsu.iUserId', 'LEFT');
+        $this->_db->join('tms_items ti', 'ti.order_id = tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
+        //$this->_db->join('tms_discussion td', 'td.job_id = tsv.job_summmeryId AND td.externalChat = 1 ', 'LEFT');
         $this->_db->where('tsv.order_id', $orderId);
         $this->_db->where('tsv.item_id', $itemNumber);
-        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
+        $this->_db->groupBy('tsv.job_summmeryId');
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId, ti.itemId as scoopID ');
         //echo $this->_db->getLastQuery();exit;
+        foreach ($data as &$row) {
+            $jobid = $row['job_summmeryId'];
+            $discussion = $this->_db->rawQueryNew("select id as discussion_id, job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where externalChat =1 and job_id=$jobid ORDER BY id DESC limit 1  ");
+            $discussion = count($discussion)> 0 ? $discussion[0] : [];
+            
+            if ($discussion) {
+                $row['discussion_id'] = $discussion['discussion_id'];
+                $row['discussion_job_id'] = $discussion['discussion_job_id'];
+                $row['discussionReadId'] = $discussion['discussionReadId'];
+            } else {
+                $row['discussion_id'] = null;
+                $row['discussion_job_id'] = null;
+                $row['discussionReadId'] = '';
+            }
+        }
         return $data;
     }
 
