@@ -3268,6 +3268,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('error', error)
         }
     }
+
+    // call fun when changes the scoop tab page
+    $scope.dashboardPageChange = function(currentPage, index, tabIndexId) {
+        $scope.dashboardScoopLoad(currentPage, index, tabIndexId );
+    };
+
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
         $scope.showDataLoader = true;
