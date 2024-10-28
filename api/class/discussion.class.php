@@ -16,6 +16,14 @@ class discussion {
     }
     
     public function discussionOrder($data) {
+        print_r($data);
+        exit;
+        
+        $fileupload = self::uploadFile($data['attachments'][0]['file']);
+        print_r($fileupload);
+        print_r($data);
+        exit;
+        
         if($data['created_by_current_user'] == 1) 
             $data['created_by_current_user'] = "true";
         else
@@ -354,6 +362,117 @@ class discussion {
         }
         return $returnData;
     }        
+
+    public function uploadFile($data) {
+        $retrundata = [];
+        $base64File = $data;
+        $fileData = $this->getFileDataFromBase64($data);
+        
+        if ($fileData) {
+            $mimeType = $fileData['mime_type'];
+            $base64String = $fileData['base64String'];
+            $decodedFile = base64_decode($base64String);
+
+            // Set the file extension and MIME type
+            $extension = $fileData['extension'];
+            $retrundata['mime_type'] = $mimeType;
+            $retrundata['original_filename'] = $fileData['file_name'];
+
+            if ($extension) {
+                // Create a folder with today's date if it doesn't exist
+                $foldername = date('Y-m-d');
+                $folderPath = UPLOADS_ROOT . '/discussionfile/' . $foldername;
+
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath, 0755, true);
+                }
+
+                // Generate the file name
+                $fileName = 'order_' . time() . '.' . $extension; // Customize the logic for file naming as needed
+                $filePath = $folderPath . '/' . $fileName;
+
+                $retrundata['filePath'] = $filePath;
+
+                // Save the decoded file content to the server
+                if (file_put_contents($filePath, $decodedFile)) {
+                    // File saved successfully
+                    echo json_encode([
+                        'data' => $retrundata,
+                        'success' => true,
+                        'message' => 'File uploaded successfully',
+                        'file_path' => $filePath
+                    ]);
+                } else {
+                    // Failed to write file
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Failed to save file'
+                    ]);
+                }
+            } else {
+                // Unsupported file type
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Unsupported file type: ' . $mimeType
+                ]);
+            }
+        } else {
+            // Invalid base64 format
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid base64 string'
+            ]);
+        }
+    }
+
+    public function getFileDataFromBase64($base64File) {
+        // Check if the base64 string matches the pattern for a data URL
+        if (preg_match('/^data:(.*?);base64,(.*)$/', $base64File, $matches)) {
+            $mimeType = $matches[1]; // MIME type (e.g., application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
+            $base64String = $matches[2]; // The actual base64 string
+
+            // Decode the base64 string to get the file content
+            $decodedFile = base64_decode($base64String);
+
+            // Calculate the file size in bytes
+            $fileSizeInBytes = strlen($decodedFile);
+
+            // Generate a file name or pass it separately
+            $fileName = 'uploaded_file'; // Generate or pass a file name (without extension)
+            $extension = '';
+
+            // Determine file extension from MIME type
+            switch ($mimeType) {
+                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    $extension = 'xlsx';
+                    break;
+                case 'image/png':
+                    $extension = 'png';
+                    break;
+                case 'image/jpeg':
+                    $extension = 'jpg';
+                    break;
+                default:
+                    $extension = 'bin'; // Default if unsupported MIME type
+                    break;
+            }
+
+            // Append the extension to the file name
+            $fileNameWithExtension = $fileName . '.' . $extension;
+
+            // Return file information
+            return [
+                'mime_type' => $mimeType,
+                'file_name' => $fileNameWithExtension,
+                'file_size_bytes' => $fileSizeInBytes, // Size in bytes
+                'extension' => $extension,
+                'base64String' => $base64String, // Base64 string without metadata
+            ];
+        } else {
+            // Invalid base64 format
+            return false;
+        }
+    }
 
 
 }

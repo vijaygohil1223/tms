@@ -31758,7 +31758,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 500);
             },
             postComment: function (data, success, error) {
-                console.log('data=>start postttt', data)
+                console.log('data========>postdata', data)
+                
                 // data.order_id = $routeParams.id;
                 // data.user_id = $window.localStorage.getItem("session_iUserId");
                 // data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -31806,13 +31807,72 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 data.pings = pingsvalue.toString();
                 console.log('posttt=>data',data)
-                rest.path = "discussionOrder";
-                rest.post(data).success(function (info) {
+                
+                var fileCount = data.attachments.length;
+                var processedFiles = 0;
 
-                }).error(errorCallback);
-                $timeout(function () {
-                    success(data);
-                }, 500);
+                angular.forEach(data.attachments, function(attachment, index) {
+                    data.attachments[index].original_filename = attachment.file.name;
+                    data.attachments[index].file_type = attachment.file.type;
+                    data.attachments[index].file_size = attachment.file.size;
+                    var file = attachment.file; // Get each file object
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function(event) {
+                            var base64File = event.target.result; // Base64 encoded file content
+                            data.attachments[index].file = base64File;
+                            
+
+                            // Increment the processed file counter
+                            processedFiles++;
+
+                            // When all files are processed, post the data
+                            if (processedFiles === fileCount) {
+                                rest.path = "discussionOrder";
+                                rest.post(data).success(function (info) {
+                                    // Handle success
+                                }).error(errorCallback);
+
+                                $timeout(function () {
+                                    success(data);
+                                }, 500);
+                            }
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+
+                // var file = data.attachments[0].file; 
+                // if (file) {
+                //     var reader = new FileReader();
+                //     reader.onload = function(event) {
+                //         var base64File = event.target.result; // Base64 encoded file content
+                //         data.attachments[0].file = base64File;
+                //         rest.path = "discussionOrder";
+                //         rest.post(data)
+                //             .success(function(info) {
+                //                 console.log("File uploaded successfully:", info);
+                //             })
+                //             .error(function(error) {
+                //                 console.log("File upload failed:", error);
+                //             });
+                //         $timeout(function () {
+                //             success(data);
+                //         }, 500);
+                //     };
+                //     reader.readAsDataURL(file);
+                // } else {
+                //     console.error("No file found in attachments");
+                // }
+                // rest.path = "discussionOrder";
+                // rest.post(data).success(function (info) {
+
+                // }).error(errorCallback);
+                // $timeout(function () {
+                //     success(data);
+                // }, 500);
             },
             putComment: function (data, success, error) {
                 $routeParams.id = data.id;
