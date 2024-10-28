@@ -1070,12 +1070,16 @@ td { font-size: 11px; } */
                                 </td>
                                 <td colspan="5">
                                   <div class="pagination pull-right">
-                                    <uib-pagination id="scoopPagination" class="pagination-sm pagination"
+                                    <uib-pagination id="scoopPagination" class="pagination-sm pagination" total-items="myTabs.totalItems"
+                                        ng-model="currentPage" ng-change="dashboardPageChange(currentPage, $index, myTabs.tabIndexId)"
+                                        previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="itemsPerPage" max-size="10">
+                                    </uib-pagination>
+                                    <!-- <uib-pagination id="scoopPagination" class="pagination-sm pagination"
                                       total-items="myTabs.totalItems" ng-model="currentPage"
                                       ng-change="dashboardScoopLoad(currentPage,myTabs.tabIndexId)"
                                       previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="itemsPerPage"
                                       max-size="10">
-                                    </uib-pagination>
+                                    </uib-pagination> -->
                                   </div>
                                 </td>
                               </tr>
