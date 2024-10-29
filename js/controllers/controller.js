@@ -40803,7 +40803,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = "invoiceSave";
             rest.post($scope.invoiceData).success(function (data) {
                 if (data.status == 422) {
-                    notification('Invoice already added for this job.', 'error');
+                    notification('You have already created an invoice for the current invoice period. You can create the next invoice in the next invoice period.', 'error');
                 } else {
                     notification('Successfully inserted.', 'success');
                     if (data) {
