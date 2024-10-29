@@ -182,18 +182,26 @@ class item {
                 unset($data['due_date']);
             }
         }
-        if(isset($data['pm_deadline'])  ) {
-            // $datetimeString = $data['pm_deadline'];
-            // $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            // $formattedPMDate = $dateTimeObj->format('Y-m-d');
-            $data['pm_deadline'] = self::formatDeadline($data['pm_deadline'], 'pm_deadline');
+        if (isset($data['pm_deadline'])) {
+            $datetimeString = $data['pm_deadline'];
+            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            if ($dateTimeObj) {
+                $formattedPMDate = $dateTimeObj->format('Y-m-d');
+                $data['pm_deadline'] = $formattedPMDate;
+            }else{
+                $data['qa_deadline'] = null;
+            }
         }
-        if(isset($data['qa_deadline'])  ) {
-            // $datetimeString = $data['qa_deadline'];
-            // $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            // $formattedQADate = $dateTimeObj->format('Y-m-d');
-            // $data['qa_deadline'] = $formattedQADate;
-            $data['qa_deadline'] = self::formatDeadline($data['qa_deadline'], 'qa_deadline');
+        
+        if (isset($data['qa_deadline'])) {
+            $datetimeString = $data['qa_deadline'];
+            $dateTimeObj1 = DateTime::createFromFormat('d.m.Y', $datetimeString);
+            if ($dateTimeObj1) {
+                $formattedQADate = $dateTimeObj1->format('Y-m-d');
+                $data['qa_deadline'] = $formattedQADate;
+            }else{
+                $data['qa_deadline'] = null;
+            }
         }
         
         $sql = "SELECT tcu.current_curency_rate
@@ -614,18 +622,18 @@ class item {
         return $data;
     }
 
-    public function formatDeadline($dateString, $format = 'd.m.Y', $outputFormat = 'Y-m-d') {
-        if (!empty($dateString)) {
-            $dateTimeObj = DateTime::createFromFormat($format, $dateString);
+    // public function formatDeadline($dateString, $format = 'd.m.Y', $outputFormat = 'Y-m-d') {
+    //     if (!empty($dateString)) {
+    //         $dateTimeObj = DateTime::createFromFormat($format, $dateString);
     
-            // Check if the date is valid according to the given format.
-            if ($dateTimeObj && $dateTimeObj->format($format) === $dateString) {
-                return $dateTimeObj->format($outputFormat);
-            }
-        }
-        // Return null if the date is invalid or empty.
-        return null;
-    }
+    //         // Check if the date is valid according to the given format.
+    //         if ($dateTimeObj && $dateTimeObj->format($format) === $dateString) {
+    //             return $dateTimeObj->format($outputFormat);
+    //         }
+    //     }
+    //     // Return null if the date is invalid or empty.
+    //     return null;
+    // }
     
 
 }
