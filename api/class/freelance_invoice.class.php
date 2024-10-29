@@ -119,14 +119,12 @@ class Freelance_invoice
         $checkDueDate = self::calculateDueDate(date("Y-m-d"), 60 );
         $alreadyInvoiceDueDate = $checkDueDate->format('Y-m-d');
        
-        $this->_db->where('is_deleted ', 0);
+        $this->_db->where('is_deleted', 0);
+        $this->_db->where('inv_due_date', $alreadyInvoiceDueDate);
+        $this->_db->where('freelance_id', $data['freelance_id']);
         $invData = $this->_db->get('tms_invoice');
-        $isDueDateMatched = false;
-        foreach ($invData as $value) {
-            if ($value['inv_due_date'] === $alreadyInvoiceDueDate && $data['freelance_id'] === $value['freelance_id']) {
-                $isDueDateMatched = true;
-            }
-        }
+        
+        $isDueDateMatched = !empty($invData);
 
         if(!$isDueDateMatched){
 
