@@ -16,13 +16,23 @@ class discussion {
     }
     
     public function discussionOrder($data) {
-        print_r($data);
-        exit;
         
-        $fileupload = self::uploadFile($data['attachments'][0]['file']);
-        print_r($fileupload);
-        print_r($data);
-        exit;
+        $fileArrString = '';
+        if(isset($data['attachments']) && count($data['attachments'])> 0 ){
+            $fileArr = [];    
+            foreach ($data['attachments'] as $index => $value) {
+                $fileupload = self::uploadFile($value);
+                $fileInfo = [
+                    'id' => $index + 1, // Assuming you want a 1-based index
+                    'original_filename' => $value['original_filename'],
+                    'mime_type' => $value['mime_type'],
+                    'file' => $fileupload['file_url'],
+                ];
+                $fileArr[] = $fileInfo; 
+            }
+            $fileArrString = json_encode($fileArr, JSON_UNESCAPED_SLASHES);
+        }
+        $data['attachments'] = $fileArrString;
         
         if($data['created_by_current_user'] == 1) 
             $data['created_by_current_user'] = "true";
@@ -365,20 +375,26 @@ class discussion {
 
     public function uploadFile($data) {
         $retrundata = [];
-        $base64File = $data;
-        $fileData = $this->getFileDataFromBase64($data);
+        //$fileData = $this->getFileDataFromBase64($data);
+        $fileData = $data;
         
         if ($fileData) {
             $mimeType = $fileData['mime_type'];
-            $base64String = $fileData['base64String'];
-            $decodedFile = base64_decode($base64String);
+           // $base64String = $fileData['base64String'];
+            //$decodedFile = base64_decode($base64String);
 
             // Set the file extension and MIME type
-            $extension = $fileData['extension'];
-            $retrundata['mime_type'] = $mimeType;
-            $retrundata['original_filename'] = $fileData['file_name'];
-
-            if ($extension) {
+            //$extension = $fileData['extension'];
+            
+            //if ($extension) {
+            if (preg_match('/^data:(.*?);base64,(.*)$/', $data['file'], $matches)) {
+                $mimeType = $matches[1]; // Extracted MIME type
+                $base64String = $matches[2]; // Extracted base64 string
+            
+                // Decode the base64 string
+                $fileData = base64_decode($base64String);
+                $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $data['original_filename']);
+    
                 // Create a folder with today's date if it doesn't exist
                 $foldername = date('Y-m-d');
                 $folderPath = UPLOADS_ROOT . '/discussionfile/' . $foldername;
@@ -387,41 +403,46 @@ class discussion {
                     mkdir($folderPath, 0755, true);
                 }
 
-                // Generate the file name
-                $fileName = 'order_' . time() . '.' . $extension; // Customize the logic for file naming as needed
+                $fileName = time() . '_' . $fileName; 
                 $filePath = $folderPath . '/' . $fileName;
-
+                $file_url = 'uploads/discussionfile/' . $foldername . '/' . $fileName;
                 $retrundata['filePath'] = $filePath;
 
                 // Save the decoded file content to the server
-                if (file_put_contents($filePath, $decodedFile)) {
+                if (file_put_contents($filePath, $fileData)) {
                     // File saved successfully
-                    echo json_encode([
+                    // echo json_encode([
+                    //     'data' => $retrundata,
+                    //     'success' => true,
+                    //     'message' => 'File uploaded successfully',
+                    //     'file_url' => $file_url
+                    // ]);
+                    return [
                         'data' => $retrundata,
                         'success' => true,
                         'message' => 'File uploaded successfully',
-                        'file_path' => $filePath
-                    ]);
+                        'file_url' => $file_url
+                    ];
                 } else {
-                    // Failed to write file
-                    echo json_encode([
+                    return [
                         'success' => false,
                         'message' => 'Failed to save file'
-                    ]);
+                    ];
                 }
             } else {
                 // Unsupported file type
-                echo json_encode([
+                return [
                     'success' => false,
                     'message' => 'Unsupported file type: ' . $mimeType
-                ]);
+                ];
+
             }
         } else {
             // Invalid base64 format
-            echo json_encode([
+            return [
                 'success' => false,
                 'message' => 'Invalid base64 string'
-            ]);
+            ];
         }
     }
 

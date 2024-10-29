@@ -644,7 +644,7 @@
                 }
 
                 // Set button state to loading
-                this.setButtonState(uploadButton, false, true);
+                //this.setButtonState(uploadButton, false, true);
 
                 // Validate attachments
                 this.options.validateAttachments(attachments, function(validatedAttachments) {
@@ -662,7 +662,7 @@
                     }
 
                     // Reset button state
-                    self.setButtonState(uploadButton, true, false);
+                    //self.setButtonState(uploadButton, true, false);
                 });
             }
 
@@ -1282,8 +1282,8 @@
             var commentingField = sendButton.parents('.commenting-field').first();
             var textarea = commentingField.find('.textarea');
             // Disable send button while request is pending
-            sendButton.removeClass('enabled');
-            this.setButtonState(sendButton, false, true);
+            //sendButton.removeClass('enabled');
+            //this.setButtonState(sendButton, false, true);
 
             // Create comment JSON
             var commentJSON = this.createCommentJSON(textarea);
@@ -1296,6 +1296,7 @@
                 self.createComment(commentJSON);
                 // Close the commenting field
                 commentingField.find('.close').trigger('click');
+                
                 // Check if the separator already exists
                 if ($("#dtseperator").length === 0) {
                     // Prepare the new separator
@@ -1315,7 +1316,11 @@
                 $('.userprof').on('dragstart', function(event) {
                     event.preventDefault();
                 });
-                self.setButtonState(sendButton, false, false);
+                //self.setButtonState(sendButton, false, false);
+                // clear selected attachment tag
+                const attachmentsContainer = document.querySelector('.control-row .attachments'); 
+                attachmentsContainer.innerHTML = '';
+
             };
             
             var success__ = function(commentJSON) {
@@ -1353,11 +1358,16 @@
             }
             return commentModel;
         },
-        createComment__: function(commentJSON) {
+        createComment: function(commentJSON) {
             var commentModel = this.createCommentModel(commentJSON);
             this.addCommentToDataModel(commentModel);
             this.addComment(commentModel);
         },
+        // createComment__: function(commentJSON) {
+        //     var commentModel = this.createCommentModel(commentJSON);
+        //     this.addCommentToDataModel(commentModel);
+        //     this.addComment(commentModel);
+        // },
 
         putComment: function(ev) {
             var self = this;
@@ -1897,7 +1907,7 @@
 
                 // Inline upload button for main commenting field
                 //if(isMain) {
-                    textareaWrapper.append(uploadButton.clone().addClass('inline-button'));
+                    //textareaWrapper.append(uploadButton.clone().addClass('inline-button'));
                 //}
 
                 // Attachments container
@@ -2184,8 +2194,8 @@
             }
 
             if(loginUserType == 1 && this.options.tabTypeIntExt==1 ){
-                attachments.prepend(attachmentsIcon);
-                attachments.prepend(attachmentsCount);
+                //attachments.prepend(attachmentsIcon);
+                //attachments.prepend(attachmentsCount);
             }
 
             
@@ -2246,7 +2256,7 @@
             });
 
             var icon = $('<i/>', {
-                'class': 'fa fa-times'
+                'class': 'fa fa-close'
             });
             if(this.options.closeIconURL.length) {
                 icon.css('background-image', 'url("'+this.options.closeIconURL+'")');
@@ -2327,6 +2337,7 @@
         },
 
         createCommentWrapperElement: function(commentModel) {
+            
             var commentWrapper = $('<div/>', {
                 'class': 'comment-wrapper'
             });
@@ -2410,9 +2421,92 @@
             var content = $('<div/>', {
                 'class': 'content'
             });
+            
             // Case: attachment
             var isAttachment = commentModel.fileURL != undefined;
-            if (isAttachment) {
+            
+            // new changes for attachment
+            var attachments = $('<div/>', {
+                'class': 'attachments'
+            });
+            var attachmentPreviews = $('<div/>', {
+                'class': 'previews'
+            });
+            var attachmentTags = $('<div/>', {
+                'class': 'tags'
+            });
+            //attachments.append(attachmentPreviews).append(attachmentTags);
+            attachments.append(attachmentTags);
+
+            if(this.options.enableAttachments && commentModel.hasAttachments()) {
+                let self = this;
+                let commentModelattachments;
+                if (Array.isArray(commentModel.attachments)) {
+                    commentModelattachments = commentModel.attachments;
+                } else if (typeof commentModel.attachments === 'string' && commentModel.attachments.trim() !== '') {
+                    try {
+                        commentModelattachments = JSON.parse(commentModel.attachments);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        commentModelattachments = []; // Fallback to an empty array if parsing fails
+                    }
+                } else {
+                    commentModelattachments = []; 
+                }
+                console.log('commentModelattachments', commentModelattachments)
+                $(commentModelattachments).each(function(index, attachment) {
+                    console.log('attachment====>', index + '' + attachment )
+                    var format = undefined;
+                    var type = undefined;
+
+                    // Type and format
+                    if(attachment.mime_type) {
+                        var mimeTypeParts = attachment.mime_type.split('/');
+                        if(mimeTypeParts.length == 2) {
+                            format = mimeTypeParts[1];
+                            type = mimeTypeParts[0];
+                        }
+                    }
+
+                    // Preview
+                    if(type == 'image' || type == 'video') {
+                        var previewRow = $('<div/>');
+
+                        // Preview element
+                        var preview = $('<a/>', {
+                            'class': 'preview',
+                            href: attachment.file,
+                            target: '_blank'
+                        });
+                        previewRow.html(preview);
+
+                        // Case: image preview
+                        if(type == 'image') {
+                            var image = $('<img/>', {
+                                src: attachment.file
+                            });
+                            preview.html(image);
+
+                        // Case: video preview
+                        } else {
+                            var video = $('<video/>', {
+                                src: attachment.file,
+                                type: attachment.mime_type,
+                                controls: 'controls'
+                            });
+                            preview.html(video);
+                        }
+                        attachmentPreviews.append(previewRow);
+                    }
+
+                    // Tag element
+                    var attachmentTag = self.createAttachmentTagElement(attachment, false);
+                    attachmentTags.append(attachmentTag);
+                });
+            //}
+
+                
+            }else if (isAttachment) {
                 var format = null;
                 var type = null;
                 // Type and format
@@ -2574,6 +2668,7 @@
             });
 
             wrapper.append(content);
+            wrapper.append(attachments);
             wrapper.append(actions);
             //commentWrapper.append(profilePicture).append(time).append(name).append(wrapper);
             var newName = name.prepend(nameSpan);
@@ -2607,7 +2702,8 @@
             // Tag element
             var attachmentTag = $('<a/>', {
                 'class': 'tag attachment',
-                'target': '_blank'
+                'target': '_blank',
+                'download': ''
             });
 
             // Set href attribute if not deletable
@@ -2624,6 +2720,7 @@
 
             // File name
             var fileName = '';
+            var displayFileName = '';
 
             // Case: file is file object
             if(attachment.file instanceof File) {
@@ -2635,6 +2732,8 @@
                 var fileName = parts[parts.length - 1];
                 fileName = fileName.split('?')[0];
                 fileName = decodeURIComponent(fileName);
+                fileName = attachment?.original_filename || fileName
+
             }
 
             // Attachment icon
