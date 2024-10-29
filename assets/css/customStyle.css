@@ -1144,3 +1144,10 @@ Scroll Tabs css */
 .tab-container tab {
   user-select: none;
 }
+.comment-wrapper .attachments {
+  margin-top: 10px !important;
+  margin-top: -5px;
+}
+.comment-wrapper .attachments .attachment {
+  color: #333 !important;
+}

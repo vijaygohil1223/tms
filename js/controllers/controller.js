@@ -31814,7 +31814,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 500);
             },
             postComment: function (data, success, error) {
-                console.log('data=>start postttt', data)
+                console.log('data========>postdata', data)
+                
                 // data.order_id = $routeParams.id;
                 // data.user_id = $window.localStorage.getItem("session_iUserId");
                 // data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -31862,13 +31863,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 data.pings = pingsvalue.toString();
                 console.log('posttt=>data',data)
-                rest.path = "discussionOrder";
-                rest.post(data).success(function (info) {
+                
+                var fileCount = data.attachments.length;
+                var processedFiles = 0;
+                if (fileCount > 0) {
+                    angular.forEach(data.attachments, function(attachment, index) {
+                        var file = attachment.file;
+                        if (file) {
+                            //data.attachments[index].file_size = attachment.file.size;
+                            // Store file info once outside the reader event
+                            data.attachments[index] = {
+                                original_filename: file.name,
+                                file_url: file.name,
+                                mime_type: file.type
+                            };
+                            var reader = new FileReader();
+                            reader.onload = function(event) {
+                                data.attachments[index].file = event.target.result; // Base64 encoded file
+                                processedFiles++;
+                                if (processedFiles === fileCount) {
+                                    postData(data);
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                } else {
+                    postData(data);
+                }
 
-                }).error(errorCallback);
-                $timeout(function () {
-                    success(data);
-                }, 500);
+                function postData(data) {
+                    rest.path = "discussionOrder";
+                    rest.post(data).success(function(info) {
+                        $timeout(function() {
+                            success(data);
+                        }, 500);
+                    }).error(errorCallback);
+                }
+
+                // $timeout(function () {
+                //     success(data);
+                // }, 500);
             },
             putComment: function (data, success, error) {
                 $routeParams.id = data.id;
@@ -46630,13 +46665,51 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     
                     data.pings = pingsvalue.toString();
-                    rest.path = "discussionOrder";
-                    rest.post(data).success(function (info) {
+                    
+                    // new code for attachement upload
+                    var fileCount = data?.attachments.length || 0;
+                    var processedFiles = 0;
+                    if (fileCount > 0) {
+                        angular.forEach(data.attachments, function(attachment, index) {
+                            var file = attachment.file;
+                            if (file) {
+                                //data.attachments[index].file_size = attachment.file.size;
+                                // Store file info once outside the reader event
+                                data.attachments[index] = {
+                                    original_filename: file.name,
+                                    file_url: file.name,
+                                    mime_type: file.type
+                                };
+                                var reader = new FileReader();
+                                reader.onload = function(event) {
+                                    data.attachments[index].file = event.target.result; // Base64 encoded file
+                                    processedFiles++;
+                                    if (processedFiles === fileCount) {
+                                        postData(data);
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    } else {
+                        postData(data);
+                    }
 
-                    }).error(errorCallback);
-                    $timeout(function () {
-                        success(data);
-                    }, 500);
+                    function postData(data) {
+                        rest.path = "discussionOrder";
+                        rest.post(data).success(function(info) {
+                            $timeout(function() {
+                                success(data);
+                            }, 500);
+                        }).error(errorCallback);
+                    }
+                    // rest.path = "discussionOrder";
+                    // rest.post(data).success(function (info) {
+
+                    // }).error(errorCallback);
+                    // $timeout(function () {
+                    //     success(data);
+                    // }, 500);
                 },
                 putComment: function (data, success, error) {
                     $routeParams.id = data.id;
