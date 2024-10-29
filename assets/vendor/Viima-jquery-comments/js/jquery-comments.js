@@ -1290,7 +1290,7 @@
 
             // Reverse mapping
             commentJSON = this.applyExternalMappings(commentJSON);
-            console.log('commentJSON', commentJSON)
+            //console.log('commentJSON', commentJSON)
 
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
@@ -1836,8 +1836,12 @@
                 var saveButtonText = this.options.textFormatter(this.options.sendText);
 
                 // Add upload button if attachments are enabled
-                
+                //console.log('this.options.tabTypeIntExt', this.options.tabTypeIntExt)
+                //console.log('this.options.enableAttachments', this.options.enableAttachments)
+                    
                 if (this.options.enableAttachments && ( loginUserType == 1 && this.options.tabTypeIntExt==1 ) ) {
+                    //console.log('called insider ', this.options.tabTypeIntExt)
+                
                     var uploadButton = $('<span/>', {
                         'class': 'enabled upload'
                     });
@@ -1901,9 +1905,11 @@
                 uploadButton.append(uploadIcon).append(fileInput);
 
                 // Main upload button
-                var mainUploadButton = uploadButton.clone();
-                mainUploadButton.data('original-content', mainUploadButton.children());
-                controlRow.append(mainUploadButton);
+                if(this.options.tabTypeIntExt && this.options.tabTypeIntExt==1 ){
+                    var mainUploadButton = uploadButton.clone();
+                    mainUploadButton.data('original-content', mainUploadButton.children());
+                    controlRow.append(mainUploadButton);
+                }
 
                 // Inline upload button for main commenting field
                 //if(isMain) {
@@ -1920,7 +1926,7 @@
                     var attachmentTag = self.createAttachmentTagElement(attachment, true);
                     attachmentsContainer.append(attachmentTag);
                 });
-                console.log('attachments', attachments)
+                //console.log('attachments', attachments)
 
                 controlRow.append(attachmentsContainer);
             }
@@ -2453,9 +2459,7 @@
                 } else {
                     commentModelattachments = []; 
                 }
-                console.log('commentModelattachments', commentModelattachments)
                 $(commentModelattachments).each(function(index, attachment) {
-                    console.log('attachment====>', index + '' + attachment )
                     var format = undefined;
                     var type = undefined;
 
@@ -2868,7 +2872,6 @@
             var textarea_att = textarea.find('.textarea');
             var commentingField = textarea.parents('.commenting-field').first();;
             
-            console.log('textarea_att', textarea_att)
             var commentJSON = {
                 id: 'c' + (this.getComments().length + 1), // Temporary id
                 parent: textarea.attr('data-parent') || null,
@@ -2886,8 +2889,6 @@
                 attachments: this.getAttachmentsFromCommentingField(commentingField)
             };
             
-            console.log('commentJSON', commentJSON)
-                
             return commentJSON;
         },
 
@@ -3031,7 +3032,6 @@
             var attachments = commentingField.find('.attachments .attachment').map(function(){
                 return $(this).data();
             }).toArray();
-            console.log('attachments', attachments)
                 
             return attachments;
         },
