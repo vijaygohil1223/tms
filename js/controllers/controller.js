@@ -1904,6 +1904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.orderID = '';
         $window.localStorage.setItem('projectOrderName', '');
         $window.localStorage.setItem("isNewProject", "true");
+        $window.localStorage.setItem("copiedProjectId", "");
         $location.path('/general');
     }
     $scope.goToJobFromPOClick = function (job_summmeryId, order_id) {
@@ -25281,15 +25282,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         
     }
+    
     $scope.copypasteProjectDatail = function () {
+        var copyMessage = "<p> would you like to copy current project data to new project?</p> ";
         
-        $window.localStorage.setItem('copiedProjectId', $scope.routeOrderID);
-        setTimeout(() => {
-            $window.localStorage.orderID = '';
-            $window.localStorage.setItem('projectOrderName', '');
-            $window.localStorage.setItem("isNewProject", "true");
-            $location.path('/general');
-        }, 200);
+        bootbox.confirm(copyMessage, function (result) {
+            copyMessage = '';
+            if (result == true) {
+                $window.localStorage.setItem('copiedProjectId', $scope.routeOrderID);
+                setTimeout(() => {
+                    $window.localStorage.orderID = '';
+                    $window.localStorage.setItem('projectOrderName', '');
+                    $window.localStorage.setItem("isNewProject", "true");
+                    $location.path('/general');
+                }, 200);
+                notification('copied data from current project.', 'success')
+            }
+        });
+
+       
     }
 
     //Setting Project Status when Create new END
@@ -25506,6 +25517,35 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         console.log('$window.localStorage.getItem(\'copiedProjectId\')', $window.localStorage.getItem('copiedProjectId'))
+        
+        rest.path = 'customer/' +  $window.localStorage.getItem('copiedProjectId');
+        rest.get().success(function (res) {
+            $scope.customer = res;
+            
+            if (res) {
+                $scope.general = {};         
+                rest.path = 'general/' + $window.localStorage.getItem('copiedProjectId') + '/' + $scope.customer.client;
+                rest.get().success(function (data) {
+                    $scope.general.due_date = data.due_date;
+                    $scope.general.specialization = data.specialization;
+
+                    if($scope.general.due_date){
+                        var due_timeval = $scope.general.due_date.split(" ")[1];
+                        $scope.general.due_date = moment($scope.general.due_date).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#due_time').val(due_timeval);
+                    };
+                   
+                    angular.element('#clientId2').val($scope.customer?.client).trigger('change');
+                    angular.element('#order_number_id').val(data.order_no);
+
+                    setTimeout(() => {
+                        $scope.getContact($scope.customer?.client, 'conatct-person');
+                    }, 1000);
+                    angular.element('#conatct-person').val($scope.customer?.contact).trigger('change');
+                })
+            }
+        });
+
         // setTimeout(() => {
         //     $scope.getContact(10, 'conatct-person')
         // }, 100);
@@ -25535,7 +25575,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
             }).error(errorCallback);
             
-            if (!$scope.general || !$scope.general.general_id) {
+            // if ((!$scope.general || !$scope.general.general_id)) {
+            if ((!$scope.general || !$scope.general.general_id)) {
+                rest.path = 'orderdataget/' + id;
+                rest.get().success(function (data) {
+                    console.log('data', data)
+                    $scope.code = data;
+                    $scope.orderNumber(data);
+                }).error(errorCallback);
+            }else if($window.localStorage.getItem('copiedProjectId')) {
                 rest.path = 'orderdataget/' + id;
                 rest.get().success(function (data) {
                     console.log('data', data)
@@ -25551,7 +25599,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('$scope.directClientData', $scope.directClientData)
             }).error(function (data, error, status) { });
 
-            $scope.customer.contact = ''
+            if(!$window.localStorage.getItem('copiedProjectId')){
+                $scope.customer.contact = ''
+            }
         }    
 
     };
