@@ -649,29 +649,12 @@
                       <div flex-no-shrink="" style="background:#fff; border-radius: 5px;">
                         <nav ui-nav="">
                           <ul class="nav">
-                            <!-- <li>
-                              <span class="nav-text">
-                                <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs"
-                                    style="color: {{general.status_color}}"></i> {{projectScoopStatus}}</span>
-                                <small class="block text-muted"> </small></span>
-                            </li> -->
                             <li class="projectName">
-                              <i class="fa fa-tasks"></i>
-                              <div class="caption">
-                                <div class="name">
-                                  <!-- {{scoopSidebarDetail.order_no}}-{{scoopSidebarDetail.item_number | numberFixedLen:3}} -->
-                                   {{jobdetail.po_number}}
-                                  <label>Job </label>
-                                </div>
-                              </div>
+                                <div> 
+                                  <span>Job:  </span>
+                                  <span style="margin-left: 5px;">{{jobdetail.po_number }}</span>
+                                 </div>
                             </li>
-                            <!-- <li class="deadline">
-                                                  <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                                                  <div class="caption">
-                                                    <div class="Delivery-date">{{general.due_date }}<label>Estimated delivery</label></div>
-                                                    <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div>
-                                                  </div>
-                                                </li> -->
                             <li class="task-price" ng-if="userRight==1">
                               <div class="caption">
                                 <i class="fa fa-snowflake-o" aria-hidden="true"></i>
@@ -681,16 +664,6 @@
                             </li>
                             <li class="userSection">
                               <span class="sec-title">Project Members:</span>
-                              <!-- <div class="top">
-                                <figure class="managerIcon" style="height: 25px; width: 26px; color: white;"></figure>
-                                <div class="user-info">
-                                  <div class="user-name">
-                                    <span> {{scoopSidebarDetail.pm_fullName }}</span>
-                                    <span class="designation">Project Manager</span>
-
-                                    </div>
-                                </div>
-                              </div> -->
                               <div>
                                 <div class="user-info">
                                   <div>
@@ -726,43 +699,21 @@
                                   <div>
                                     <span class="designation"> <strong>Linguist:</strong> </span>
                                   </div>
-                                  <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId ">
+                                  <!-- <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId ">
                                     <span> {{linguist.vUserName}} </span>
+                                  </div> -->
+                                  <div class="user-name">
+                                    <span> {{linguistName}} </span>
                                   </div>
                                 </div>
                               </div>
-                              
-                              <div class="projectTeam">
-                                <!-- <div class="team-list">
-                                  <div class="list-item">
-                                    <figure class="coordinatorIcon"></figure>
-                                    <div class="right">
-                                      <strong> {{scoopSidebarDetail.pc_fullName }}</strong>
-                                      <span class="designation">Project Coordinator</span>
-                                    </div>
-                                  </div>
-                                  <div class="list-item">
-                                    <figure class="QAIcon"></figure>
-                                    <div class="right">
-                                      <strong> {{scoopSidebarDetail.qa_fullName }}</strong>
-                                      <span class="designation">QA Specialist</span>
-                                    </div>
-                                  </div>
-                                </div> -->
-                                <!-- <div class="team-list">
-                                  <div class="list-item" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId " >
-                                    <figure style="">
-                                    </figure>
-                                    <div class="right">
-                                      <strong>{{linguist.vUserName}}</strong>
-                                      <span class="designation">Linguist</span>
-                                    </div>
-                                  </div>
-
-                                </div> -->
-
-                              </div>
                             </li>
+                            <li class="projectName">
+                              <div> 
+                                <span>Job price:  </span>
+                                <span style="margin-left: 5px;">{{jobdetail.total_price | customNumber }}</span>
+                               </div>
+                          </li>
                           </ul>
                         </nav>
                       </div>
