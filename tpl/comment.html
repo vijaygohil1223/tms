@@ -435,7 +435,7 @@
 
                                 </select>
                               </div>
-                              <div class="mt-15" ng-if="selectedTab==2">
+                              <div class="mt-15 d-flex" ng-if="selectedTab==2">
                                 <span>Job </span>
                                 <input type="text" select2-jobs typeid="{{pageOrderId}}" isMultiple="false" id="linguistJob"
                                   class="form-control" name="linguistJob" ng-model="linguistJob"
@@ -481,7 +481,7 @@
                             <div class="mt-15">
                               <div class="user-info">
                                 <div>
-                                  <span class="designation"> <strong>Linguist: {{selectedTab}}</strong> </span>
+                                  <span class="designation"> <strong>Linguist: </strong> </span>
                                 </div>
                                 <div class="user-name" ng-repeat="linguist in jobLinguist" ng-if="selectedTab==1">
                                   <span> {{linguist.vUserName}} </span>
