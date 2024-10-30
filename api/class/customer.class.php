@@ -13,7 +13,16 @@ class customer {
     public function save($info) {
         $info['created_date'] = date('Y-m-d H:i:s');
         $info['modified_date'] = date('Y-m-d H:i:s');
+
+        //start code for copy project keys unset 
+        $keysToUnset = ['c_id', 'sub_pm', 'sub_pc', 'sub_qa', 'memo'];
+        foreach ($keysToUnset as $key) {
+            unset($info[$key]);
+        }
+        //end code for copy project keys unset 
+
         $id = $this->_db->insert('tms_customer', $info);
+        
         if ($id) {
 
             // getting projectId and name from tms_general
