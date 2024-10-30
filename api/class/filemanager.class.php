@@ -1420,7 +1420,8 @@ array(
 
     public function saveFileuploadAWS($data) {
         $output_dir = UPLOADS_ROOT."fileupload/";
-        $currentDate = date('Y-m-d');
+        //$currentDate = date('Y-m-d');
+        $currentDate = date('Y/m'). '/' . date('Y-m-d');
         $awsFile = new awsFileupload();
                     
         if (isset($_FILES["myfile"])) {

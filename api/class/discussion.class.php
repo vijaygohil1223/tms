@@ -3,6 +3,7 @@
 require_once 'functions.class.php';
 require_once 'customer.class.php';
 require_once 'client.class.php';
+require_once 'awsFileupload.class.php';
 
 class discussion {
     public function __construct() {
@@ -16,6 +17,26 @@ class discussion {
     }
     
     public function discussionOrder($data) {
+        
+        $fileArrString = '';
+        if(isset($data['attachments']) && count($data['attachments'])> 0 ){
+            $fileArr = [];    
+            foreach ($data['attachments'] as $index => $value) {
+                //$fileupload = self::uploadFile($value);
+                $fileupload = self::uploadFileS3AWS($value);
+                
+                $fileInfo = [
+                    'id' => $index + 1, // Assuming you want a 1-based index
+                    'original_filename' => $value['original_filename'],
+                    'mime_type' => $value['mime_type'],
+                    'file' => $fileupload['file_url'],
+                ];
+                $fileArr[] = $fileInfo; 
+            }
+            $fileArrString = json_encode($fileArr, JSON_UNESCAPED_SLASHES);
+        }
+        $data['attachments'] = $fileArrString;
+        
         if($data['created_by_current_user'] == 1) 
             $data['created_by_current_user'] = "true";
         else
@@ -354,6 +375,116 @@ class discussion {
         }
         return $returnData;
     }        
+
+    public function uploadFileS3AWS($data) {
+        $retrundata = [];
+        $fileData = $data;
+        $awsFile = new awsFileupload();
+        
+        if ($fileData) {
+            $mimeType = $fileData['mime_type'];
+            if (preg_match('/^data:(.*?);base64,(.*)$/', $data['file'], $matches)) {
+                $mimeType = $matches[1]; // Extracted MIME type
+                $base64String = $matches[2]; // Extracted base64 string
+            
+                $fileData = base64_decode($base64String);
+                $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $data['original_filename']);
+    
+                $foldername = date('Y/m'). '/' . date('Y-m-d');
+                
+                $fileName = time() . '_' . $fileName; 
+                
+                $keyName = 'discussionfile/'. $foldername . '/' . $fileName ;
+                
+                // Save the decoded file content to the server
+                $awsResult = $awsFile->awsFileUploadBase64($fileData, $keyName,  $mimeType);
+                //print_r($awsResult);
+                //exit;
+                if ($awsResult) {
+                    return [
+                        'data' => $retrundata,
+                        'success' => true,
+                        'message' => 'File uploaded successfully',
+                        'file_url' => $awsResult['file_url']
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => 'Failed to save file'
+                    ];
+                }
+            } else {
+                // Unsupported file type
+                return [
+                    'success' => false,
+                    'message' => 'Unsupported file type: ' . $mimeType
+                ];
+
+            }
+        } else {
+            // Invalid base64 format
+            return [
+                'success' => false,
+                'message' => 'Invalid base64 string'
+            ];
+        }
+    }
+
+    public function uploadFile($data) {
+        $retrundata = [];
+        $fileData = $data;
+        
+        if ($fileData) {
+            $mimeType = $fileData['mime_type'];
+            if (preg_match('/^data:(.*?);base64,(.*)$/', $data['file'], $matches)) {
+                $mimeType = $matches[1]; // Extracted MIME type
+                $base64String = $matches[2]; // Extracted base64 string
+            
+                $fileData = base64_decode($base64String);
+                $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $data['original_filename']);
+    
+                $foldername = date('Y-m-d');
+                $folderPath = UPLOADS_ROOT . '/discussionfile/' . $foldername;
+
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath, 0755, true);
+                }
+
+                $fileName = time() . '_' . $fileName; 
+                $filePath = $folderPath . '/' . $fileName;
+                $file_url = 'uploads/discussionfile/' . $foldername . '/' . $fileName;
+                $retrundata['filePath'] = $filePath;
+
+                // Save the decoded file content to the server
+                if (file_put_contents($filePath, $fileData)) {
+                    return [
+                        'data' => $retrundata,
+                        'success' => true,
+                        'message' => 'File uploaded successfully',
+                        'file_url' => $file_url
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => 'Failed to save file'
+                    ];
+                }
+            } else {
+                // Unsupported file type
+                return [
+                    'success' => false,
+                    'message' => 'Unsupported file type: ' . $mimeType
+                ];
+
+            }
+        } else {
+            // Invalid base64 format
+            return [
+                'success' => false,
+                'message' => 'Invalid base64 string'
+            ];
+        }
+    }
 
 
 }
