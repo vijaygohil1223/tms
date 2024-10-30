@@ -288,38 +288,37 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     // }
 
     $totalAmount = "SELECT
-        c.client_currency,
-        SUM(its.total_amount) AS totalPrice,
-        SUM($text) AS totalPriceEUR,
-        SUM(COALESCE(tsv.total_job_price, 0)) AS jobExpenseReportTotal,
-        SUM(COALESCE(tsv.total_job_price, 0) / its.base_currency_rate) AS jobExpenseReportTotalEUR,
-        SUM(its.total_amount - COALESCE(tsv.total_job_price, 0)) AS totalDifference,
-        SUM(
-            ($text) - COALESCE(tsv.total_job_price, 0) / its.base_currency_rate
-        ) AS totalDifferenceEUR
-    FROM (
-        SELECT DISTINCT its.*, c.client_currency
-        FROM tms_items its
-        LEFT JOIN tms_general gen ON its.order_id = gen.order_id
-        LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
-        LEFT JOIN tms_client c ON cust.client = c.iClientId
-        LEFT JOIN tms_user_status stus ON c.vStatus = stus.status_id
-        LEFT JOIN tms_client_indirect inc ON inc.iClientId = cust.indirect_customer
-        LEFT JOIN tms_users tu ON tu.iUserId = cust.project_manager
-        LEFT JOIN tms_project_type tpt ON its.project_type = tpt.pr_type_id
-        LEFT JOIN tms_project_status ps ON ps.pr_status_id = gen.project_status
-        LEFT JOIN tms_item_status scs ON scs.item_status_id = its.item_status
-        LEFT JOIN (
-            SELECT order_id, item_id, SUM(total_price) AS total_job_price
-            FROM tms_summmery_view
-            GROUP BY order_id, item_id
-        ) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
-        WHERE 1=1 $qry_invc
-    ) its
-    LEFT JOIN ($subQuery) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
-    LEFT JOIN tms_general gen ON its.order_id = gen.order_id
-    LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
-    LEFT JOIN tms_client c ON cust.client = c.iClientId";
+            its.client_currency,  
+            SUM(its.total_amount) AS totalPrice,
+            SUM(its.total_amount) AS totalPriceEUR,
+            SUM(COALESCE(its.total_job_price, 0)) AS jobExpenseReportTotal,
+            SUM(COALESCE(its.total_job_price, 0) / its.base_currency_rate) AS jobExpenseReportTotalEUR,
+            SUM(its.total_amount - COALESCE(its.total_job_price, 0)) AS totalDifference,
+            SUM(its.total_amount - COALESCE(its.total_job_price, 0) / its.base_currency_rate) AS totalDifferenceEUR
+        FROM (
+            SELECT 
+                its.*,
+                c.client_currency,
+                SUM(tsv.total_job_price) AS total_job_price
+            FROM tms_items its
+            LEFT JOIN tms_general gen ON its.order_id = gen.order_id
+            LEFT JOIN tms_customer cust ON its.order_id = cust.order_id
+            LEFT JOIN tms_client c ON cust.client = c.iClientId
+            LEFT JOIN tms_user_status stus ON c.vStatus = stus.status_id
+            LEFT JOIN tms_client_indirect inc ON inc.iClientId = cust.indirect_customer
+            LEFT JOIN tms_users tu ON tu.iUserId = cust.project_manager
+            LEFT JOIN tms_project_type tpt ON its.project_type = tpt.pr_type_id
+            LEFT JOIN tms_project_status ps ON ps.pr_status_id = gen.project_status
+            LEFT JOIN tms_item_status scs ON scs.item_status_id = its.item_status
+            LEFT JOIN (
+                SELECT order_id, item_id, SUM(total_price) AS total_job_price
+                FROM tms_summmery_view
+                GROUP BY order_id, item_id
+            ) tsv ON tsv.order_id = its.order_id AND tsv.item_id = its.item_number
+            WHERE 1=1 $qry_invc
+            GROUP BY its.order_id, its.item_number, c.client_currency
+        ) its
+        GROUP BY its.client_currency";
 
     // Execute the query
     $getTotalRecordsQuery = $dbConn->query($totalAmount);
