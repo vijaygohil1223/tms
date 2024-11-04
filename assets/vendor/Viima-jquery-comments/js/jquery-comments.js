@@ -1284,7 +1284,9 @@
             // Disable send button while request is pending
             //sendButton.removeClass('enabled');
             //this.setButtonState(sendButton, false, true);
-
+            $(".commenting-field").find('.send.save').removeClass('enabled')
+            $(".commenting-field").find('.upload').removeClass('enabled')
+            
             // Create comment JSON
             var commentJSON = this.createCommentJSON(textarea);
 
@@ -1294,6 +1296,7 @@
 
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
+
                 // Close the commenting field
                 commentingField.find('.close').trigger('click');
                 
@@ -1321,6 +1324,8 @@
                 const attachmentsContainer = document.querySelector('.control-row .attachments'); 
                 attachmentsContainer.innerHTML = '';
 
+                $(".commenting-field").find('.send.save').removeClass('enabled')
+
             };
             
             var success__ = function(commentJSON) {
@@ -1342,7 +1347,10 @@
             };
 
             var error = function() {
-                sendButton.addClass('enabled');
+                //sendButton.addClass('enabled');
+                $(".commenting-field").find('.send.save').removeClass('enabled')
+                $(".commenting-field").find('.upload').removeClass('enabled')
+                
             };
 
             this.options.postComment(commentJSON, success, error);
