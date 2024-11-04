@@ -415,6 +415,28 @@ app.filter('customNumber', function($filter,$window) {
         }
     };
 });
+// remove dot. as thousand seperator
+app.filter('customNumber2', function($filter,$window) {
+    return function(input) {
+        var decimalSeparator = $window.localStorage.getItem('DecimalSeparator')
+        const numStr = String(input);
+        // String Contains Decimal
+        var numFix = 2;
+        var number = $filter('number')(input,numFix);
+        if(number){
+            if(decimalSeparator){
+                if(decimalSeparator == '.'){
+                    return number;
+                }else{
+                    return number.replace(/,/g, '').replace('.', ',');  
+                    //return number.split('.')[0].replace(/,/g,'.')+','+number.split('.')[1];
+                }
+            }else{
+                return number
+            }
+        }
+    };
+});
 app.filter('customNumber4Digit', function($filter,$window) {
     return function(input) {
         var decimalSeparator = $window.localStorage.getItem('DecimalSeparator')
