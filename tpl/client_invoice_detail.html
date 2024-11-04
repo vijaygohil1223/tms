@@ -326,7 +326,11 @@
               <tbody>
                 <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
                   <td>
-                    {{ invoiceL.invoice_number.includes(invoiceNoPrefix) ? invoiceL.invoice_number.split(invoiceNoPrefix)[1] : invoiceL.invoice_number }} -staticstring-
+                    {{
+                        invoiceL.invoice_number.includes(invoiceNoPrefix) 
+                            ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
+                            : invoiceL.invoice_number 
+                    }} -staticstring-
                   </td>
                   <td style="font-weight: initial; font-size: initial;">{{invoiceL.invoice_date | globalDtFormat}}</td>
                   <td>{{ invoiceL.invoice_due_date | globalDtFormat }}</td>
@@ -334,7 +338,11 @@
                   <td></td>
                   <td></td>
                   <td>
-                    {{ invoiceL.invoice_number.includes(invoiceNoPrefix) ? invoiceL.invoice_number.split(invoiceNoPrefix)[1] : invoiceL.invoice_number }} -staticstring-
+                    {{
+                        invoiceL.invoice_number.includes(invoiceNoPrefix) 
+                            ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
+                            : invoiceL.invoice_number 
+                    }} -staticstring-
                   </td>
                   <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                   <td>{{ invoiceL.accounting_tripletex}}</td>
