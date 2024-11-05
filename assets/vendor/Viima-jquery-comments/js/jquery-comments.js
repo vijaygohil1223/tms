@@ -1286,7 +1286,7 @@
             //this.setButtonState(sendButton, false, true);
             $(".commenting-field").find('.send.save').removeClass('enabled')
             $(".commenting-field").find('.upload').removeClass('enabled')
-            
+
             // Create comment JSON
             var commentJSON = this.createCommentJSON(textarea);
 
@@ -1348,9 +1348,8 @@
 
             var error = function() {
                 //sendButton.addClass('enabled');
-                $(".commenting-field").find('.send.save').removeClass('enabled')
-                $(".commenting-field").find('.upload').removeClass('enabled')
-                
+                $(".commenting-field").find('.send.save').addClass('enabled')
+                $(".commenting-field").find('.upload').addClass('enabled')
             };
 
             this.options.postComment(commentJSON, success, error);
