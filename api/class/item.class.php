@@ -182,27 +182,27 @@ class item {
                 unset($data['due_date']);
             }
         }
-        if (isset($data['pm_deadline'])) {
-            $datetimeString = $data['pm_deadline'];
-            $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            if ($dateTimeObj) {
-                $formattedPMDate = $dateTimeObj->format('Y-m-d');
-                $data['pm_deadline'] = $formattedPMDate;
-            }else{
-                $data['qa_deadline'] = null;
-            }
-        }
-        
-        if (isset($data['qa_deadline'])) {
-            $datetimeString = $data['qa_deadline'];
-            $dateTimeObj1 = DateTime::createFromFormat('d.m.Y', $datetimeString);
-            if ($dateTimeObj1) {
-                $formattedQADate = $dateTimeObj1->format('Y-m-d');
-                $data['qa_deadline'] = $formattedQADate;
-            }else{
-                $data['qa_deadline'] = null;
-            }
-        }
+        // removed no longer needed
+        // if (isset($data['pm_deadline'])) {
+        //     $datetimeString = $data['pm_deadline'];
+        //     $dateTimeObj = DateTime::createFromFormat('d.m.Y', $datetimeString);
+        //     if ($dateTimeObj) {
+        //         $formattedPMDate = $dateTimeObj->format('Y-m-d');
+        //         $data['pm_deadline'] = $formattedPMDate;
+        //     }else{
+        //         $data['qa_deadline'] = null;
+        //     }
+        // }
+        // if (isset($data['qa_deadline'])) {
+        //     $datetimeString = $data['qa_deadline'];
+        //     $dateTimeObj1 = DateTime::createFromFormat('d.m.Y', $datetimeString);
+        //     if ($dateTimeObj1) {
+        //         $formattedQADate = $dateTimeObj1->format('Y-m-d');
+        //         $data['qa_deadline'] = $formattedQADate;
+        //     }else{
+        //         $data['qa_deadline'] = null;
+        //     }
+        // }
         
         $sql = "SELECT tcu.current_curency_rate
             FROM tms_items ti

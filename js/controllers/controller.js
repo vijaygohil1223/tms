@@ -28059,27 +28059,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     }
 
-                    if ($scope.itemList[i].pm_deadline && $scope.itemList[i].pm_deadline !== '0000-00-00') {
-                        var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
-                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
-                        var due_timevl = new_due_date.split(" ")[1];
-                        $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
-                        angular.element('#pm_deadline' + i).val(due_timevl);
-                    }else{
-                        $scope.itemList[i].pm_deadline = '';
-                        angular.element('#pm_deadline' + i).val('');
-                    }
-
-                    if ($scope.itemList[i].qa_deadline && $scope.itemList[i].qa_deadline !== '0000-00-00') {
-                        var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
-                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
-                        var due_timevl = new_due_date.split(" ")[1];
-                        $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
-                        angular.element('#qa_deadline' + i).val(due_timevl);
-                    }else{
-                        $scope.itemList[i].qa_deadline = '';
-                        angular.element('#qa_deadline' + i).val('');
-                    }
+                    // removed - no longer needed
+                    // if ($scope.itemList[i].pm_deadline && $scope.itemList[i].pm_deadline !== '0000-00-00') {
+                    //     var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
+                    //     var due_timevl = new_due_date.split(" ")[1];
+                    //     $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                    //     angular.element('#pm_deadline' + i).val(due_timevl);
+                    // }else{
+                    //     $scope.itemList[i].pm_deadline = '';
+                    //     angular.element('#pm_deadline' + i).val('');
+                    // }
+                    // if ($scope.itemList[i].qa_deadline && $scope.itemList[i].qa_deadline !== '0000-00-00') {
+                    //     var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
+                    //     //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                    //     var due_timevl = new_due_date.split(" ")[1];
+                    //     $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                    //     angular.element('#qa_deadline' + i).val(due_timevl);
+                    // }else{
+                    //     $scope.itemList[i].qa_deadline = '';
+                    //     angular.element('#qa_deadline' + i).val('');
+                    // }
 
                     if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
                         var sourceData = JSON.parse($scope.itemList[i].source_lang);
@@ -28266,11 +28265,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     }
                 // }).error(errorCallback);
 
-                rest.path = 'getDiscussionMessageRead/' + val.itemId;
-                rest.get().success(function (data) {
-                    $scope.discussionScoopRead[val.itemId] = data;
-                    console.log('$scope.discussionScoopRead', $scope.discussionScoopRead)
-                })
+                // rest.path = 'getDiscussionMessageRead/' + val.itemId;
+                // rest.get().success(function (data) {
+                //     $scope.discussionScoopRead[val.itemId] = data;
+                //     console.log('$scope.discussionScoopRead', $scope.discussionScoopRead)
+                // })
+                // Check if the data is already in the cache
+                if ($scope.discussionScoopRead[val.itemId]) {
+                    // If data exists in cache, just use it
+                    console.log('$scope.discussionScoopRead (from cache)', $scope.discussionScoopRead[val.itemId]);
+                } else {
+                    // If data is not in cache, call the API
+                    rest.path = 'getDiscussionMessageRead/' + val.itemId;
+                    rest.get().success(function (data) {
+                        // Store the response in the cache
+                        $scope.discussionScoopRead[val.itemId] = data;
+                        console.log('$scope.discussionScoopRead (from API)', $scope.discussionScoopRead);
+                    });
+                }
+
 
             })
         });
@@ -42866,27 +42879,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         angular.element('#due_time' + i).val(due_timevl);
                     }
 
-                    if ($scope.itemList[i].pm_deadline && $scope.itemList[i].pm_deadline !== '0000-00-00') {
-                        var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
-                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
-                        var due_timevl = new_due_date.split(" ")[1];
-                        $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
-                        angular.element('#pm_deadline' + i).val(due_timevl);
-                    }else{
-                        $scope.itemList[i].pm_deadline = '';
-                        angular.element('#pm_deadline' + i).val('');
-                    }
-
-                    if ($scope.itemList[i].qa_deadline && $scope.itemList[i].qa_deadline !== '0000-00-00') {
-                        var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
-                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
-                        var due_timevl = new_due_date.split(" ")[1];
-                        $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
-                        angular.element('#qa_deadline' + i).val(due_timevl);
-                    }else{
-                        $scope.itemList[i].qa_deadline = '';
-                        angular.element('#qa_deadline' + i).val('');
-                    }
+                    // removed - no longer needed
+                    // if ($scope.itemList[i].pm_deadline && $scope.itemList[i].pm_deadline !== '0000-00-00') {
+                    //     var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
+                    //     //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                    //     var due_timevl = new_due_date.split(" ")[1];
+                    //     $scope.itemList[i].pm_deadline = moment($scope.itemList[i].pm_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                    //     angular.element('#pm_deadline' + i).val(due_timevl);
+                    // }else{
+                    //     $scope.itemList[i].pm_deadline = '';
+                    //     angular.element('#pm_deadline' + i).val('');
+                    // }
+                    // if ($scope.itemList[i].qa_deadline && $scope.itemList[i].qa_deadline !== '0000-00-00') {
+                    //     var new_due_date = moment($scope.itemList[i].qa_deadline).format($scope.dateFormatGlobal);
+                    //     //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                    //     var due_timevl = new_due_date.split(" ")[1];
+                    //     $scope.itemList[i].qa_deadline = moment($scope.itemList[i].qa_deadline).format($window.localStorage.getItem('global_dateFormat'));
+                    //     angular.element('#qa_deadline' + i).val(due_timevl);
+                    // }else{
+                    //     $scope.itemList[i].qa_deadline = '';
+                    //     angular.element('#qa_deadline' + i).val('');
+                    // }
 
                     if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
                         var sourceData = JSON.parse($scope.itemList[i].source_lang);
