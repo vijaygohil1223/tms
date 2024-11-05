@@ -38088,28 +38088,51 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.tripletexData = function () {
-        $("#exportableTripletex .dt-loading" ).remove();
-        
-        if($scope.checkedIds.length > 0){
-            $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
-        }    
-        setTimeout(() => {
-            // export excel file using sheetjs
-            //exportTableToExcel('exportable2Tripletex','Client Invoice Tripletex Report');
-            exportTableToExcel('exportable2Tripletex','invoice_import_example_new_min',[11], 1)
-            
-            $route.reload();
-            //notification('File downloaded successfully', 'success');
-            $scope.checkedIds = [];
-            $scope.getAllInvoice = allInvoiceListArr
-            // Remove selected
-            $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-            $('input[id^=checkAll]:checkbox').removeAttr('checked');
-            
-        }, 500);
-
+        // Remove the loading class from the exportable table
+        $("#exportableTripletex .dt-loading").remove();
+    
+        // Retrieve the full list of invoices
+        const tripleTexinvoiceList = $scope.invoiceListAll;
+    
+        // Filter the list based on selected IDs or credit_note_id
+        if ($scope.checkedIds.length > 0) {
+            $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
+                return $scope.checkedIds.includes(item.invoice_id) && !item.credit_note_id; 
+            });
+        } else {
+            $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
+                return !item.credit_note_id; 
+            });
+        }
+    
+        console.log('$scope.tripleTexinvoiceList', $scope.tripleTexinvoiceList);
+    
+        // Ensure the data is applied to the view
+        $scope.$applyAsync(() => {
+            // Use $timeout with a small delay to ensure the table rendering is complete
+            setTimeout(() => {
+                // Ensure the table has data before exporting
+                if ($scope.tripleTexinvoiceList.length > 0) {
+                    // Now that filtering is done, call exportTableToExcel
+                    exportTableToExcel('exportable2Tripletex', 'invoice_import_example_new_min', [11], 1);
+    
+                    // Reload the route or page if necessary
+                    $route.reload();
+    
+                    // Reset checked IDs and other states
+                    $scope.checkedIds = [];
+                    //$scope.getAllInvoice = allInvoiceListArr;
+    
+                    // Uncheck any checkboxes that were selected
+                    $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                    $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                } else {
+                    notification('No record found.', 'warning');
+                }
+            }, 50); // Small delay to ensure rendering is complete
+        });
     };
+    
 
     // On input change
     $scope.isPaymentDate = false;
