@@ -14,80 +14,82 @@
           <h1 class="m-n font-thin h3">Invoice Create</h1>
         </div>
         <div class="wrapper-md ng-scope">
-          <div class="panel panel-default">
-            <div class="table-responsive">
-              <div class="bg-light lter b-b wrapper-md d-flex">
-                <h4 class="m-n font-thin col-sm-11"> <a href="#/invoice-client" class="btn btn-info"><i
-                      class="fa fa-list"></i>&nbsp; Go To Invoice List</a> </h4>
-                <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)"><i class="fa fa-plus"></i>&nbsp;&nbsp;
-                  Create invoice</button>
-              </div>
-              <table class="table table-striped b-t b-b table-bordered">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Scoop number</th>
-                    <th>Client</th>
-                    <th>PO number</th>
-                    <th>Due Date</th>
-                    <th>status</th>
-                    <th>Price</th>
-                    <th>Currency</th>
-                  </tr>
-                </thead>
-                <tbody ng-init="invLen = InvoiceResult.length - 1"
-                  ng-repeat="invoiceL in InvoiceResult  track by $index" >
-                  <tr>
-                    <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
-                      ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">
-                      <div class="d-flex">
-                        Client: {{ invoiceL.contactName }}
-                        <div class="d-flex" style="margin-top: -4px; margin-left: 25px;">
-                          <label style="margin-top:8px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
-                          <!-- <input type="checkbox" id="checkAll{{invoiceL.iClientId}}" name="invoiceCheckAll" ng-model="checkall" ng-checked="checkalldata=='all'" ng-click="checkCreateInvoiceIds('all', invoiceL.iClientId)" > -->
-                          <input type="checkbox" ng-model="invoiceselectedAll" id="checkAll{{invoiceL.iClientId}}" ng-change="checkCreateInvoiceIds('all', invoiceL.iClientId)" /> 
+          <div class="white_box_wrapper hbox hbox-auto-xs hbox-auto-sm">
+            <div class="panel panel-default">
+              <div class="table-responsive">
+                <div class="bg-light lter b-b wrapper-md d-flex">
+                  <h4 class="m-n font-thin col-sm-11"> <a href="#/invoice-client" class="btn btn-info"><i
+                        class="fa fa-list"></i>&nbsp; Go To Invoice List</a> </h4>
+                  <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)"><i class="fa fa-plus"></i>&nbsp;&nbsp;
+                    Create invoice</button>
+                </div>
+                <table class="table table-striped b-t b-b table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Scoop number</th>
+                      <th>Client</th>
+                      <th>PO number</th>
+                      <th>Due Date</th>
+                      <th>status</th>
+                      <th>Price</th>
+                      <th>Currency</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-init="invLen = InvoiceResult.length - 1"
+                    ng-repeat="invoiceL in InvoiceResult  track by $index" >
+                    <tr>
+                      <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
+                        ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">
+                        <div class="d-flex">
+                          Client: {{ invoiceL.contactName }}
+                          <div class="d-flex" style="margin-top: -4px; margin-left: 25px;">
+                            <label style="margin-top:8px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
+                            <!-- <input type="checkbox" id="checkAll{{invoiceL.iClientId}}" name="invoiceCheckAll" ng-model="checkall" ng-checked="checkalldata=='all'" ng-click="checkCreateInvoiceIds('all', invoiceL.iClientId)" > -->
+                            <input type="checkbox" ng-model="invoiceselectedAll" id="checkAll{{invoiceL.iClientId}}" ng-change="checkCreateInvoiceIds('all', invoiceL.iClientId)" /> 
+                          </div>
+                          <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)" style="padding: 4px; margin-left: 30px;"><i class="fa fa-plus"></i>&nbsp;&nbsp; invoice</button>
                         </div>
-                        <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)" style="padding: 4px; margin-left: 30px;"><i class="fa fa-plus"></i>&nbsp;&nbsp; invoice</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span ng-if="invoiceL.itemStatus=='Approved' || invoiceL.itemStatus=='Overdue'">
-                        <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0" class="scoopInv" />
-                      </span>
-                      <span ng-if="invoiceL.itemStatus!='Approved'">
-                        <input type="checkbox" name="invoceCheck" disabled>
-                      </span>
-                    </td>
-                    <td>
-                      <a style="color:#4ba0c3" href="#/items/{{invoiceL.orderId}}" title="View" class="trActionIcon">
-                        <span ng-bind="(invoiceL.orderNumber)"></span>-<span ng-bind="(invoiceL.item_number | numberFixedLen:3)"></span>
-                      </a>
                       </td>
-                    <td>
-                      <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.iClientId}}" title="View" class="trActionIcon"> {{ invoiceL.contactName }}</a>
-                    </td>
-                    <td>{{ invoiceL.itemPonumber }}</td>
-                    <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
-                    <td class="nowrap">
-                      <button class="btn approvedColor" ng-if="invoiceL.itemStatus == 'Approved'"></button>
-                      &nbsp;{{invoiceL.itemStatus}}
-                    </td>
-                    <td ng-bind="invoiceL.totalAmount | customNumber"></td>
-                    <td ng-bind="invoiceL.client_currency"></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span ng-if="invoiceL.itemStatus=='Approved' || invoiceL.itemStatus=='Overdue'">
+                          <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0" class="scoopInv" />
+                        </span>
+                        <span ng-if="invoiceL.itemStatus!='Approved'">
+                          <input type="checkbox" name="invoceCheck" disabled>
+                        </span>
+                      </td>
+                      <td>
+                        <a style="color:#4ba0c3" href="#/items/{{invoiceL.orderId}}" title="View" class="trActionIcon">
+                          <span ng-bind="(invoiceL.orderNumber)"></span>-<span ng-bind="(invoiceL.item_number | numberFixedLen:3)"></span>
+                        </a>
+                        </td>
+                      <td>
+                        <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.iClientId}}" title="View" class="trActionIcon"> {{ invoiceL.contactName }}</a>
+                      </td>
+                      <td>{{ invoiceL.itemPonumber }}</td>
+                      <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
+                      <td class="nowrap">
+                        <button class="btn approvedColor" ng-if="invoiceL.itemStatus == 'Approved'"></button>
+                        &nbsp;{{invoiceL.itemStatus}}
+                      </td>
+                      <td ng-bind="invoiceL.totalAmount | customNumber"></td>
+                      <td ng-bind="invoiceL.client_currency"></td>
 
-                  </tr>
-                  <tr ng-if="$last || !$last && (InvoiceResult[$index+1] && InvoiceResult[$index+1].iClientId !== invoiceL.iClientId)">
-                    <td colspan="6" style="text-align: right !important;font-weight:bold;">Total:</td>
-                    <td ng-init="totalForClient = calculateTotalForClient(invoiceL.iClientId)">
-                      {{ totalForClient | customNumber }}
-                    </td>
-                    <td></td>
-                  </tr>
-                  
-                </tbody>
-              </table>
+                    </tr>
+                    <tr ng-if="$last || !$last && (InvoiceResult[$index+1] && InvoiceResult[$index+1].iClientId !== invoiceL.iClientId)">
+                      <td colspan="6" style="text-align: right !important;font-weight:bold;">Total:</td>
+                      <td ng-init="totalForClient = calculateTotalForClient(invoiceL.iClientId)">
+                        {{ totalForClient | customNumber }}
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <!-- footer copy right -->

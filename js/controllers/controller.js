@@ -21992,6 +21992,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     $scope.totalPriceSelected = 0;
 
+    $scope.totalInvoiceCost = 0;
+
+    // Function to calculate the total invoice cost
+    $scope.calculateTotal = function() {
+        $scope.totalInvoiceCost = 0;  // Reset the total
+        angular.forEach($scope.invoiceListAll, function(item) {
+            var cost = parseFloat(item.Invoice_costEUR);
+            if (!isNaN(cost)) {
+                $scope.totalInvoiceCost += cost;
+            }
+        });
+    };
+
+    // Watch for changes in the invoiceListAll array and recalculate the total
+    $scope.$watch('invoiceListAll', function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+            $scope.calculateTotal();
+        }
+    }, true);
+
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

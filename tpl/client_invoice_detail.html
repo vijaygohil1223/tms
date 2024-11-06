@@ -26,336 +26,343 @@
         <h1 class="m-n font-thin h3">Invoice List</h1>
       </div>
       <div class="wrapper-md ng-scope">
-        <div class="panel panel-default" style="margin-bottom:5px;">
-          <div class="panel-body">
-            <div class="table-responsive">
-              <table class="table">
+        <div class="white_box_wrapper hbox hbox-auto-xs hbox-auto-sm">
+          
+          <div class="panel panel-default" style="margin-bottom:5px;">
+            <div class="panel-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <form id="search-invoice">
+                          <div class="col-lg-12" style="margin-top: 20px">
+                            <!-- <div class="col-lg-4">
+                              <span>Enter Project No. : </span>
+                              <tags-input ng-model="searchOrderNumber" placeholder="Search Project No."></tags-input>
+                            </div>
+                            <div class="col-lg-1" style="margin-top: 24px">
+                              <span><button class="btn btn-sm btn-info" ng-click="search(searchOrderNumber)">
+                                  ok
+                                </button></span>
+                            </div> -->
+                            <a href="#/invoice-client-projects" class="btn btn-info btn-rightside">
+                              <i class="fa fa-hand-o-right"></i> Go To Invoice Create</a>
+                            <div class="pull-right">
+                              <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">
+                                <i class="fa fa-eye"></i> Draft Invoice
+                              </button>
+                              <!-- <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')"
+                                style="margin-right: 10px">
+                                <i class="fa fa-eye"></i> Save Invoice
+                              </button> -->
+                              <button class="btn btn-info" ng-click="exportPdf()" ng-disabled="isDisabledExportpdf">
+                                Pdf &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                              </button>
+                              <!-- <button class="btn btn-info" ng-click="exportDocx()" ng-disabled="isDisabledExportpdf">
+                                Doc &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                              </button> -->
+                              <button class="btn btn-info" ng-click="exportData()">
+                                Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                              </button>
+                              <button class="btn btn-info" ng-click="tripletexData()">
+                              Tripletex &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="">
+              <div class="bg-light lter b-b wrapper-md d-flex">
+                <!-- <h4 class="m-n font-thin col-sm-8"> </h4> -->
+                <div class="col-sm-12">
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <label style="margin-top:5px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
+                      <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
+                        ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="d-flex">
+                      <label style="margin-top:5px; white-space: nowrap;">Change Status &nbsp;&nbsp;</label>
+                      <input type="text" select2-client-invoice-status id="invoiceStatusdata"
+                        class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus" ng-change="onInputChange(invoiceStatus)"
+                        placeholder="please select Status" />
+                    </div>
+                  </div>
+                  <div class="col-sm-3" ng-show="isPaymentDate">
+                    <div class="d-flex" style="white-space:nowrap;">
+                      <label style="margin-top:5px;">Payment Date &nbsp;&nbsp;</label>
+                      <input type="text" class="input-sm form-control w-sm inline v-middle" name="created_date" minTime="false" ng-model="created_date" 
+                      ng-datepicker required autocomplete="off" placeholder="Payment date" style="margin-left:20px;"/>  
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <button class="btn btn-sm btn-info" ng-click="statusAction(action,projectStatus)"
+                      style="padding:5px 25px; margin-left:20px;"><i class="glyphicon glyphicon-ok"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <ul class="alt projectjobdv2 overviewli">
+                <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
+                    Outstanding <span class="badge bg-info">{{openInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-overdue" ng-class="{ 'active': invoiceActive=='Overdue'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
+                    Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-partPaid" ng-class="{ 'active': invoiceActive=='Partly Paid'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Partly Paid')">
+                    Partly Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-complete" ng-class="{ 'active': invoiceActive=='Completed'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Completed')">
+                    Paid <span class="badge bg-info">{{completedInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
+                    Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-credit" ng-class="{ 'active': invoiceActive=='Credited'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Credited')">
+                    Credited <span class="badge bg-info">{{credtInvcCount}}</span></a>
+                </li>
+                <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
+                    Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
+                </li> -->
+                <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
+                    Not exported <span class="badge bg-info">{{notExportedInvcCount}}</span></a>
+                </li>
+                <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
+                    All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
+                </li>
+              </ul>
+              <div class="overview-list projecttable">
+                <div class="table-responsive">
+                  <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsClInvc" dt-columns="dtColumns">
+                    <thead>
+                      <th>
+                        #
+                        <!-- <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
+                      <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
+                          ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" /> -->
+                      </th>
+                      <th >Invoice number</th>
+                      <th>Company name</th>
+                      <th>Tripletex ID</th>
+                      <th>Price</th>
+                      <th>Currency</th>
+                      <th ng-click="dtExcelTable('create-date')">Creation Date</th>
+                      <th ng-click="dtExcelTable('due-date')" id="dueDateFld">Due Date</th>
+                      <th ng-click="dtExcelTable('payment-date')" id="paymentDateFld">Payment Date</th>
+                      <th>Invoice Status</th>
+                      <th>Action</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="invoiceL in invoiceListAll">
+                        <td class="nowrap">
+                          <input type="checkbox" id="invoiceCheck{{$index}}"
+                            ng-click="checkInvoiceIds(invoiceL.invoice_id, invoiceL.Invoice_cost)" class="invoiceCheck{{invoiceL.invoice_id}}"
+                            name="invoiceCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='invoicecheck'" />
+                          <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
+                            style="margin-left:10px;"></span>
+                          <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
+                            style="display: none" ng-model="invoiceL.invoice_id" />
+                        </td>
+                        <td class="nowrap">
+                          <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" ng-if="! invoiceL.credit_note_id" title="View"> 
+                            {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }}
+                          </a>
+                          <a href="#/invoice-credit-note/{{invoiceL.invoice_id}}" ng-if=" invoiceL.credit_note_id" title="View"> 
+                            {{invoiceL.credit_note_no}}
+                          </a>
+                        </td>
+                        <td>
+                          <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.clientId}}" title="View" class="trActionIcon"> {{ invoiceL.clientCompanyName }} </a>
+                          <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number, invoiceL.vSignUpload)"
+                          title="Comment" class="trActionIcon">
+                            &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
+                        </td>
+                        <td>{{invoiceL.accounting_tripletex}}</td>
+                        <td>
+                          <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.Invoice_cost | customNumber }} </span>
+                          <span ng-if="invoiceL.credit_note_id"> -{{ invoiceL.Invoice_cost | customNumber }} </span>
+                        </td>
+                        <td>{{ invoiceL.client_currency }} </td>
+                        <td>
+                          <span style="display: none;"> {{ invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date }} </span> 
+                          <!-- <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
+                          <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span> -->
+                          <span>
+                            {{ (invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date) | globalDtFormat }}
+                        </span>
+                        </td>
+                        <td >
+                          <span class="none"> {{invoiceL.invoice_due_date}} </span>
+                          <span ng-class="{'past-date': isPastDate(invoiceL.invoice_due_date, invoiceL.invoice_status)}">
+                            {{ invoiceL.invoice_due_date | globalDtFormat }}
+                          </span>
+                          <a href="javascript:void(0)" 
+                          title="edit duedate" class="trActionIcon"
+                          ng-click="editDueDate(invoiceL.invoice_id, invoiceL.invoice_due_date | globalDtFormat , invoiceL.invoice_date)"><i
+                            class="fa fa-pencil"></i></a>
+                        </td>
+                        <td> 
+                          <span class="none"> {{invoiceL.paid_date}} </span>
+                          <span ng-if="!invoiceL.credit_note_id && invoiceL.paid_date !== '0000-00-00 00:00:00' && invoiceL.paid_date"> 
+                            {{ invoiceL.paid_date | globalDtFormat }} 
+                            <a href="javascript:void(0)" 
+                              title="edit paymentdate" class="trActionIcon"
+                              ng-click="editPaymentDate(invoiceL.invoice_id, invoiceL.paid_date | globalDtFormat , invoiceL.invoice_date)">
+                              <i class="fa fa-pencil"></i>
+                            </a>
+                          </span> 
+                        </td>
+                        
+                        
+                        <td>
+                          <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>
+                          <span ng-if="invoiceL.credit_note_id"> Credited </span>
+                          
+                        </td>
+                        <td>
+                          <div class="trActiontitle">
+                            <!-- <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                                class="fa fa-eye"></i></a> -->
+                            <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id,false, invoiceL.credit_note_id ? true : false )" style="margin-left:15px;"><i
+                                class="fa fa-download"></i></a>
+                            <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice(invoiceL.invoice_id)" style="margin-left:5px;"><i
+                                  class="fa fa-trash"></i></a>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="3" style="text-align: left;white-space: nowrap;">Selected Invoice Total : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
+                        <td colspan="8" style="text-align: left;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <!-- Loader  -->
+                <div loading-widget ng-show="showDataLoaderJob"></div>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            
+            <!-- Invoice for export to excel -->
+            <div class="table-responsive" id="exportable" style="display: none">
+              <table class="table m-b-none default footable-loaded footable" id="exportable2" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
+                <thead>
+                  <th>#</th>
+                  <th>Invoice number</th>
+                  <th>Company name</th>
+                  <th>Tripletex ID</th>
+                  <th>Price</th>
+                  <th>Currency</th>
+                  <th id="crExdate">Creation Date</th>
+                  <th id="dueExdate">Due Date</th>
+                  <th id="paymnetExdate">Payment Date</th>
+                  <th>Invoice status</th>
+                </thead>
                 <tbody>
-                  <tr>
+                  <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
+                    <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
+                    <td ng-bind="$index + 1"></td>
+                    <td ng-bind="invoiceL.invoice_number"></td>
+                    <td style="font-weight: initial; font-size: initial;">{{invoiceL.clientCompanyName}}</td>
+                    <td>{{invoiceL.accounting_tripletex}}</td>
+                    <td>{{ invoiceL.Invoice_cost }}</td>
+                    <td>{{invoiceL.client_currency}} </td>
+                    <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                    <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                     <td>
-                      <form id="search-invoice">
-                        <div class="col-lg-12" style="margin-top: 20px">
-                          <!-- <div class="col-lg-4">
-                            <span>Enter Project No. : </span>
-                            <tags-input ng-model="searchOrderNumber" placeholder="Search Project No."></tags-input>
-                          </div>
-                          <div class="col-lg-1" style="margin-top: 24px">
-                            <span><button class="btn btn-sm btn-info" ng-click="search(searchOrderNumber)">
-                                ok
-                              </button></span>
-                          </div> -->
-                          <a href="#/invoice-client-projects" class="btn btn-info btn-rightside">
-                            <i class="fa fa-hand-o-right"></i> Go To Invoice Create</a>
-                          <div class="pull-right">
-                            <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">
-                              <i class="fa fa-eye"></i> Draft Invoice
-                            </button>
-                            <!-- <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')"
-                              style="margin-right: 10px">
-                              <i class="fa fa-eye"></i> Save Invoice
-                            </button> -->
-                            <button class="btn btn-info" ng-click="exportPdf()" ng-disabled="isDisabledExportpdf">
-                              Pdf &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
-                            </button>
-                            <!-- <button class="btn btn-info" ng-click="exportDocx()" ng-disabled="isDisabledExportpdf">
-                              Doc &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
-                            </button> -->
-                            <button class="btn btn-info" ng-click="exportData()">
-                              Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
-                            </button>
-                            <button class="btn btn-info" ng-click="tripletexData()">
-                            Tripletex &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </form>
+                      <span ng-bind="invoiceL.invoice_status"></span>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
 
-        <div class="panel panel-default">
-          <div class="">
-            <div class="bg-light lter b-b wrapper-md d-flex">
-              <!-- <h4 class="m-n font-thin col-sm-8"> </h4> -->
-              <div class="col-sm-12">
-                <div class="col-sm-2">
-                  <div class="d-flex">
-                    <label style="margin-top:5px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
-                    <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
-                      ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
-                  </div>
-                </div>
-                <div class="col-sm-4">
-                  <div class="d-flex">
-                    <label style="margin-top:5px; white-space: nowrap;">Change Status &nbsp;&nbsp;</label>
-                    <input type="text" select2-client-invoice-status id="invoiceStatusdata"
-                      class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus" ng-change="onInputChange(invoiceStatus)"
-                      placeholder="please select Status" />
-                  </div>
-                </div>
-                <div class="col-sm-3" ng-show="isPaymentDate">
-                  <div class="d-flex" style="white-space:nowrap;">
-                    <label style="margin-top:5px;">Payment Date &nbsp;&nbsp;</label>
-                    <input type="text" class="input-sm form-control w-sm inline v-middle" name="created_date" minTime="false" ng-model="created_date" 
-                    ng-datepicker required autocomplete="off" placeholder="Payment date" style="margin-left:20px;"/>  
-                  </div>
-                </div>
-                <div class="col-sm-2">
-                  <button class="btn btn-sm btn-info" ng-click="statusAction(action,projectStatus)"
-                    style="padding:5px 25px; margin-left:20px;"><i class="glyphicon glyphicon-ok"></i></button>
-                </div>
-              </div>
+          <div class="panel panel-default"></div>
+            
+            <!-- Invoice for export to excel -->
+            <div class="table-responsive" id="exportableTripletex" style="display: none">
+              <table class="table m-b-none default footable-loaded footable" id="exportable2Tripletex" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
+                <thead>
+                  <th>INVOICE NO</th>
+                  <th>INVOICE DATE</th>
+                  <th>DUE DATE</th>
+                  <th>KID</th>
+                  <th>PAYMENT TYPE</th>
+                  <th>PAID AMOUNT</th>
+                  <th>ORDER NO</th>
+                  <th>ORDER DATE</th>
+                  <th>CUSTOMER NO</th>
+                  <th>DELIVERY DATE</th>
+                  <th>ORDER LINE</th>
+                  <th>ORDER LINE - UNIT PRICE </th>
+                  <th>ORDER LINE - COUNT</th>
+                  <th>ORDER LINE – VAT CODE</th>
+                  <th>CURRENCY</th>
+                </thead>
+                <tbody>
+                  <tr id="Export_{{$index}}" ng-repeat="invoiceL in tripleTexinvoiceList">
+                    <td>
+                      {{
+                          invoiceL.invoice_number.includes(invoiceNoPrefix) 
+                              ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
+                              : invoiceL.invoice_number 
+                      }} -staticstring-
+                    </td>
+                    <td style="font-weight: initial; font-size: initial;">{{invoiceL.invoice_date | globalDtFormat}}</td>
+                    <td>{{ invoiceL.invoice_due_date | globalDtFormat }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      {{
+                          invoiceL.invoice_number.includes(invoiceNoPrefix) 
+                              ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
+                              : invoiceL.invoice_number 
+                      }} -staticstring-
+                    </td>
+                    <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
+                    <td>{{ invoiceL.accounting_tripletex}}</td>
+                    <td>{{ invoiceL.invoice_date | globalDtFormat}}</td>
+                    <td>{{ invoiceL.invoice_number}}</td>
+                    <td>{{ invoiceL.Invoice_cost | customNumber2 }} -staticstring-</td>
+                    <td>1</td>
+                    <td>52</td>
+                    <td>{{invoiceL.client_currency}}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <ul class="alt projectjobdv2 overviewli">
-              <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
-                  Outstanding <span class="badge bg-info">{{openInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-overdue" ng-class="{ 'active': invoiceActive=='Overdue'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
-                  Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-partPaid" ng-class="{ 'active': invoiceActive=='Partly Paid'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Partly Paid')">
-                  Partly Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-complete" ng-class="{ 'active': invoiceActive=='Completed'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Completed')">
-                  Paid <span class="badge bg-info">{{completedInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
-                  Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-credit" ng-class="{ 'active': invoiceActive=='Credited'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Credited')">
-                  Credited <span class="badge bg-info">{{credtInvcCount}}</span></a>
-              </li>
-              <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
-                  Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
-              </li> -->
-              <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
-                  Not exported <span class="badge bg-info">{{notExportedInvcCount}}</span></a>
-              </li>
-              <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
-                <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
-                  All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
-              </li>
-            </ul>
-            <div class="overview-list projecttable">
-              <div class="table-responsive">
-                <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsClInvc" dt-columns="dtColumns">
-                  <thead>
-                    <th>
-                      #
-                      <!-- <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
-                    <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
-                        ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" /> -->
-                    </th>
-                    <th >Invoice number</th>
-                    <th>Company name</th>
-                    <th>Tripletex ID</th>
-                    <th>Price</th>
-                    <th>Currency</th>
-                    <th ng-click="dtExcelTable('create-date')">Creation Date</th>
-                    <th ng-click="dtExcelTable('due-date')" id="dueDateFld">Due Date</th>
-                    <th ng-click="dtExcelTable('payment-date')" id="paymentDateFld">Payment Date</th>
-                    <th>Invoice Status</th>
-                    <th>Action</th>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="invoiceL in invoiceListAll">
-                      <td class="nowrap">
-                        <input type="checkbox" id="invoiceCheck{{$index}}"
-                          ng-click="checkInvoiceIds(invoiceL.invoice_id, invoiceL.Invoice_cost)" class="invoiceCheck{{invoiceL.invoice_id}}"
-                          name="invoiceCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='invoicecheck'" />
-                        <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
-                          style="margin-left:10px;"></span>
-                        <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
-                          style="display: none" ng-model="invoiceL.invoice_id" />
-                      </td>
-                      <td class="nowrap">
-                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" ng-if="! invoiceL.credit_note_id" title="View"> 
-                          {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }}
-                        </a>
-                        <a href="#/invoice-credit-note/{{invoiceL.invoice_id}}" ng-if=" invoiceL.credit_note_id" title="View"> 
-                          {{invoiceL.credit_note_no}}
-                        </a>
-                      </td>
-                      <td>
-                        <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.clientId}}" title="View" class="trActionIcon"> {{ invoiceL.clientCompanyName }} </a>
-                        <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number, invoiceL.vSignUpload)"
-                        title="Comment" class="trActionIcon">
-                          &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
-                      </td>
-                      <td>{{invoiceL.accounting_tripletex}}</td>
-                      <td>
-                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.Invoice_cost | customNumber }} </span>
-                        <span ng-if="invoiceL.credit_note_id"> -{{ invoiceL.Invoice_cost | customNumber }} </span>
-                      </td>
-                      <td>{{ invoiceL.client_currency }} </td>
-                      <td>
-                        <span style="display: none;"> {{ invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date }} </span> 
-                        <!-- <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
-                        <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span> -->
-                        <span>
-                          {{ (invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date) | globalDtFormat }}
-                      </span>
-                      </td>
-                      <td >
-                        <span ng-class="{'past-date': isPastDate(invoiceL.invoice_due_date, invoiceL.invoice_status)}">
-                          {{ invoiceL.invoice_due_date | globalDtFormat }}
-                        </span>
-                        <a href="javascript:void(0)" 
-                        title="edit duedate" class="trActionIcon"
-                        ng-click="editDueDate(invoiceL.invoice_id, invoiceL.invoice_due_date | globalDtFormat , invoiceL.invoice_date)"><i
-                          class="fa fa-pencil"></i></a>
-                      </td>
-                      <td> 
-                        <span ng-if="!invoiceL.credit_note_id && invoiceL.paid_date !== '0000-00-00 00:00:00' && invoiceL.paid_date"> 
-                          {{ invoiceL.paid_date | globalDtFormat }} 
-                          <a href="javascript:void(0)" 
-                             title="edit paymentdate" class="trActionIcon"
-                             ng-click="editPaymentDate(invoiceL.invoice_id, invoiceL.paid_date | globalDtFormat , invoiceL.invoice_date)">
-                             <i class="fa fa-pencil"></i>
-                          </a>
-                        </span> 
-                      </td>
-                      
-                      
-                      <td>
-                        <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>
-                        <span ng-if="invoiceL.credit_note_id"> Credited </span>
-                        
-                      </td>
-                      <td>
-                        <div class="trActiontitle">
-                          <!-- <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                              class="fa fa-eye"></i></a> -->
-                          <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id,false, invoiceL.credit_note_id ? true : false )" style="margin-left:15px;"><i
-                              class="fa fa-download"></i></a>
-                          <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice(invoiceL.invoice_id)" style="margin-left:5px;"><i
-                                class="fa fa-trash"></i></a>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="3" style="text-align: left;white-space: nowrap;">Selected Invoice Total : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
-                      <td colspan="8" style="text-align: left;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- Loader  -->
-              <div loading-widget ng-show="showDataLoaderJob"></div>
-            </div>
-
-
           </div>
-        </div>
 
-        <div class="panel panel-default">
-          
-          <!-- Invoice for export to excel -->
-          <div class="table-responsive" id="exportable" style="display: none">
-            <table class="table m-b-none default footable-loaded footable" id="exportable2" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
-              <thead>
-                <th>#</th>
-                <th>Invoice number</th>
-                <th>Company name</th>
-                <th>Tripletex ID</th>
-                <th>Price</th>
-                <th>Currency</th>
-                <th id="crExdate">Creation Date</th>
-                <th id="dueExdate">Due Date</th>
-                <th id="paymnetExdate">Payment Date</th>
-                <th>Invoice status</th>
-              </thead>
-              <tbody>
-                <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
-                  <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
-                  <td ng-bind="$index + 1"></td>
-                  <td ng-bind="invoiceL.invoice_number"></td>
-                  <td style="font-weight: initial; font-size: initial;">{{invoiceL.clientCompanyName}}</td>
-                  <td>{{invoiceL.accounting_tripletex}}</td>
-                  <td>{{ invoiceL.Invoice_cost }}</td>
-                  <td>{{invoiceL.client_currency}} </td>
-                  <td>{{ invoiceL.created_date | globalDtFormat }}</td>
-                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
-                  <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
-                  <td>
-                    <span ng-bind="invoiceL.invoice_status"></span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel panel-default"></div>
-          
-          <!-- Invoice for export to excel -->
-          <div class="table-responsive" id="exportableTripletex" style="display: none">
-            <table class="table m-b-none default footable-loaded footable" id="exportable2Tripletex" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
-              <thead>
-                <th>INVOICE NO</th>
-                <th>INVOICE DATE</th>
-                <th>DUE DATE</th>
-                <th>KID</th>
-                <th>PAYMENT TYPE</th>
-                <th>PAID AMOUNT</th>
-                <th>ORDER NO</th>
-                <th>ORDER DATE</th>
-                <th>CUSTOMER NO</th>
-                <th>DELIVERY DATE</th>
-                <th>ORDER LINE</th>
-                <th>ORDER LINE - UNIT PRICE </th>
-                <th>ORDER LINE - COUNT</th>
-                <th>ORDER LINE – VAT CODE</th>
-                <th>CURRENCY</th>
-              </thead>
-              <tbody>
-                <tr id="Export_{{$index}}" ng-repeat="invoiceL in tripleTexinvoiceList">
-                  <td>
-                    {{
-                        invoiceL.invoice_number.includes(invoiceNoPrefix) 
-                            ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
-                            : invoiceL.invoice_number 
-                    }} -staticstring-
-                  </td>
-                  <td style="font-weight: initial; font-size: initial;">{{invoiceL.invoice_date | globalDtFormat}}</td>
-                  <td>{{ invoiceL.invoice_due_date | globalDtFormat }}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>
-                    {{
-                        invoiceL.invoice_number.includes(invoiceNoPrefix) 
-                            ? invoiceL.invoice_number.split(invoiceNoPrefix).pop() 
-                            : invoiceL.invoice_number 
-                    }} -staticstring-
-                  </td>
-                  <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
-                  <td>{{ invoiceL.accounting_tripletex}}</td>
-                  <td>{{ invoiceL.invoice_date | globalDtFormat}}</td>
-                  <td>{{ invoiceL.invoice_number}}</td>
-                  <td>{{ invoiceL.Invoice_cost | customNumber2 }} -staticstring-</td>
-                  <td>1</td>
-                  <td>52</td>
-                  <td>{{invoiceL.client_currency}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
 
 
