@@ -309,14 +309,18 @@
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colspan="5" style="text-align: left;white-space: nowrap;">
-                              Selected Invoice Total (In EUR  ) : <strong>
+                            <td colspan="2" style="text-align: left;white-space: nowrap;">
+                              Selected Total (In EUR  ) : <strong>
                                 <!-- {{ totalSelectedPrice ? totalSelectedPrice : 0 | customNumber }}  -->
                                 {{totalPriceSelected | customNumber }}
                               </strong>
                             </td>
-                            <td colspan="4"> </td>
-                            <td colspan="2"></td>
+                            <td colspan="2" style="text-align: right;white-space: nowrap;">
+                              Total (In EUR  ) : <strong>
+                                {{ totalInvoiceCost | customNumber }}
+                              </strong>
+                            </td>
+                            <td colspan="7"> </td>
                           </tr>
                         </tfoot>
                       </table>
