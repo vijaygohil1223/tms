@@ -37580,7 +37580,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter, DTOptionsBuilder, $compile ) {
+}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter, DTOptionsBuilder, DTColumnBuilder, $compile, $http ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.invoiceChange = function (data, companyCode) {
@@ -37687,7 +37687,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }).error(errorCallback);
     }
-    $scope.getAllInvoice();
+    //$scope.getAllInvoice(); // temp remove please check it if needed
 
     $scope.dateToday = new Date();
     //----- ****** Start Invoice Tabs ****** --------//
@@ -37734,23 +37734,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.allInvcData.push(val);
 
                 if (val?.credit_note_id && val.is_credit_note == 1) {
-                    $scope.credtInvcCount++;
+                    //$scope.credtInvcCount++;
                     $scope.creditedInvc.push(val);
                 }
                 
                 if(! val?.credit_note_id){
                     if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding' || val.invoice_status == 'Partly Paid')  {
-                        $scope.openInvcCount++;
+                        //$scope.openInvcCount++;
                         val.Invoice_cost = val.Invoice_cost - val.invoice_partial_paid_total
                         $scope.openInvc.push(val);
                     }
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
                         val.invoice_status = 'Paid';
-                        $scope.completedInvcCount++;
+                        //$scope.completedInvcCount++;
                         $scope.completeInvc.push(val);
                     }
                     if (val.invoice_status == 'Partly Paid') {
-                        $scope.partPaidInvcCount++;
+                        //$scope.partPaidInvcCount++;
                         $scope.partPaidInvc.push(val);
                     } 
                     // if (val.invoice_status == 'Irrecoverable') {
@@ -37758,15 +37758,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     $scope.irrecoverableInvc.push(val);
                     // } 
                     if (val.invoice_status == 'Cancel' || val.invoice_status == 'Irrecoverable' ) {
-                        $scope.cancelledInvcCount++;
+                        //$scope.cancelledInvcCount++;
                         $scope.cancelledInvc.push(val);
                     }
                     if (val.is_excel_download != 1) {
-                        $scope.notExportedInvcCount++;
+                        //$scope.notExportedInvcCount++;
                         $scope.notExportedInvc.push(val);
                     }
                     if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel','Irrecoverable'].includes(val.invoice_status) ){
-                        $scope.overdueInvcCount++ 
+                        //$scope.overdueInvcCount++ 
                         $scope.overdueInvc.push(val);
                     }
                     
@@ -37787,9 +37787,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     };
 
+    $scope.dtInstance = {};
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    }
+
+    $scope.activeTab = 'Open';
     $scope.invcStatusRecord = function (invcStatus) {
         console.log('invcStatus', invcStatus)
-        
+        //$scope.filterInvoiceFn(invcStatus)
+        $scope.activeTab = invcStatus;
+
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
@@ -37804,7 +37813,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('input[id^=checkAll]:checkbox').removeAttr('checked');
         // $scope.invcList_tabFilter()
         // .then(function (invoicePromiseData) {
-                $scope.allInvcCount = $scope.allInvcData.length;
+                //$scope.allInvcCount = $scope.allInvcData.length;
                 /* All Invoice list for widget */
                 switch ($scope.invcstatusFilter) {
                     case "all":
@@ -37845,21 +37854,273 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.invoiceListAll = $scope.allInvcData;
                 // }
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
-                if ($scope.invoiceListAll) {
-                    $scope.invoiceListAll = $scope.invoiceListAll;
-                }
+                // temp remove
+                // if ($scope.invoiceListAll) {
+                //     $scope.invoiceListAll = $scope.invoiceListAll;
+                // }
                 /* Start Upcoming Due Invoice - widgetBox */
+                $scope.totalSelectedPrice = '';
                 $scope.showDataLoaderJob = false;
                 /* End */
+                
+                if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                    $scope.dtInstance.reloadData();
+                } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                    $scope.dtInstance.DataTable.ajax.reload();
+                } else {
+                    console.error('DataTable instance not correctly initialized.');
+                }
+
         //})    
     };
 
-    $scope.invcList_tabFilter()
-        .then(function (invoicePromiseData) {
-            $scope.invcStatusRecord('Open');
-            //$scope.invcStatusRecord('all');
-    });
+    // $scope.invcList_tabFilter()
+    //     .then(function (invoicePromiseData) {
+    //         $scope.invcStatusRecord('Open');
+    //         //$scope.invcStatusRecord('all');
+    // });
+
+    $scope.invcStatusRecord('Open');
     // ****** END invioce TABS ******* //
+
+    
+    rest.path = "getclientInvoiceListCount";
+    rest.get().success(function (data) {
+        $scope.allInvcCount = data?.allinvoice || 0 ;
+        $scope.openInvcCount = data?.outstanding || 0 ;
+        $scope.completedInvcCount = data?.paid || 0;
+        $scope.partPaidInvcCount = data?.partpaid || 0;
+        //$scope.noRecoverInvcCount = data?.allinvoice ;
+        $scope.cancelledInvcCount = data?.cancelled || 0 ;
+        $scope.overdueInvcCount = data?.overdue || 0;
+        $scope.notExportedInvcCount = data?.notExported || 0 ;
+        $scope.credtInvcCount = data?.credited || 0 ;
+    })
+
+    // *******============ //
+    //        clien invoice custom pagination start
+    //==========**************//
+    function createdRow(row, data, dataIndex) {
+        $compile(angular.element(row).contents())($scope);
+    }
+
+    $scope.dtColumnsClient = [
+        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
+            var start = meta.settings._iDisplayStart;
+            var index = start + meta.row; // This will give you the index for unique ids
+            var tempCheckedmark = '';
+            if(full.is_excel_download){
+                tempCheckedmark = `<span class="fa fa-check"  
+                        title="Excel exported" style="margin-left:10px;"> </span>`
+            }
+            // Constructing the HTML for the checkbox and Excel exported icon
+            var html = '<div class="nowrap ">' +
+                // Checkbox input for each row
+                '<input type="checkbox" id="invoiceCheck' + index + '" ' +
+                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + full.Invoice_cost + ')" ' +
+                'class="invoiceCheck' + full.invoice_id + '" ' +
+                'name="invoiceCheck' + index + '" ' +
+                'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" ' +
+                'ng-checked="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']==\'invoicecheck\'" />' +
+                tempCheckedmark+
+                // Hidden input to bind the invoice ID to the check data model
+                '<input type="text" id="invoiceCheckData' + index + '" ' +
+                'name="invoiceCheckData' + index + '" style="display: none" ' +
+                'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" />' +
+                '</div>';
+            return html;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Invoice number').renderWith(function(data, type, full, meta) {
+            if(full.credit_note_id && full.credit_note_id > 0){
+                var tempAtag = `<a href="#/invoice-credit-note/${full.invoice_id}" title="View" > 
+                            ${full.credit_note_no}
+                          </a>`;
+            }else{
+                var tempAtag = `<a href="#/client-invoice-show/${full.invoice_id}" title="View" > 
+                            ${full.invoice_number ? full.invoice_number : 'invoice'}
+                          </a> `;
+            }
+            var html = `
+                <div class="nowrap ">
+                    ${tempAtag}
+                </div>
+            `;
+            return html; 
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Company name').renderWith(function(data, type, full, meta) {
+            var html = `
+                <div >
+                    <a style="color:#4ba0c3" href="#/viewdirect/${full.clientId}" title="View" class="trActionIcon"> ${full.clientCompanyName} </a>
+                    <a href="javascript:void(0)" ng-click="generalEmail(${full.clientId}, '${full.invoice_number}', '${full.vSignUpload}')"
+                       title="Comment" class="trActionIcon">
+                        &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i>
+                    </a>
+                </div>
+            `;
+            // $timeout(function() {
+            //     var compiledHtml = $compile(html)($scope);
+            //     angular.element(document).find('table').find('tbody').find('tr').eq(meta.row)
+            //         .find('td').eq(meta.col).html(compiledHtml);
+            // }, 0);
+            return html; 
+        }),
+        DTColumnBuilder.newColumn('accounting_tripletex')
+        .withTitle('Tripletex ID')
+        .renderWith(function(data, type, full, meta) {
+            if (data) {
+                return data;
+            }
+            return '';
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Prices').renderWith(function(data, type, full, meta) {
+            if(full.credit_note_id && full.credit_note_id > 0){
+                return ` <span>-${ $filter('customNumber')(full.Invoice_cost) } </span> `;
+            }else{
+                return ` <span >${ $filter('customNumber')(full.Invoice_cost) } </span> `;
+            }
+            
+        }),
+        //DTColumnBuilder.newColumn('client_currency').withTitle('Currency'),
+        DTColumnBuilder.newColumn('client_currency')
+        .withTitle('Currency')
+        .renderWith(function(data, type, full, meta) {
+            return data ? data.split(',')[0].trim() : '';
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Creation Date').renderWith(function(data, type, full, meta) {
+            if(full.credit_note_id && full.credit_note_id > 0){
+                return ` <span class="nowrap"> ${$filter('globalDtFormat')(full.credit_note_create_date)} </span> `    
+            }else{
+                return ` <span class="nowrap"> ${$filter('globalDtFormat')(full.invoice_date)} </span>`;
+                }
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Due Date').renderWith(function(data, type, full, meta) {
+            return '<span ng-class="{\'past-date\': isPastDate(' + full.invoice_due_date + ', \'' + full.invoice_status + '\')}" >' +
+                        $filter('globalDtFormat')(full.invoice_due_date) + 
+                    '</span>' +
+                    '<a href="javascript:void(0)" ' +
+                    'title="edit duedate" class="trActionIcon" ' +
+                    'ng-click="editDueDate(\'' + full.invoice_id + '\', \'' + $filter('globalDtFormat')(full.invoice_due_date) + '\', \'' + full.invoice_date + '\')">' +
+                    '<i class="fa fa-pencil"></i></a>';
+
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Payment Date').renderWith(function(data, type, full, meta) {
+            if(full.credit_note_id && full.credit_note_id > 0  ){
+                return '';
+            }else{
+                if( full.paid_date !== '0000-00-00 00:00:00' && full.paid_date ){
+                    return '<span >' + $filter('globalDtFormat')(full.paid_date) +
+                    '<a href="javascript:void(0)" ' +
+                    'title="edit paymentdate" class="trActionIcon" ' +
+                    'ng-click="editPaymentDate(\'' + full.invoice_id + '\', \'' + $filter('globalDtFormat')(full.paid_date) + '\', \'' + full.invoice_date + '\')">' +
+                    '<i class="fa fa-pencil"></i></a>'
+                    '</span>';
+                }else{
+                    return '';
+                }
+                
+            }
+        }),
+        //DTColumnBuilder.newColumn('invoice_status').withTitle('Invoice Status'),
+        DTColumnBuilder.newColumn('invoice_status').withTitle('Invoice Status').renderWith(function(data, type, full, meta) {
+            if(full.credit_note_id && full.credit_note_id > 0  ){
+                return 'Credited';
+            }else{
+                return full.invoice_status;
+            }
+            
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Action').renderWith(function(data, type, full, meta) {
+            const tempval = full.credit_note_id ? true : false;
+            var html = `
+                <div class="d-flex">
+                    <a href="javascript:void(0)" title="PDF Report" class="trActionIcon" 
+                       ng-click="pdfInvoice(${full.invoice_id}, false, ${tempval})" style="margin-left:15px;">
+                        <i class="fa fa-download"></i>
+                    </a> &nbsp;&nbsp;
+                    <a href="javascript:void(0)" title="Delete Invoice" class="trActionIcon" 
+                       ng-click="deleteInvoice(${full.invoice_id})" style="margin-left:5px;">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            `;
+            // $timeout(function() {
+            //     var compiledHtml = $compile(html)($scope);
+            //     angular.element(document).find('table').find('tbody').find('tr').eq(meta.row)
+            //         .find('td').eq(meta.col).html(compiledHtml);
+            // }, 0);
+            return html; 
+        }),
+    ];
+    $scope.filterInvoiceFn = function(tabName){
+        $scope.dtOptionsClient = DTOptionsBuilder.newOptions()
+        .withOption('ajax', function(data, callback, settings) {
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                activeTab: $scope.activeTab ? $scope.activeTab : 'Open'
+            };
+            // API call to fetch data
+            $http.post('api/v1/getclientInvoiceList', params)
+            //$http.post('api/statusJobReportFilterCustomPage.php', params)
+                .then(function(response) {
+                    var res = response.data;
+                    console.log('Server Response:', res);
+                    $scope.invoiceListAll = res?.data;
+                    $scope.getAllInvoice = res?.data
+                    $scope.invoiceListAllExport = res?.data;
+                    $scope.tripleTexinvoiceList = res?.data;
+                    $scope.totalPrice = res?.totalPrice || 0;
+                    
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                    
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withOption('footerCallback', function (tfoot, data, start, end, display) {
+            // var api = this.api();
+            // var columnData = api.column(3, { search: 'applied' }).data();
+            // if (columnData && columnData.length) {
+            //     var total = columnData.reduce(function (a, b) {
+            //         a = parseFloat(a) || 0; // Safeguard against non-numeric values
+            //         b = parseFloat(b) || 0; // Safeguard against non-numeric values
+            //         return a + b;
+            //     }, 0);
+            //     $(api.column(3).footer()).html(
+            //         $filter('customNumber')(total.toFixed(2))
+            //     );
+            // } else {
+            //     $(api.column(3).footer()).html('0.00'); // Default footer value
+            // }
+        })
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('createdRow', createdRow)
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 10)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[0, 'asc']])
+        // DTInstances.getLast().then(function(inst) {
+        //     $scope.dtColumnsInternal = inst;
+        // })
+
+    } 
+    $scope.filterInvoiceFn('Open');
+    ///  
+    // END
+    ////////
 
     $scope.msgEmailSubject = '';
     $scope.generalEmail = function (id, invoiceNo, userSign) {
@@ -37953,6 +38214,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, totalp) {
+        console.log('id', id)
         // Initialize total price if not already initialized
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
@@ -38066,67 +38328,66 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     
+    function exportExcelTemFn(){
+        // export excel file using sheetjs
+        exportTableToExcel('exportable2','Client Invoice Report');
+        //exportTableToExcel2('exportable2','Client Invoice Report');
+        
+        // on excel download add flag 1 (To display check mark)
+        rest.path = 'clientInvoiceExcelStatus';
+        rest.post($scope.checkedIds).success(function (data) {
+            if (data.status == 200) {
+                $route.reload();
+                //notification('File downloaded successfully', 'success');
+                $scope.checkedIds = [];
+            }
+        }).error(errorCallback);
+        //$scope.getAllInvoice = allInvoiceListArr
+        // Remove selected
+        $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+        $('input[id^=checkAll]:checkbox').removeAttr('checked');
+    }
+
+    $scope.isExportexcelBtn = false;
     //Invoice export to excel
     $scope.exportData = function () {
-        $("#exportable .dt-loading" ).remove();
+        $scope.isExportexcelBtn = true;
+        
+        try {
+            $("#exportable .dt-loading" ).remove();
         
         if($scope.checkedIds.length > 0){
+            let invoiceListAllExport = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
+            $scope.invoiceListAllExport = invoiceListAllExport; 
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
-        }    
-        setTimeout(() => {
+            //$scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
             
-            // var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
-            // var html = document.getElementById('exportable').innerHTML;
-            // var vEncodeHead2 = '</body></html>';
-            // var blob = new Blob([vEncodeHead + html + vEncodeHead2], {
-            //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            // });
-            // saveAs(blob, "Client Invoice Report.xlsx");
+            setTimeout(() => {
+                exportExcelTemFn();
+            }, 500);
 
-            
-            // export excel file using sheetjs
-            exportTableToExcel('exportable2','Client Invoice Report');
-            //exportTableToExcel2('exportable2','Client Invoice Report');
-            
-            // on excel download add flag 1 (To display check mark)
-            rest.path = 'clientInvoiceExcelStatus';
-            rest.post($scope.checkedIds).success(function (data) {
-                if (data.status == 200) {
-                    $route.reload();
-                    //notification('File downloaded successfully', 'success');
-                    $scope.checkedIds = [];
+        }else{
+
+            rest.path = 'getclientInvoiceListExport';
+            rest.post( { activeTab: $scope.activeTab } ).success(function (response) {
+                if (response.status == 200) {
+                    $scope.invoiceListAllExport = response.data
+                    setTimeout(() => {
+                        exportExcelTemFn();
+
+                        $scope.isExportexcelBtn = false;
+                    }, 100);
                 }
             }).error(errorCallback);
-            $scope.getAllInvoice = allInvoiceListArr
-            // Remove selected
-            $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-            $('input[id^=checkAll]:checkbox').removeAttr('checked');
-            
-        }, 500);
+        }  
+        } catch (error) {
+            console.log('error', error)
+            $scope.isExportexcelBtn = false;
+        }  
 
     };
 
-    $scope.tripletexData = function () {
-        // Remove the loading class from the exportable table
-        $("#exportableTripletex .dt-loading").remove();
-    
-        // Retrieve the full list of invoices
-        const tripleTexinvoiceList = $scope.invoiceListAll;
-    
-        // Filter the list based on selected IDs or credit_note_id
-        if ($scope.checkedIds.length > 0) {
-            $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
-                return $scope.checkedIds.includes(item.invoice_id) && !item.credit_note_id; 
-            });
-        } else {
-            $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
-                return !item.credit_note_id; 
-            });
-        }
-    
-        console.log('$scope.tripleTexinvoiceList', $scope.tripleTexinvoiceList);
-    
+    function tripletexDataTempFn(){
         // Ensure the data is applied to the view
         $scope.$applyAsync(() => {
             // Use $timeout with a small delay to ensure the table rendering is complete
@@ -38135,14 +38396,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.tripleTexinvoiceList.length > 0) {
                     // Now that filtering is done, call exportTableToExcel
                     exportTableToExcel('exportable2Tripletex', 'invoice_import_example_new_min', [11], 1);
-    
                     // Reload the route or page if necessary
                     $route.reload();
-    
                     // Reset checked IDs and other states
                     $scope.checkedIds = [];
                     //$scope.getAllInvoice = allInvoiceListArr;
-    
                     // Uncheck any checkboxes that were selected
                     $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
                     $('input[id^=checkAll]:checkbox').removeAttr('checked');
@@ -38151,6 +38409,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }, 50); // Small delay to ensure rendering is complete
         });
+    }
+
+    $scope.tripletexData = function () {
+        $scope.isExportexcelBtn = true;
+        try {
+            $("#exportableTripletex .dt-loading").remove();
+            // Retrieve the full list of invoices
+            const tripleTexinvoiceList = $scope.invoiceListAll;
+        
+            // Filter the list based on selected IDs or credit_note_id
+            if ($scope.checkedIds.length > 0) {
+                $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
+                    return $scope.checkedIds.includes(item.invoice_id) && !item.credit_note_id; 
+                });
+                setTimeout(() => {
+                    tripletexDataTempFn();
+                }, 100);
+
+            } else {
+                rest.path = 'getclientInvoiceListExport';
+                rest.post( { activeTab: $scope.activeTab } ).success(function (response) {
+                    if (response.status == 200) {
+                        $scope.tripleTexinvoiceList = response.data
+                        setTimeout(() => {
+                            tripletexDataTempFn();
+                            $scope.isExportexcelBtn = false;
+                        }, 100);
+                    }
+                }).error(errorCallback);
+                // $scope.tripleTexinvoiceList = tripleTexinvoiceList.filter(function (item) { 
+                //     return !item.credit_note_id; 
+                // });
+            }
+        } catch (error) {
+            console.log('error', error)
+            $scope.isExportexcelBtn = false;
+        }
+        
     };
     
 
@@ -38165,7 +38461,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusAction = function (action) {
         
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
-        console.log('invoiceStatus', invoiceStatus)
+        if($scope.checkedIds.length == 0){
+            notification('Please select invoice.', 'warning'); 
+        } 
         
         var i, j, totalChecked, successMsg, completedRequests;
         i = j = totalChecked = successMsg = completedRequests = 0;
@@ -38396,7 +38694,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('pageLength', 100).
         withOption('drawCallback', function(settings) {
             $timeout(function() {
-              var table = $('#jobAllTbl').DataTable();
+              var table = $('#invoiceAllTbl').DataTable();
               var filteredData = table.rows({ filter: 'applied' }).data().toArray();
           
               $scope.totalPrice = 0;

@@ -3929,6 +3929,23 @@ $app->post('/checkFIleExist','authenticate', function () use($app) {
     $result = $invoice->checkFIleExist($data);
     echoResponse(200, $result);
 });
+$app->post('/getclientInvoiceList','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->getclientInvoiceList($data);
+    echoResponse(200, $result);
+});
+$app->get('/getclientInvoiceListCount', 'authenticate',function() {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getclientInvoiceListCount();
+    echoResponse(200, $result);
+});
+$app->post('/getclientInvoiceListExport','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->getclientInvoiceListExport($data);
+    echoResponse(200, $result);
+});
 
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {

@@ -62,10 +62,10 @@
                               <!-- <button class="btn btn-info" ng-click="exportDocx()" ng-disabled="isDisabledExportpdf">
                                 Doc &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                               </button> -->
-                              <button class="btn btn-info" ng-click="exportData()">
+                              <button class="btn btn-info" ng-click="exportData()" ng-disabled="isExportexcelBtn" >
                                 Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                               </button>
-                              <button class="btn btn-info" ng-click="tripletexData()">
+                              <button class="btn btn-info" ng-click="tripletexData()" ng-disabled="isExportexcelBtn">
                               Tripletex &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                               </button>
                             </div>
@@ -153,14 +153,21 @@
               </ul>
               <div class="overview-list projecttable">
                 <div class="table-responsive">
-                  <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsClInvc" dt-columns="dtColumns">
+                  
+                  <table datatable="" dt-options="dtOptionsClient" dt-columns="dtColumnsClient" id="invoiceAllTbl" style="width:100% !important" dt-instance="dtInstance" class="table m-b-none default footable-loaded footable" >
+                  
+                    <tfoot>
+                      <tr>
+                        <td colspan="4" style="text-align: left;white-space: nowrap;">Selected Invoice Total : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
+                        <td colspan="7" style="text-align: left;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
+                      </tr>
+                    </tfoot>
+                  
+                  </table>
+
+                  <!-- <table class="table table-striped b-b" datatable="ng" id="invoiceAllTbl" dt-options="dtOptionsClInvc" dt-columns="dtColumns">
                     <thead>
-                      <th>
-                        #
-                        <!-- <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
-                      <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
-                          ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" /> -->
-                      </th>
+                      <th>#</th>
                       <th >Invoice number</th>
                       <th>Company name</th>
                       <th>Tripletex ID</th>
@@ -205,8 +212,6 @@
                         <td>{{ invoiceL.client_currency }} </td>
                         <td>
                           <span style="display: none;"> {{ invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date }} </span> 
-                          <!-- <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
-                          <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span> -->
                           <span>
                             {{ (invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date) | globalDtFormat }}
                         </span>
@@ -232,17 +237,12 @@
                             </a>
                           </span> 
                         </td>
-                        
-                        
                         <td>
                           <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>
                           <span ng-if="invoiceL.credit_note_id"> Credited </span>
-                          
                         </td>
                         <td>
                           <div class="trActiontitle">
-                            <!-- <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                                class="fa fa-eye"></i></a> -->
                             <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id,false, invoiceL.credit_note_id ? true : false )" style="margin-left:15px;"><i
                                 class="fa fa-download"></i></a>
                             <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice(invoiceL.invoice_id)" style="margin-left:5px;"><i
@@ -257,10 +257,11 @@
                         <td colspan="8" style="text-align: left;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
                       </tr>
                     </tfoot>
-                  </table>
+                  </table> -->
+
                 </div>
                 <!-- Loader  -->
-                <div loading-widget ng-show="showDataLoaderJob"></div>
+                <!-- <div loading-widget ng-show="showDataLoaderJob"></div> -->
               </div>
 
 
@@ -285,7 +286,7 @@
                   <th>Invoice status</th>
                 </thead>
                 <tbody>
-                  <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
+                  <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAllExport">
                     <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
                     <td ng-bind="$index + 1"></td>
                     <td ng-bind="invoiceL.invoice_number"></td>
