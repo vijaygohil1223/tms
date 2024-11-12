@@ -1832,7 +1832,8 @@ class Client_invoice
             //10 => 'action',
         ];
         // Determine the column to sort by based on DataTables order index
-        $orderColumn = $columns[$orderColumnIndex] ?? ' tmInvoice.invoice_id';
+        $orderColumn = ' tmInvoice.invoice_date ';
+        //$orderColumn = $columns[$orderColumnIndex] ?? ' tmInvoice.invoice_id';
         $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
 
         $whereCond = " WHERE 
@@ -1934,7 +1935,7 @@ class Client_invoice
             tu.vSignUpload, 
             tc.accounting_tripletex, 
             tcp.total_partial_paid AS invoice_partial_paid_total, 
-            tcn.id AS credit_note_id";
+            tcn.id AS credit_note_id, (tmInvoice.invoice_cost / IFNULL(NULLIF(tmInvoice.currency_rate, 0), 1)) AS invoice_price_euro";
 
         
         // if($post && isset($post['activeTab']) && $post['activeTab'] == 'Credited'){

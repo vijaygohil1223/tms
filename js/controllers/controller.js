@@ -37947,6 +37947,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             `;
             return html; 
         }),
+        // DTColumnBuilder.newColumn(null).withTitle('Client').renderWith(function(data, type, full, meta) {
+        //     if ($scope.prevGroup !== full.clientId) {
+        //         $scope.prevGroup = full.clientId;
+        //         return '<tr class="group"><td colspan="10">Client: ' + full.clientCompanyName + '</td></tr>';
+        //     }
+        //     return '';
+        // }),
         DTColumnBuilder.newColumn(null).withTitle('Company name').renderWith(function(data, type, full, meta) {
             var html = `
                 <div >
@@ -38060,7 +38067,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 length: data.length,
                 order: data.order,
                 search: data.search.value,
-                activeTab: $scope.activeTab ? $scope.activeTab : 'Open'
+                activeTab: $scope.activeTab ? $scope.activeTab : 'Open',
+                //group_by: 'client_name'
             };
             // API call to fetch data
             $http.post('api/v1/getclientInvoiceList', params)
@@ -38112,6 +38120,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
+        .withOption('drawCallback', function(settings) {
+            var api = this.api();
+            var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
+            var lastClient = null;
+        
+            // Loop over the data of the current page rows
+            api.rows({ page: 'current' }).data().each(function(rowData, index) {
+                // Check if the client (or invoice_date) has changed
+                if (lastClient !== rowData.invoice_date) {
+                    const tempInvoicePrice = +rowData.invoice_price_euro; // Access invoice_price_euro
+                    
+                    // Insert a group row before the current row
+                    $(rows).eq(index).before(
+                        '<tr class="group"><td colspan="11" class="text-bold">Client: ' +
+                        $filter('globalDtFormat')(rowData.invoice_date) + ' price: ' + tempInvoicePrice + '</td></tr>'
+                    );
+        
+                    // Update lastClient to the current invoice_date
+                    lastClient = rowData.invoice_date;
+                }
+            });
+        });
+        
         // DTInstances.getLast().then(function(inst) {
         //     $scope.dtColumnsInternal = inst;
         // })
