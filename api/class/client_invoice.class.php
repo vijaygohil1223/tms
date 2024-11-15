@@ -1990,6 +1990,10 @@ class Client_invoice
         $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
         $data = $this->_db->rawQueryNew($baseQry);
 
+        $groupQry = "SELECT DATE(created_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost FROM tms_invoice_client GROUP BY DATE(created_date) ORDER BY order_day ";
+        $groupByData = $this->_db->rawQueryNew($groupQry);
+
+
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = '';
             if ($post && isset($post['activeTab']) && $post['activeTab'] != 'Credited') {
@@ -2003,6 +2007,22 @@ class Client_invoice
             if (in_array($value['invoice_status'], ['Complete', 'Completed', 'Paid'])) {
                 $data[$key]['invoice_status'] = 'Paid';
             }
+
+            // foreach ($groupByData as $group) {
+            //     if (isset($data[$key]['created_date'])) {
+            //         // Convert both dates to Y-m-d format
+            //         $createdDate = date('Y-m-d', strtotime($data[$key]['created_date']));
+            //         $orderDay = date('Y-m-d', strtotime($group['order_day']));
+            
+            //         // Compare the formatted dates
+            //         if ($createdDate == $orderDay) {
+            //             $data[$key]['price_total_group_date'] = $group['total_invoice_cost'];
+            //             break;
+            //         }
+            //     }
+            // }
+            
+            
             
         }
 
