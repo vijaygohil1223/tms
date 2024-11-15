@@ -12292,6 +12292,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //search data action
+    $scope.isSelectAllOption = false;
     $scope.statusAction = function (action) {
         switch (action) {
             case "Change project status":
@@ -12320,7 +12321,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const scoopIds = [];
                 const checkboxes = angular.element('[id^=orderCheckData]');
                 let allSelected = true;
-            
+
                 checkboxes.each((index, element) => {
                     const isChecked = document.querySelector(`#orderCheck${index}`).checked;
                     if (isChecked) {
@@ -12329,6 +12330,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         allSelected = false;
                     }
                 });
+                if($scope.isSelectAllOption == false){
+                    allSelected = false;
+                }
+
+
             
                 if (scoopIds.length === 0) {
                     notification('No orders selected!', 'warning');
@@ -12431,6 +12437,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.checkdata[i] = false; // Clear the selection in AngularJS model
                     }
                 }
+                $scope.isSelectAllOption = false;
                 break;
             case "Export to excel":
                 var count = 0;
@@ -12466,6 +12473,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     for (var i = 0; i < $scope.totalRecords; i++) {
                       $scope.checkdata[i] = true; // Set each checkbox as selected
                     }
+                    $scope.isSelectAllOption = true;
                     break;
         }
     }
