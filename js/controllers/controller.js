@@ -47733,6 +47733,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#responseMsg').text('You have accepted the job, thank you.');
                             $("#responseMsg").addClass("alert alert-success" );
                         }else{
+                            $scope.isDIsplayToLinguist = false;
                             let msgText = 'The job is accepted by someone else!' ;
                             $('#responseMsg').text(msgText);
                             $("#responseMsg").addClass("alert alert-warning" );
@@ -47751,6 +47752,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     }
 
+    $scope.isDIsplayToLinguist = true;
     $scope.acceptjobstatus = function (status, action) {
         if($scope.jobdetailData.accept > 0 ){
             if($scope.jobDetails.jobAccept == 1 && $scope.jobdetailData.accept == $scope.jobDetails.resourceId){
@@ -47758,6 +47760,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$('#responseMsg').text('Already, You have accepted the job, thank you.');
                 $("#responseMsg").addClass("alert alert-success" );
             }else{
+                $scope.isDIsplayToLinguist = false;
                 let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'Job is already accepted!' ;
                 $('#responseMsg').text(msgText);
                 $("#responseMsg").addClass("alert alert-warning" );

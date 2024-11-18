@@ -75,7 +75,7 @@
                                             <label>{{jobdetailData.created_date | globalDtFormat}}</label>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6 none">
                                         <div class="form-group">
                                             <label><strong>Resource:</strong></label>
                                             <span>{{jobdetailData.userName}}</span>
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
                             
-                            <div class="panel panel-default custm-table">
+                            <div class="panel panel-default custm-table" ng-show="isDIsplayToLinguist">
                                 <div class="panel-heading font-bold">
                                     <h4>Work instructions</h4>
                                 </div>
@@ -179,7 +179,8 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <!-- hide payment info for all -->
+                            <div class="panel panel-default none">
                                 <div class="panel-heading font-bold">
                                     <h4>Payment to linguist</h4>
                                 </div>
