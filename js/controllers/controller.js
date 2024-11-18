@@ -12349,6 +12349,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 };
             
+                // Bulk status update removed form client's requirement
                 const updateStatus = async () => {
                     try {
                         rest.path = 'ordersearchItemStatusBulkUpdate1';
@@ -12473,7 +12474,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     for (var i = 0; i < $scope.totalRecords; i++) {
                       $scope.checkdata[i] = true; // Set each checkbox as selected
                     }
-                    $scope.isSelectAllOption = true;
+                    //$scope.isSelectAllOption = true;
                     break;
         }
     }
