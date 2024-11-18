@@ -11451,7 +11451,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
                     
     $scope.filterInvoiceFn = function(){
-        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        $scope.dtOptionsScoopreport = DTOptionsBuilder.newOptions()
         .withOption('processing', true) 
         .withOption('serverSide', true) 
         .withOption('ajax', function(data, callback, settings) {
@@ -11772,8 +11772,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         })
         .withDataProp('data') 
+        .withOption('createdRow', function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        } )
         .withOption('paging', true) 
         .withOption('pageLength', 100)
+        .withOption('lengthMenu', [100, 200, 300, 400, 500]) 
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
@@ -12479,30 +12483,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-
-
-
-    $scope.dtOptions = DTOptionsBuilder.newOptions().
-    withOption('responsive', true).
-    withOption('pageLength', 100).
-    withOption('columnDefs',  [
-        {
-            targets: [9,10],
-            render: function (data, type, row, meta) {
-                if (type === 'sort') {
-                    let tempSort = data.replace(/\./g, '').replace(',', '.');
-                    let sortedValue = parseFloat(tempSort);
-                    // if (meta.col === 10) {
-                    //     //console.log('Sorting price column:', sortedValue);
-                    // } else if (meta.col === 11) {
-                    //     //console.log('Sorting expense column:', sortedValue);
-                    // }
-                    return sortedValue;
-                }
-                return data;
-            }
-        }
-    ]);
+    
 }).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
