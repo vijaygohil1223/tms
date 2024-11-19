@@ -38141,7 +38141,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('createdRow', createdRow)
         .withDataProp('data') 
         .withOption('paging', true) 
-        .withOption('pageLength', 10)
+        .withOption('pageLength', 100)
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])

@@ -1844,11 +1844,11 @@ class Client_invoice
     /* Get All client invoice */
     public function getclientInvoiceList($post)
     {   
-        $searchValue = $post['search'] ?? ''; // Search value
-        $orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
-        $orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
-        $start = $post['start'] ?? 0; // Starting point for pagination
-        $length = $post['length'] ?? 10; // Number of records to fetch
+        $searchValue = $post['search'] ?? ''; 
+        $orderColumnIndex = $post['order'][0]['column'] ?? 1; 
+        $orderDir = $post['order'][0]['dir'] ?? 'asc'; 
+        $start = $post['start'] ?? 0; 
+        $length = $post['length'] ?? 100; 
         // Define the columns array corresponding to DataTables columns
         $columns = [
             // 0 => 'invoice_id',
