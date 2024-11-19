@@ -21189,17 +21189,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return total;
     };
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().
-        withOption('scrollX', 'true').
-        withOption('responsive', true).
-        withOption('pageLength', 100).
-        withOption('ordering', false);
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+        .withOption('scrollX', 'true')
+        .withOption('responsive', true)
+        .withOption('pageLength', 100)
+        .withOption('ordering', false)
+        .withOption('drawCallback', function(settings) {
+            // $timeout(function() {
+            //   var table = $('#approvedInvoiceList').DataTable();
+            //   console.log('table', table)
+            //   var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+            //   $scope.totalInvoiceCost = 0;
+            //   $scope.totalSelectedPrice = 0;
+            //   angular.forEach(filteredData, function(item) {
+            //     var htmlContent = item[3]; 
+            //     var extractedText = $('<td>').html(htmlContent).text().trim();
+            //     // Parse and accumulate the value
+            //     var value = parseFloat(extractedText.replace(/\./g, '').replace(',', '.'));
+            //     if (!isNaN(value)) {
+            //       $scope.totalInvoiceCost += value;
+            //     }
+            //   });
+            //   $scope.$apply(); // Apply scope changes
+            // });
+          });
         //withOption('scrollCollapse', true);
 
-    $scope.dtOptionsInv = DTOptionsBuilder.newOptions().
-        withOption('scrollX', 'true').
-        withOption('responsive', true).
-        withOption('pageLength', 100);
+    $scope.dtOptionsInv = DTOptionsBuilder.newOptions()
+        .withOption('scrollX', 'true')
+        .withOption('responsive', true)
+        .withOption('pageLength', 100)
+        .withOption('drawCallback', function(settings) {
+            $timeout(function() {
+              var table = $('#invoiceList').DataTable();
+              var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+              $scope.totalInvoiceCost = 0;
+              $scope.totalSelectedPrice = 0;
+              angular.forEach(filteredData, function(item) {
+                var htmlContent = item[3]; 
+                var extractedText = $('<td>').html(htmlContent).text().trim();
+                // Parse and accumulate the value
+                var value = parseFloat(extractedText.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(value)) {
+                  $scope.totalInvoiceCost += value;
+                }
+              });
+              $scope.$apply(); // Apply scope changes
+            });
+          });
 
 
     // Function to group data by create_date
@@ -22023,7 +22060,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.calculateTotal = function() {
         $scope.totalInvoiceCost = 0;  // Reset the total
         angular.forEach($scope.invoiceListAll, function(item) {
-            var cost = parseFloat(item.Invoice_costEUR);
+            //var cost = parseFloat(item.Invoice_costEUR);
+            var cost = parseFloat(item.Invoice_cost);
             if (!isNaN(cost)) {
                 $scope.totalInvoiceCost += cost;
             }

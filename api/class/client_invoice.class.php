@@ -1864,8 +1864,8 @@ class Client_invoice
             //10 => 'action',
         ];
         // Determine the column to sort by based on DataTables order index
-        $orderColumn = ' tmInvoice.invoice_date ';
-        //$orderColumn = $columns[$orderColumnIndex] ?? ' tmInvoice.invoice_id';
+        //$orderColumn = ' tmInvoice.invoice_date ';
+        $orderColumn = $columns[$orderColumnIndex] ?? ' tmInvoice.invoice_id';
         $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
 
         $whereCond = " WHERE 
