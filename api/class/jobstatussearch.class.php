@@ -189,6 +189,57 @@ class jobstatussearch {
 
 	    }
 
+		public function jobStatusUpdateBulk($post){
+			
+			//B3299_PRF005 , B3310_PRF008
+			//	23672-23672
+			// B4307_PRF006
+			//B4307_PRF006
+			$jobIds = $post['jobIdChecked'];  // This is an array of job IDs
+			$jobStatus = $post['jobStatus'];  // The status you're updating
+			$updatedDate = date('Y-m-d H:i:s');  // Current date and time
+
+			$data = [
+				'item_status' => $jobStatus,
+				'updated_date' => $updatedDate
+			];
+
+			$return = [
+				'status' => 200,
+				'is_update' => false,
+				'is_alljobInvoiced' => false,
+			];
+
+			if (is_array($jobIds) && !empty($jobIds)) {
+				$jobIds = array_map('intval', $jobIds);
+			
+				$this->_db->where('invc_job_id', $jobIds, 'IN');
+				$this->_db->where('is_deleted', 0);
+				$existingJobs = $this->_db->get('tms_invoice_jobs'); 
+
+				if (count($existingJobs) > 0) {
+					$existingJobIds = array_map(function($job) {
+						return $job['invc_job_id'];
+					}, $existingJobs);
+					$jobIds = array_diff($jobIds, $existingJobIds);
+				}
+				if (!empty($jobIds)) {
+					try {
+						$this->_db->where('job_summmeryId', $jobIds, 'IN');
+						$isUpdate = $this->_db->update('tms_summmery_view', $data);
+						$return['is_update'] = true;
+					} catch (Exception $e) {
+						$return['status'] = 500;
+					}
+				} else {
+					$return['is_alljobInvoiced'] = true;
+				}
+			}
+			
+			return $return;
+
+	    }
+
 
 
 }

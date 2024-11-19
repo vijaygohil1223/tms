@@ -340,14 +340,22 @@ class Client_invoice
 
     public function deleteClientInvoice($data)
     {
+        $modifiedData = date('Y-m-d H:i:s');
+        $delete = false;
+            
         if (isset($data['deleted_scoopId']) && $data['deleted_scoopId'] != 0) {
+            $updateItemData['updated_date'] = $modifiedData;
             $scpStatusData['item_status'] = 5;
             $this->_db->where('itemId', $data['deleted_scoopId']);
             $scpstsId = $this->_db->update('tms_items', $scpStatusData);
         }
         if (isset($data['invoice_id'])) {
+            // soft delete
+            $invoiceUpdate['is_deleted'] = 1;
+            $invoiceUpdate['modified_date'] = $modifiedData;
             $this->_db->where('invoice_id', $data['invoice_id']);
-            $delete = $this->_db->delete('tms_invoice_client');
+            $delete = $this->_db->update('tms_invoice_client', $invoiceUpdate);
+            //$delete = $this->_db->delete('tms_invoice_client'); // hard delete
         }
         if ($delete) {
             $res['status'] = 200;
@@ -1129,12 +1137,16 @@ class Client_invoice
 
     public function deleteInvoice($id)
     {
+        $modifiedData = date('Y-m-d H:i:s');
+        $delete = false;
+
         $this->_db->where('invoice_id', $id);
         $getInvoiceData = $this->_db->getOne('tms_invoice_client', 'scoop_id');
         if (isset($getInvoiceData) && !empty($getInvoiceData)) {
             foreach (json_decode($getInvoiceData['scoop_id']) as $k => $itemId) {
                 try {
                     // updating status of items once we delete invoice.
+                    $updateItemData['updated_date'] = $modifiedData;
                     $updateItemData['item_status'] = 5;
                     $this->_db->where('itemId', $itemId->id);
                     $this->_db->update('tms_items', $updateItemData);
@@ -1143,8 +1155,12 @@ class Client_invoice
             }
 
             // delete invoice
+            // soft delete
+            $invoiceUpdate['is_deleted'] = 1;
+            $invoiceUpdate['modified_date'] = $modifiedData;
             $this->_db->where('invoice_id', $id);
-            $delete = $this->_db->delete('tms_invoice_client');
+            $delete = $this->_db->update('tms_invoice_client', $invoiceUpdate);
+            //$delete = $this->_db->delete('tms_invoice_client');
 
             // delete invoice payment data
             $this->_db->where('invoice_id', $id);
@@ -1272,7 +1288,23 @@ class Client_invoice
         //$qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, ' ', tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, ' ', sub_tu.vLastName ) AS sub_pm_name, CONCAT( sub_scp_tu.vFirstName, ' ', sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT( gen_Qa.vFirstName, ' ', gen_Qa.vLastName ) AS gen_Qa_fullName, CONCAT( sub_gen_Qa.vFirstName, ' ', sub_gen_Qa.vLastName ) AS gen_sub_Qa_fullName, CONCAT( scp_Qa.vFirstName, ' ', scp_Qa.vLastName ) AS scp_Qa_fullName, CONCAT( sub_scp_Qa.vFirstName, ' ', sub_scp_Qa.vLastName ) AS scp_sub_Qa_fullName, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, GROUP_CONCAT(DISTINCT(jsv.resources)) AS linguistId, GROUP_CONCAT( DISTINCT( CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) ) ) AS linguistName FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) WHERE its.order_id != 0 AND tis.item_status_id = '5' GROUP BY its.itemId ORDER BY `its`.`itemId` DESC";
         //$qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, ' ', tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, ' ', sub_tu.vLastName ) AS sub_pm_name, CONCAT( sub_scp_tu.vFirstName, ' ', sub_scp_tu.vLastName ) AS sub_scoopPm_name, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2 FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client WHERE its.order_id != 0 AND tis.item_status_id = '5'  GROUP BY its.itemId ORDER BY `its`.`itemId` DESC";
         //$qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2 FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client WHERE its.order_id != 0 AND tis.item_status_id = '5' GROUP BY its.itemId ORDER BY `its`.`itemId` DESC";
-        $qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, iscp.invc_scoop_id FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN tms_invoice_scoops AS iscp ON its.itemId = iscp.invc_scoop_id WHERE its.order_id != 0 AND tis.item_status_id = '5' AND iscp.invc_scoop_id IS NULL GROUP BY its.itemId ORDER BY `its`.`itemId` DESC ";
+        // last new change 
+        // LEFT JOIN tms_invoice_client AS invc ON iscp.invc_Id = invc.invoice_id AND invc.is_deleted != 1  
+        // AND ( iscp.invc_scoop_id IS NULL OR invc.invoice_id IS NULL)
+        $qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, iscp.invc_scoop_id FROM tms_items AS its 
+        LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id 
+        LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id 
+        LEFT JOIN tms_client AS c ON cust.client = c.iClientId 
+        LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id 
+        LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer 
+        LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager 
+        LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status 
+        LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id 
+        LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id 
+        LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client 
+        LEFT JOIN tms_invoice_scoops AS iscp ON its.itemId = iscp.invc_scoop_id 
+        LEFT JOIN tms_invoice_client AS invc ON iscp.invc_Id = invc.invoice_id AND invc.is_deleted != 1  
+        WHERE its.order_id != 0 AND tis.item_status_id = '5' AND ( iscp.invc_scoop_id IS NULL OR invc.invoice_id IS NULL) GROUP BY its.itemId ORDER BY `its`.`itemId` DESC ";
         $data = $this->_db->rawQuery($qry);
 
         return $data;

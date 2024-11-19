@@ -244,7 +244,10 @@ class orderstatussearch {
 				return $number;
 			}
 
-			if($post && isset($post['is_all_selected'] ) && $post['is_all_selected']==1){
+			//if($post && isset($post['is_all_selected'] ) && $post['is_all_selected']==1){
+			// above condition temporary out of requirement
+			$scopopUpdateBulk = false;
+			if($scopopUpdateBulk){
 		
 				$searchValueNum = customNumberFormat($searchValue);
 				$qry_invc = '';

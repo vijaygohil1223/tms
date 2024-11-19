@@ -11451,7 +11451,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
                     
     $scope.filterInvoiceFn = function(){
-        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        $scope.dtOptionsScoopreport = DTOptionsBuilder.newOptions()
         .withOption('processing', true) 
         .withOption('serverSide', true) 
         .withOption('ajax', function(data, callback, settings) {
@@ -11772,8 +11772,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         })
         .withDataProp('data') 
+        .withOption('createdRow', function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        } )
         .withOption('paging', true) 
         .withOption('pageLength', 100)
+        .withOption('lengthMenu', [100, 200, 300, 400, 500]) 
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
@@ -12292,6 +12296,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //search data action
+    $scope.isSelectAllOption = false;
     $scope.statusAction = function (action) {
         switch (action) {
             case "Change project status":
@@ -12320,7 +12325,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const scoopIds = [];
                 const checkboxes = angular.element('[id^=orderCheckData]');
                 let allSelected = true;
-            
+
                 checkboxes.each((index, element) => {
                     const isChecked = document.querySelector(`#orderCheck${index}`).checked;
                     if (isChecked) {
@@ -12329,6 +12334,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         allSelected = false;
                     }
                 });
+                if($scope.isSelectAllOption == false){
+                    allSelected = false;
+                }
+
+
             
                 if (scoopIds.length === 0) {
                     notification('No orders selected!', 'warning');
@@ -12343,6 +12353,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 };
             
+                // Bulk status update removed form client's requirement
                 const updateStatus = async () => {
                     try {
                         rest.path = 'ordersearchItemStatusBulkUpdate1';
@@ -12431,6 +12442,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.checkdata[i] = false; // Clear the selection in AngularJS model
                     }
                 }
+                $scope.isSelectAllOption = false;
                 break;
             case "Export to excel":
                 var count = 0;
@@ -12466,34 +12478,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     for (var i = 0; i < $scope.totalRecords; i++) {
                       $scope.checkdata[i] = true; // Set each checkbox as selected
                     }
+                    //$scope.isSelectAllOption = true;
                     break;
         }
     }
 
-
-
-
-    $scope.dtOptions = DTOptionsBuilder.newOptions().
-    withOption('responsive', true).
-    withOption('pageLength', 100).
-    withOption('columnDefs',  [
-        {
-            targets: [9,10],
-            render: function (data, type, row, meta) {
-                if (type === 'sort') {
-                    let tempSort = data.replace(/\./g, '').replace(',', '.');
-                    let sortedValue = parseFloat(tempSort);
-                    // if (meta.col === 10) {
-                    //     //console.log('Sorting price column:', sortedValue);
-                    // } else if (meta.col === 11) {
-                    //     //console.log('Sorting expense column:', sortedValue);
-                    // }
-                    return sortedValue;
-                }
-                return data;
-            }
-        }
-    ]);
+    
 }).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
@@ -20371,23 +20361,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         switch (action) {
             case "Change status to":
-                var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
-                var successShown = false;
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (jobselect == 'true') {
-                        var jobId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = jobId;
-                        rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
-                        rest.get().success(function (data) {
-                            if (!successShown) { 
-                                notification('Status updated successfully', 'success');
-                                successShown = true; 
-                            }
-                            $route.reload();
-                        }).error(errorCallback);
+                // Get the job status data
+                try {
+                    var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
+                    let jobCheckIds = [];
+                    var checkboxes = angular.element('[id^=orderCheckData]');
+                    angular.forEach(checkboxes, function(checkbox, i) {
+                        // Check if the current checkbox is checked
+                        if (angular.element('#orderCheck' + i).is(':checked')) {
+                            var tempJobId = angular.element('#orderCheckData' + i).val();
+                            jobCheckIds.push(tempJobId);
+                        }
+                    });
+                    if (jobCheckIds.length > 0) {
+                        rest.path = 'jobStatusUpdateBulk';
+                        rest.post({ jobIdChecked: jobCheckIds, jobStatus: jobStatus })
+                            .success(function(response) {
+                                console.log('api retun data', response)
+                                if (response.status === 200) {
+                                    notification("Job status updated successfully. (Status won't update if an invoice is created for the job.)", 'success');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                        jobCheckIds = [];
+                                    }, 200);
+                                }else{
+                                    notification('Something went wrong', 'warning');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                        jobCheckIds = [];
+                                    }, 200);
+                                }
+                            })
+                            .error(errorCallback);
                     }
+                } catch (error) {
+                    notification('Something went wrong.', 'warning');
                 }
+                //var successShown = false;
+                // for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                //     var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                //     if (jobselect == 'true') {
+                //         var jobId = angular.element('#orderCheckData' + i).val();
+                //         $routeParams.id = jobId;
+                //         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
+                //         rest.get().success(function (data) {
+                //             if (!successShown) { 
+                //                 notification('Status updated successfully', 'success');
+                //                 successShown = true; 
+                //             }
+                //             $route.reload();
+                //         }).error(errorCallback);
+                //     }
+                // }
                 break;
             case "Remove selection":
                 // bootbox.confirm("Are you sure you want to delete?", function(result) {
@@ -48049,6 +48074,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#responseMsg').text('You have accepted the job, thank you.');
                             $("#responseMsg").addClass("alert alert-success" );
                         }else{
+                            $scope.isDIsplayToLinguist = false;
                             let msgText = 'The job is accepted by someone else!' ;
                             $('#responseMsg').text(msgText);
                             $("#responseMsg").addClass("alert alert-warning" );
@@ -48067,6 +48093,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     }
 
+    $scope.isDIsplayToLinguist = true;
     $scope.acceptjobstatus = function (status, action) {
         if($scope.jobdetailData.accept > 0 ){
             if($scope.jobDetails.jobAccept == 1 && $scope.jobdetailData.accept == $scope.jobDetails.resourceId){
@@ -48074,6 +48101,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$('#responseMsg').text('Already, You have accepted the job, thank you.');
                 $("#responseMsg").addClass("alert alert-success" );
             }else{
+                $scope.isDIsplayToLinguist = false;
                 let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'Job is already accepted!' ;
                 $('#responseMsg').text(msgText);
                 $("#responseMsg").addClass("alert alert-warning" );
