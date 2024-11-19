@@ -20361,23 +20361,56 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         switch (action) {
             case "Change status to":
+                // Get the job status data
                 var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
-                var successShown = false;
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (jobselect == 'true') {
-                        var jobId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = jobId;
-                        rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
-                        rest.get().success(function (data) {
-                            if (!successShown) { 
-                                notification('Status updated successfully', 'success');
-                                successShown = true; 
-                            }
-                            $route.reload();
-                        }).error(errorCallback);
+                let jobCheckIds = [];
+                var checkboxes = angular.element('[id^=orderCheckData]');
+                angular.forEach(checkboxes, function(checkbox, i) {
+                    // Check if the current checkbox is checked
+                    if (angular.element('#orderCheck' + i).is(':checked')) {
+                        var tempJobId = angular.element('#orderCheckData' + i).val();
+                        jobCheckIds.push(tempJobId);
                     }
+                });
+                if (jobCheckIds.length > 0) {
+                    rest.path = 'jobStatusUpdateBulk';
+                    rest.post({ jobIdChecked: jobCheckIds, jobStatus: jobStatus })
+                        .success(function(response) {
+                            console.log('api retun data', response)
+                            if (response.status === 200) {
+                                notification('job status updated successfully', 'success');
+                                setTimeout(() => {
+                                    $route.reload();
+                                    jobCheckIds = [];
+                                }, 200);
+                            }else{
+                                notification('Something went wrong', 'warning');
+                                setTimeout(() => {
+                                    $route.reload();
+                                    jobCheckIds = [];
+                                }, 200);
+                            }
+                        })
+                        .error(errorCallback);
                 }
+
+                return false;
+                var successShown = false;
+                // for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                //     var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                //     if (jobselect == 'true') {
+                //         var jobId = angular.element('#orderCheckData' + i).val();
+                //         $routeParams.id = jobId;
+                //         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
+                //         rest.get().success(function (data) {
+                //             if (!successShown) { 
+                //                 notification('Status updated successfully', 'success');
+                //                 successShown = true; 
+                //             }
+                //             $route.reload();
+                //         }).error(errorCallback);
+                //     }
+                // }
                 break;
             case "Remove selection":
                 // bootbox.confirm("Are you sure you want to delete?", function(result) {

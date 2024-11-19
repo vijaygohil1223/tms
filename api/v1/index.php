@@ -4331,5 +4331,13 @@ $app->post('/ordersearchItemStatusBulkUpdate1', function () use($app) {
     $result = $statusOrder->ordersearchItemStatusBulkUpdate1($data);
     echoResponse(200, $result);
 });
+
+$app->post('/jobStatusUpdateBulk', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $post = json_decode($app->request->getBody(), TRUE);
+    $result = $statusJob->jobStatusUpdateBulk($post);
+    echoResponse(200, $result);
+});
+
 $app->run();
 ?>
