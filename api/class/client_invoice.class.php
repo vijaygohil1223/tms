@@ -1852,7 +1852,8 @@ class Client_invoice
         // Define the columns array corresponding to DataTables columns
         $columns = [
             0 => 'invoice_id',
-            1 => 'invoice_number',
+            //1 => 'invoice_number',
+            1 => 'custom_invoice_number',
             2 => 'tc.vUserName',
             3 => 'accounting_tripletex',
             4 => 'Invoice_cost',
