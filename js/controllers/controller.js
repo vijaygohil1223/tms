@@ -37968,7 +37968,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.dtColumnsClient = [
-        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn(null).withTitle('#').notSortable().renderWith(function(data, type, full, meta) {
             var start = meta.settings._iDisplayStart;
             var index = start + meta.row; // This will give you the index for unique ids
             var tempCheckedmark = '';
@@ -38099,7 +38099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             
         }),
-        DTColumnBuilder.newColumn(null).withTitle('Action').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
             const tempval = full.credit_note_id ? true : false;
             var html = `
                 <div class="d-flex">

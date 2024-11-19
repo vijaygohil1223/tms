@@ -1851,7 +1851,7 @@ class Client_invoice
         $length = $post['length'] ?? 100; 
         // Define the columns array corresponding to DataTables columns
         $columns = [
-            // 0 => 'invoice_id',
+            0 => 'invoice_id',
             1 => 'invoice_number',
             2 => 'tc.vUserName',
             3 => 'accounting_tripletex',
@@ -1865,7 +1865,7 @@ class Client_invoice
         ];
         // Determine the column to sort by based on DataTables order index
         //$orderColumn = ' tmInvoice.invoice_date ';
-        $orderColumn = $columns[$orderColumnIndex] ?? ' tmInvoice.invoice_id';
+        $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
         $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
 
         $whereCond = " WHERE 
