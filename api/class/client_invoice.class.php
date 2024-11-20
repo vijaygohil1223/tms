@@ -2011,8 +2011,6 @@ class Client_invoice
                 $totalCostsByDate[$paidDate] = $row['total_invoice_cost_eur'];
                 //$totalCostsByDate[$row['order_day']] = $row['total_invoice_cost'];
             }
-            // print_r($totalCostsByDate);
-            // exit;
         }
 
         foreach ($data as $key => $value) {

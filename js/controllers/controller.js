@@ -38128,6 +38128,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.filterInvoiceFn = function(tabName){
         $scope.dtOptionsClient = DTOptionsBuilder.newOptions()
         .withOption('ajax', function(data, callback, settings) {
+            if (data && data.search && data.search.value !== '') {
+                $scope.totalSelectedPrice = '';
+                $('input[id^=checkAll]:checkbox').prop('checked', false);
+            }
             var params = {
                 draw: data.draw,
                 start: data.start,
