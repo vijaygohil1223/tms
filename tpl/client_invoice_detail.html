@@ -162,7 +162,7 @@
                 </li>
               </ul>
               <div class="overview-list projecttable">
-                <div ng-if="['all','Completed','Not-exported','Partly Paid'].includes(activeTab) ">
+                <div ng-if="['all','Completed','Not-exported'].includes(activeTab) ">
                   <div class="d-flex groupCheckbox">
                     <label style="margin-top:5px; white-space:nowrap;">Group by paid date &nbsp;&nbsp;</label>
                     <input type="checkbox" id="recordgroupByPaidDate" name="recordgroupByPaidDate" ng-model="recordgroupByPaidDate" ng-click="displayGorupBy(recordgroupByPaidDate)"  />

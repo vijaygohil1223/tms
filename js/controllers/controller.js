@@ -37862,6 +37862,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.filterInvoiceFn(invcStatus)
         $scope.activeTab = invcStatus;
 
+        if(!['all','Completed','Not-exported'].includes(invcStatus)){
+            $scope.recordgroupByPaidDate = false;
+        }
+
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
@@ -38196,7 +38200,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const tempInvoicePrice = $filter('customNumber')( (rowData.group_total_invoice_cost_eur).toFixed(2)) ;
                         $(rows).eq(index).before(
                             '<tr class="groupdate"><td colspan="11" class="text-bold">Paid date: ' +
-                            $filter('globalDtFormat')(rowData.paid_date) + ' <span style="margin-left:20px"> Total: ' + tempInvoicePrice + ' </span></td> </tr>'
+                            $filter('globalDtFormat')(rowData.paid_date) + ' <span style="margin-left:20px"> Total (in EUR): ' + tempInvoicePrice + ' </span></td> </tr>'
                         );
                         lastClient = rowData.paid_date;
                     }

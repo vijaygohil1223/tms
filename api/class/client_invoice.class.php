@@ -2005,10 +2005,10 @@ class Client_invoice
             $totalCostsByDate = [];
             foreach ($groupByDate as $row) {
                 $paidDate = $row['order_day'];
-                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
+                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00' || $paidDate == '') {
                     $paidDate = 'unpaid';
                 }
-                $totalCostsByDate[$row['order_day']] = $row['total_invoice_cost_eur'];
+                $totalCostsByDate[$paidDate] = $row['total_invoice_cost_eur'];
                 //$totalCostsByDate[$row['order_day']] = $row['total_invoice_cost'];
             }
             // print_r($totalCostsByDate);
@@ -2034,9 +2034,11 @@ class Client_invoice
             if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
                 $paidDate = $value['paid_date'];
                 if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
-                    $paidDate = 'unpaid';
+                    $createdDate = 'unpaid';
+                }else{
+                    $createdDate = date('Y-m-d', strtotime($value['paid_date'])); 
                 }
-                $createdDate = date('Y-m-d', strtotime($value['paid_date'])); 
+                //print_r($createdDate);
                 $data[$key]['group_total_invoice_cost_eur'] = isset($totalCostsByDate[$createdDate]) ? $totalCostsByDate[$createdDate] : 0;
             }
 
