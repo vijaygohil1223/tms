@@ -37945,7 +37945,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.invcStatusRecord('Open');
     // ****** END invioce TABS ******* //
-
+    $scope.recordgroupByPaidDate = false;
+    $scope.totalPriceEuro = 0;
     
     rest.path = "getclientInvoiceListCount";
     rest.get().success(function (data) {
@@ -37966,7 +37967,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     function createdRow(row, data, dataIndex) {
         $compile(angular.element(row).contents())($scope);
     }
-
     $scope.dtColumnsClient = [
         DTColumnBuilder.newColumn(null).withTitle('#').notSortable().renderWith(function(data, type, full, meta) {
             var start = meta.settings._iDisplayStart;
@@ -37980,7 +37980,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var html = '<div class="nowrap ">' +
                 // Checkbox input for each row
                 '<input type="checkbox" id="invoiceCheck' + index + '" ' +
-                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + full.Invoice_cost + ')" ' +
+                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + full.invoice_price_euro + ')" ' +
                 'class="invoiceCheck' + full.invoice_id + '" ' +
                 'name="invoiceCheck' + index + '" ' +
                 'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" ' +
@@ -38131,7 +38131,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 order: data.order,
                 search: data.search.value,
                 activeTab: $scope.activeTab ? $scope.activeTab : 'Open',
-                //group_by: 'client_name'
+                displayGroupBy: $scope.recordgroupByPaidDate ? $scope.recordgroupByPaidDate : false,
+                //group_by: 'client_name',
+
             };
             // API call to fetch data
             $http.post('api/v1/getclientInvoiceList', params)
@@ -38144,6 +38146,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.invoiceListAllExport = res?.data;
                     $scope.tripleTexinvoiceList = res?.data;
                     $scope.totalPrice = res?.totalPrice || 0;
+                    $scope.totalPriceEuro = res?.totalPriceEur || 0;
                     
                     // Pass the data to DataTables
                     callback({
@@ -38184,24 +38187,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
         .withOption('drawCallback', function(settings) {
-            // var api = this.api();
-            // var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
-            // var lastClient = null;
-        
-            // api.rows({ page: 'current' }).data().each(function(rowData, index) {
-            //     if (lastClient !== rowData.invoice_date ) {
-            //         const tempInvoicePrice = +rowData.invoice_price_euro; // Access invoice_price_euro
-                    
-            //         $(rows).eq(index).before(
-            //             '<tr class="group"><td colspan="11" class="text-bold">Paid date: ' +
-            //             $filter('globalDtFormat')(rowData.invoice_date) + ' price Total: ' + tempInvoicePrice + '</td></tr>'
-            //         );
-        
-            //         lastClient = rowData.invoice_date;
-            //     }
-            // });
+            if($scope.recordgroupByPaidDate && $scope.recordgroupByPaidDate == true){
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
+                var lastClient = null;
+                api.rows({ page: 'current' }).data().each(function(rowData, index) {
+                    if (lastClient !== rowData.paid_date ) {
+                        const tempInvoicePrice = $filter('customNumber')( (rowData.group_total_invoice_cost_eur).toFixed(2)) ;
+                        $(rows).eq(index).before(
+                            '<tr class="groupdate"><td colspan="11" class="text-bold">Paid date: ' +
+                            $filter('globalDtFormat')(rowData.paid_date) + ' <span style="margin-left:20px"> Total: ' + tempInvoicePrice + ' </span></td> </tr>'
+                        );
+                        lastClient = rowData.paid_date;
+                    }
+                });
+            }
         });
-        
         // DTInstances.getLast().then(function(inst) {
         //     $scope.dtColumnsInternal = inst;
         // })
@@ -38211,6 +38212,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     ///  
     // END
     ////////
+
+    $scope.displayGorupBy = function(type){
+        $scope.recordgroupByPaidDate = type;
+        $scope.invcStatusRecord($scope.activeTab)
+    }
 
     $scope.msgEmailSubject = '';
     $scope.generalEmail = function (id, invoiceNo, userSign) {
@@ -38320,11 +38326,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach($scope.invoiceListAll, function(invoiceL, index) {
                         if (!invoiceL.credit_note_id) {
                             // Add invoice cost to total price
-                            $scope.totalSelectedPrice += invoiceL.Invoice_cost;
+                            //$scope.totalSelectedPrice += invoiceL.Invoice_cost;
+                            $scope.totalSelectedPrice += invoiceL.invoice_price_euro;
+                            
                             $scope.checkedIds.push(invoiceL.invoice_id);
                         } else {
                             // Subtract invoice cost (as it's a credit note)
-                            $scope.totalSelectedPrice -= invoiceL.Invoice_cost;
+                            //$scope.totalSelectedPrice -= invoiceL.Invoice_cost;
+                            $scope.totalSelectedPrice -= invoiceL.invoice_price_euro;
                         }
                     });
                 } else {

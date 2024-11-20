@@ -10,6 +10,16 @@
   .past-date {
     color: red;
   }
+  .groupdate{
+    font-weight: bold;
+  }
+  .groupCheckbox{
+    margin-top: 15px;
+    right: 230px;
+    margin-right: 35px;
+    position: absolute;
+    z-index: 1000;
+  }
 </style>
 
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -114,52 +124,59 @@
               </div>
 
               <ul class="alt projectjobdv2 overviewli">
-                <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
+                <li class="list-group-item tab-requested" ng-class="{ 'active': activeTab=='Open'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
                     Outstanding <span class="badge bg-info">{{openInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-overdue" ng-class="{ 'active': invoiceActive=='Overdue'}">
+                <li class="list-group-item tab-overdue" ng-class="{ 'active': activeTab=='Overdue'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
                     Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-partPaid" ng-class="{ 'active': invoiceActive=='Partly Paid'}">
+                <li class="list-group-item tab-partPaid" ng-class="{ 'active': activeTab=='Partly Paid'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Partly Paid')">
                     Partly Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-complete" ng-class="{ 'active': invoiceActive=='Completed'}">
+                <li class="list-group-item tab-complete" ng-class="{ 'active': activeTab=='Completed'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Completed')">
                     Paid <span class="badge bg-info">{{completedInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
+                <li class="list-group-item tab-cancel" ng-class="{ 'active': activeTab=='Cancelled'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
                     Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-credit" ng-class="{ 'active': invoiceActive=='Credited'}">
+                <li class="list-group-item tab-credit" ng-class="{ 'active': activeTab=='Credited'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Credited')">
                     Credited <span class="badge bg-info">{{credtInvcCount}}</span></a>
                 </li>
-                <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
+                <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': activeTab=='Irrecoverable'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
                     Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
                 </li> -->
-                <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
+                <li class="list-group-item tab-not-exported" ng-class="{ 'active': activeTab=='Not-exported'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
                     Not exported <span class="badge bg-info">{{notExportedInvcCount}}</span></a>
                 </li>
-                <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
+                <li class="list-group-item tab-due-today" ng-class="{ 'active': activeTab=='all'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
                     All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
                 </li>
               </ul>
               <div class="overview-list projecttable">
+                <div ng-if="['all','Completed','Not-exported','Partly Paid'].includes(activeTab) ">
+                  <div class="d-flex groupCheckbox">
+                    <label style="margin-top:5px; white-space:nowrap;">Group by paid date &nbsp;&nbsp;</label>
+                    <input type="checkbox" id="recordgroupByPaidDate" name="recordgroupByPaidDate" ng-model="recordgroupByPaidDate" ng-click="displayGorupBy(recordgroupByPaidDate)"  />
+                  </div>
+                </div>
+
                 <div class="table-responsive">
                   
                   <table datatable="" dt-options="dtOptionsClient" dt-columns="dtColumnsClient" id="invoiceAllTbl" style="width:100% !important" dt-instance="dtInstance" class="table m-b-none default footable-loaded footable" >
                   
                     <tfoot>
                       <tr>
-                        <td colspan="4" style="text-align: left;white-space: nowrap;">Selected Invoice Total : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
-                        <td colspan="7" style="text-align: left;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
+                        <td colspan="4" style="text-align: left;white-space: nowrap;">Selected Total(Eur) : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
+                        <td colspan="7" style="text-align: left;"> Total Price(Eur): <strong>{{ totalPriceEuro | customNumber }} </strong> </td>
                       </tr>
                     </tfoot>
                   

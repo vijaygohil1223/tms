@@ -1865,9 +1865,16 @@ class Client_invoice
             //10 => 'action',
         ];
         // Determine the column to sort by based on DataTables order index
-        //$orderColumn = ' tmInvoice.invoice_date ';
-        $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
-        $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+        if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
+            //$orderColumn = ' tmInvoice.paid_date ';  
+            //$orderDir =  'ASC';
+            // use case if date is 00
+            $orderColumn = " CASE WHEN tmInvoice.paid_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.paid_date) DESC ";
+            $orderDir =  ' ';
+        }else{
+            $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
+            $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+        }
 
         $whereCond = " WHERE 
         tmInvoice.invoice_type = 'Save' 
@@ -1915,8 +1922,9 @@ class Client_invoice
             if($post && isset($post['activeTab']) && $post['activeTab'] == 'Credited'){
                 $creditNo = " OR tcn.credit_note_no LIKE '%" . $searchValue . "%' ";
             }
+            $statusValue = ($searchValue =='Paid' ) ? 'Completed' : $searchValue ;
             
-            $whereCond .= " AND ( tmInvoice.invoice_status LIKE '%" . $searchValue . "%'
+            $whereCond .= " AND ( tmInvoice.invoice_status LIKE '%" . $statusValue . "%'
                         OR tc.vUserName LIKE '%" . $searchValue . "%'
                         OR tmInvoice.invoice_number LIKE '%" . $searchValue . "%'
                         OR tmInvoice.custom_invoice_number LIKE '%" . $searchValue . "%'
@@ -1970,38 +1978,6 @@ class Client_invoice
             tcp.total_partial_paid AS invoice_partial_paid_total, 
             tcn.id AS credit_note_id, (tmInvoice.invoice_cost / IFNULL(NULLIF(tmInvoice.currency_rate, 0), 1)) AS invoice_price_euro";
 
-        
-        // if($post && isset($post['activeTab']) && $post['activeTab'] == 'Credited'){
-        //     $jonTable = " FROM tms_invoice_credit_notes tcn
-        //     LEFT JOIN 
-        //     tms_invoice_client tmInvoice ON tcn.invoice_id = tmInvoice.invoice_id
-        // LEFT JOIN 
-        //     tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-        // LEFT JOIN 
-        //     tms_client tc ON tc.iClientId = tmInvoice.customer_id
-        // LEFT JOIN 
-        //     (SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid 
-        //     FROM tms_invoice_client_payments 
-        //     WHERE is_deleted = 0 
-        //     GROUP BY invoice_id) tcp ON tcp.invoice_id = tmInvoice.invoice_id ";
-        
-        // }else{
-        //     $jonTable = " FROM 
-        //     tms_invoice_client tmInvoice
-        // LEFT JOIN 
-        //     tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-        // LEFT JOIN 
-        //     tms_client tc ON tc.iClientId = tmInvoice.customer_id
-        // LEFT JOIN 
-        //     tms_invoice_credit_notes tcn ON tcn.invoice_id = tmInvoice.invoice_id
-        // LEFT JOIN 
-        //     (SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid 
-        //     FROM tms_invoice_client_payments 
-        //     WHERE is_deleted = 0 
-        //     GROUP BY invoice_id) tcp ON tcp.invoice_id = tmInvoice.invoice_id ";
-        // }
-        // Define the common part of the query that doesn't change
-
         $jonLeftTable = " 
         LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
         LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
@@ -2023,9 +1999,21 @@ class Client_invoice
         $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
         $data = $this->_db->rawQueryNew($baseQry);
 
-        $groupQry = "SELECT DATE(created_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost FROM tms_invoice_client GROUP BY DATE(created_date) ORDER BY order_day ";
-        $groupByData = $this->_db->rawQueryNew($groupQry);
-
+        if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
+            $grpQry = " SELECT DATE(tmInvoice.paid_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.paid_date) " ;
+            $groupByDate = $this->_db->rawQueryNew($grpQry);
+            $totalCostsByDate = [];
+            foreach ($groupByDate as $row) {
+                $paidDate = $row['order_day'];
+                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
+                    $paidDate = 'unpaid';
+                }
+                $totalCostsByDate[$row['order_day']] = $row['total_invoice_cost_eur'];
+                //$totalCostsByDate[$row['order_day']] = $row['total_invoice_cost'];
+            }
+            // print_r($totalCostsByDate);
+            // exit;
+        }
 
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = '';
@@ -2039,6 +2027,17 @@ class Client_invoice
             $data[$key]['invoice_status'] = ($value['invoice_status'] == 'Open') ? 'Outstanding' : $value['invoice_status'];
             if (in_array($value['invoice_status'], ['Complete', 'Completed', 'Paid'])) {
                 $data[$key]['invoice_status'] = 'Paid';
+            }
+
+            
+            $data[$key]['group_total_invoice_cost_eur'] = 0;
+            if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
+                $paidDate = $value['paid_date'];
+                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
+                    $paidDate = 'unpaid';
+                }
+                $createdDate = date('Y-m-d', strtotime($value['paid_date'])); 
+                $data[$key]['group_total_invoice_cost_eur'] = isset($totalCostsByDate[$createdDate]) ? $totalCostsByDate[$createdDate] : 0;
             }
 
             // foreach ($groupByData as $group) {
@@ -2063,9 +2062,10 @@ class Client_invoice
         $countQry = $this->_db->rawQueryNew($constQry);
         $recordsTotal = $countQry[0]['total'];
 
-        $constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal $jonTable $whereCond ";
+        $constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond ";
         $priceRecord = $this->_db->rawQueryNew($constQry);
         $priceTotal = $priceRecord[0]['priceTotal'];
+        $priceTotalEur = $priceRecord[0]['total_price_euro'];
 
         $creditdata = [];
         $retData = $data;
@@ -2084,6 +2084,7 @@ class Client_invoice
             "recordsFiltered" => $totalFilteredRecords,
             "data" => $retData,
             "totalPrice" => $priceTotal ? $priceTotal : 0 ,
+            "totalPriceEur" => $priceTotalEur ? $priceTotalEur : 0 ,
         ];
         return $response;
     }
