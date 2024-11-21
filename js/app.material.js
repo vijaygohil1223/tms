@@ -480,12 +480,12 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             activetab: 'Order-status-report',
             role: '1'
         })
-        .when('/Order-status-report1', {
-            templateUrl: modulesPath + 'status_report1.html',
-            controller: 'orderstatusReportController1',
-            activetab: 'Order-status-report',
-            role: '1'
-        })
+        // .when('/Order-status-report1', {
+        //     templateUrl: modulesPath + 'status_report1.html',
+        //     controller: 'orderstatusReportController1',
+        //     activetab: 'Order-status-report',
+        //     role: '1'
+        // })
         .when('/Jobs-status-report', {
             templateUrl: modulesPath + 'status_job.html',
             controller: 'jobstatusReportController',
