@@ -38,8 +38,8 @@ function statusorderReportFilterCustomPage($post, $dbConn){
         9 => 'scoop_due_date',
         10 => 'totalAmount',
         11 => 'total_job_price',
-        // 12=>
-        // 13=>
+        12=>'scoop_gross_profit',
+        13=>'scoop_profit_margin'
     ];
 
     // Determine the column to sort by based on DataTables order index
@@ -173,6 +173,25 @@ function statusorderReportFilterCustomPage($post, $dbConn){
               FROM tms_summmery_view 
               GROUP BY order_id, item_id)";
 
+              
+    // to overcome issue on query
+    if($orderColumnIndex ==12){
+        $selectSort_12 = " ,
+            ( ((its.total_amount/its.base_currency_rate) ) - ((COALESCE(tsv.total_job_price, 0)/its.base_currency_rate) ) ) AS scoop_gross_profit ";
+    }else{
+        $selectSort_12 = ' ';
+    }
+    if($orderColumnIndex == 13) {
+        $selectSort_13 = " ,
+            CASE 
+            WHEN (its.total_amount/its.base_currency_rate) > 0 THEN 
+                (((its.total_amount / its.base_currency_rate) - (COALESCE(tsv.total_job_price, 0) / its.base_currency_rate)) / (its.total_amount / its.base_currency_rate)) * 100
+            ELSE 0
+        END AS scoop_profit_margin ";
+    } else {
+        $selectSort_13 = ' ';
+    }
+
     $querydata = "SELECT 
             gen.order_no AS orderNumber, 
             gen.due_date AS DueDate, 
@@ -211,7 +230,9 @@ function statusorderReportFilterCustomPage($post, $dbConn){
             its.q_date AS QuentityDate,
             tpt.project_name AS projectTypeName,
             concat(tu.vFirstName, ' ', tu.vLastName) AS pm_name, 
-            c.accounting_tripletex 
+            c.accounting_tripletex
+            $selectSort_12
+            $selectSort_13
         FROM 
             tms_items its
         LEFT JOIN 
@@ -393,9 +414,7 @@ function statusorderReportFilterCustomPage($post, $dbConn){
     $results['info'] = $info;
     $results['Typeinfo'] = $Typeinfo;
     $results['customerType'] = $customerType;
-    $results['projectScoopInfo'] = $projectScoopInfo;
-
-    
+    $results['projectScoopInfo'] = $projectScoopInfo;    
 
     $totalRecordsQuery = "SELECT COUNT(DISTINCT its.itemId) AS count 
     FROM 

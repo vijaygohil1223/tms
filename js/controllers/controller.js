@@ -10325,7 +10325,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
    
 
     $scope.dtColumnsInternal = [
-        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn(null).withTitle('#').notSortable().renderWith(function(data, type, full, meta) {
             var start = meta.settings._iDisplayStart;
             var index = start + meta.row; // This will give you the index for unique ids
             var html = '<div>' +
@@ -10382,8 +10382,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }),
         DTColumnBuilder.newColumn(null).withTitle('Profit Margin').renderWith(function(data, type, full, meta) {
             // Ensure the values are valid numbers
-            var totalAmount = parseFloat(full.totalAmount) || 0;
-            var totalJobPrice = parseFloat(full.total_job_price) || 0;
+            // var totalAmount = parseFloat(full.totalAmount) || 0;
+            // var totalJobPrice = parseFloat(full.total_job_price) || 0;
+            var totalAmount = parseFloat(full.totalAmountEUR) || 0;
+            var totalJobPrice = parseFloat(full.total_job_priceEUR) || 0;
             
             // Calculate margin
             var margin = $scope.calculateProfitMargin(totalAmount, totalJobPrice);
@@ -10742,7 +10744,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('lengthMenu', [100, 200, 300, 400, 500]) 
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
-        .withOption('order', [[0, 'asc']])
+        .withOption('order', [[1, 'asc']])
     } 
     $scope.filterInvoiceFn();
 
