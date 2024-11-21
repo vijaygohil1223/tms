@@ -568,7 +568,10 @@ class db {
 
             if ($isInsert !== false) {
                 //is insert statement
-                $this->_query .= '(`' . implode(array_keys($tableData), '`, `') . '`)';
+                // old version code commentted
+                //$this->_query .= '(`' . implode(array_keys($tableData), '`, `') . '`)';
+                // new version to sort issue
+                $this->_query .= '(`' . implode('`, `', array_keys($tableData)) . '`)';
                 $this->_query .= ' VALUES(';
             }
 

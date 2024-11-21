@@ -37889,6 +37889,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     case "Open":
                         $scope.invoiceListAll = $scope.openInvc;
                         break;
+                    case "group-outstanding":
+                        $scope.invoiceListAll = $scope.openInvc;
+                        break;
                     case "Completed":
                         // complete as paid
                         $scope.invoiceListAll = $scope.completeInvc;
@@ -38139,9 +38142,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 order: data.order,
                 search: data.search.value,
                 activeTab: $scope.activeTab ? $scope.activeTab : 'Open',
-                displayGroupBy: $scope.recordgroupByPaidDate ? $scope.recordgroupByPaidDate : false,
+                displayGroupBy: ($scope.activeTab == 'group-outstanding') ? true : false,
                 //group_by: 'client_name',
-
             };
             // API call to fetch data
             $http.post('api/v1/getclientInvoiceList', params)
@@ -38171,19 +38173,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
         .withOption('footerCallback', function (tfoot, data, start, end, display) {
             // var api = this.api();
-            // var columnData = api.column(3, { search: 'applied' }).data();
-            // if (columnData && columnData.length) {
-            //     var total = columnData.reduce(function (a, b) {
-            //         a = parseFloat(a) || 0; // Safeguard against non-numeric values
-            //         b = parseFloat(b) || 0; // Safeguard against non-numeric values
-            //         return a + b;
-            //     }, 0);
-            //     $(api.column(3).footer()).html(
-            //         $filter('customNumber')(total.toFixed(2))
-            //     );
-            // } else {
-            //     $(api.column(3).footer()).html('0.00'); // Default footer value
-            // }
         })
         .withOption('processing', true) 
         .withOption('serverSide', true) 
@@ -38195,18 +38184,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
         .withOption('drawCallback', function(settings) {
-            if($scope.recordgroupByPaidDate && $scope.recordgroupByPaidDate == true){
+            if($scope.activeTab && $scope.activeTab == 'group-outstanding' ){
                 var api = this.api();
                 var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
                 var lastClient = null;
                 api.rows({ page: 'current' }).data().each(function(rowData, index) {
-                    if (lastClient !== rowData.paid_date ) {
+                    if (lastClient !== rowData.invoice_due_date ) {
                         const tempInvoicePrice = $filter('customNumber')( (rowData.group_total_invoice_cost_eur).toFixed(2)) ;
                         $(rows).eq(index).before(
-                            '<tr class="groupdate"><td colspan="11" class="text-bold">Paid date: ' +
-                            $filter('globalDtFormat')(rowData.paid_date) + ' <span style="margin-left:20px"> Total (in EUR): ' + tempInvoicePrice + ' </span></td> </tr>'
+                            '<tr class="groupdate"><td colspan="11" class="text-bold">Due date: ' +
+                            $filter('globalDtFormat')(rowData.invoice_due_date) + ' <span style="margin-left:20px"> Total (in EUR): ' + tempInvoicePrice + ' </span></td> </tr>'
                         );
-                        lastClient = rowData.paid_date;
+                        lastClient = rowData.invoice_due_date;
                     }
                 });
             }
@@ -38221,10 +38210,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // END
     ////////
 
-    $scope.displayGorupBy = function(type){
-        $scope.recordgroupByPaidDate = type;
-        $scope.invcStatusRecord($scope.activeTab)
-    }
+    // $scope.displayGorupBy = function(type){
+    //     $scope.recordgroupByPaidDate = type;
+    //     $scope.invcStatusRecord($scope.activeTab)
+    // }
 
     $scope.msgEmailSubject = '';
     $scope.generalEmail = function (id, invoiceNo, userSign) {

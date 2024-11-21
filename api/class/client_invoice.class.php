@@ -1865,11 +1865,12 @@ class Client_invoice
             //10 => 'action',
         ];
         // Determine the column to sort by based on DataTables order index
-        if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
-            //$orderColumn = ' tmInvoice.paid_date ';  
+        //if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
+        if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+            //$orderColumn = ' tmInvoice.invoice_due_date ';  
             //$orderDir =  'ASC';
             // use case if date is 00
-            $orderColumn = " CASE WHEN tmInvoice.paid_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.paid_date) DESC ";
+            $orderColumn = " CASE WHEN tmInvoice.invoice_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.invoice_due_date) DESC ";
             $orderDir =  ' ';
         }else{
             $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
@@ -1887,6 +1888,11 @@ class Client_invoice
                                         OR tmInvoice.invoice_status = 'Outstanding' 
                                         OR tmInvoice.invoice_status = 'Partly Paid') ";
                     break;
+                case 'group-outstanding':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Open' 
+                                        OR tmInvoice.invoice_status = 'Outstanding' 
+                                        OR tmInvoice.invoice_status = 'Partly Paid') ";
+                    break;    
                 case 'Partly Paid':
                     $whereCond .= " AND (tmInvoice.invoice_status = 'Partly Paid') ";
                     break;
@@ -1999,8 +2005,8 @@ class Client_invoice
         $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
         $data = $this->_db->rawQueryNew($baseQry);
 
-        if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
-            $grpQry = " SELECT DATE(tmInvoice.paid_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.paid_date) " ;
+        if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+            $grpQry = " SELECT DATE(tmInvoice.invoice_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.invoice_due_date) " ;
             $groupByDate = $this->_db->rawQueryNew($grpQry);
             $totalCostsByDate = [];
             foreach ($groupByDate as $row) {
@@ -2029,32 +2035,16 @@ class Client_invoice
 
             
             $data[$key]['group_total_invoice_cost_eur'] = 0;
-            if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
-                $paidDate = $value['paid_date'];
+            if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+                $paidDate = $value['invoice_due_date'];
                 if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
                     $createdDate = 'unpaid';
                 }else{
-                    $createdDate = date('Y-m-d', strtotime($value['paid_date'])); 
+                    $createdDate = date('Y-m-d', strtotime($value['invoice_due_date'])); 
                 }
                 //print_r($createdDate);
                 $data[$key]['group_total_invoice_cost_eur'] = isset($totalCostsByDate[$createdDate]) ? $totalCostsByDate[$createdDate] : 0;
             }
-
-            // foreach ($groupByData as $group) {
-            //     if (isset($data[$key]['created_date'])) {
-            //         // Convert both dates to Y-m-d format
-            //         $createdDate = date('Y-m-d', strtotime($data[$key]['created_date']));
-            //         $orderDay = date('Y-m-d', strtotime($group['order_day']));
-            
-            //         // Compare the formatted dates
-            //         if ($createdDate == $orderDay) {
-            //             $data[$key]['price_total_group_date'] = $group['total_invoice_cost'];
-            //             break;
-            //         }
-            //     }
-            // }
-            
-            
             
         }
 

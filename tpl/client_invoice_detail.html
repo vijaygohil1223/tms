@@ -128,6 +128,10 @@
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
                     Outstanding <span class="badge bg-info">{{openInvcCount}}</span></a>
                 </li>
+                <li class="list-group-item tab-group-outstanding" ng-class="{ 'active': activeTab=='group-outstanding'}">
+                  <a href="javascript:void(0)" ng-click="invcStatusRecord('group-outstanding')">
+                    Group outstanding <span class="badge bg-info">{{openInvcCount}}</span></a>
+                </li>
                 <li class="list-group-item tab-overdue" ng-class="{ 'active': activeTab=='Overdue'}">
                   <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
                     Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
@@ -162,12 +166,12 @@
                 </li>
               </ul>
               <div class="overview-list projecttable">
-                <div ng-if="['all','Completed','Not-exported'].includes(activeTab) ">
+                <!-- <div ng-if="['all','Completed','Not-exported'].includes(activeTab) ">
                   <div class="d-flex groupCheckbox">
                     <label style="margin-top:5px; white-space:nowrap;">Group by paid date &nbsp;&nbsp;</label>
                     <input type="checkbox" id="recordgroupByPaidDate" name="recordgroupByPaidDate" ng-model="recordgroupByPaidDate" ng-click="displayGorupBy(recordgroupByPaidDate)"  />
                   </div>
-                </div>
+                </div> -->
 
                 <div class="table-responsive">
                   
