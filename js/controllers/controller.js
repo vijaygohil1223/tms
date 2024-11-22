@@ -36682,7 +36682,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (invoices) {
             $scope.getAllInvoice = invoices;
-            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
+            //console.log('$scope.getAllInvoice', $scope.getAllInvoice)
             allInvoiceListArr = invoices;
             
             //get of invoice due period
@@ -36745,7 +36745,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
-            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
+            //console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
@@ -36822,7 +36822,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.activeTab = 'Open';
     $scope.invcStatusRecord = function (invcStatus) {
-        console.log('invcStatus', invcStatus)
+        //console.log('invcStatus', invcStatus)
         //$scope.filterInvoiceFn(invcStatus)
         $scope.activeTab = invcStatus;
 
@@ -36902,7 +36902,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
                     $scope.dtInstance.DataTable.ajax.reload();
                 } else {
-                    console.error('DataTable instance not correctly initialized.');
+                    //console.error('DataTable instance not correctly initialized.');
                 }
 
         //})    
@@ -37146,7 +37146,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('pageLength', 100)
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
-        .withOption('order', [[0, 'asc']])
+        .withOption('order', [[1, 'asc']])
         .withOption('drawCallback', function(settings) {
             if($scope.activeTab && $scope.activeTab == 'group-outstanding' ){
                 var api = this.api();
@@ -37217,8 +37217,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 };
 
                 if (id != undefined && id != " " && id != null) {
-
-                    console.log('arrObj', arrObj)
+                    //console.log('arrObj', arrObj)
                     $window.localStorage.generalMsg = invoiceEmail;
                     var modalInstance = $uibModal.open({
                         animation: $scope.animationsEnabled,
@@ -37271,7 +37270,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, totalp) {
-        console.log('id', id)
+        //console.log('id', id)
         // Initialize total price if not already initialized
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
@@ -37280,6 +37279,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (id) {
             
             if (id === 'all') {
+                $scope.totalSelectedPrice = 0;
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
                
                 if (isCheckedAll === 'true') {
@@ -37513,7 +37513,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // On input change
     $scope.isPaymentDate = false;
     $scope.onInputChange = function(item){
-        console.log('item', item)
+        //console.log('item', item)
         $scope.isPaymentDate = ['Paid','Complete'].includes(item.split(',').pop()) ? true : false 
     }
 
@@ -37528,12 +37528,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var i, j, totalChecked, successMsg, completedRequests;
         i = j = totalChecked = successMsg = completedRequests = 0;
         if(invoiceStatus != ''){
-            console.log('$scope.checkedIds',$scope.checkedIds )
+            //console.log('$scope.checkedIds',$scope.checkedIds )
             //for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
             angular.forEach($scope.checkedIds, function (val, i) {    
-                console.log('val', val)
+                //console.log('val', val)
                 const getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return getAllInvoice.invoice_id == val });
-                console.log('getAllInvoice-filter1', getAllInvoice)
+                //console.log('getAllInvoice-filter1', getAllInvoice)
                 //var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
                 //const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
                 var invoiceselect = getAllInvoice.length ? 'true' : 'false';
@@ -37556,22 +37556,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "statusId": invoiceId
                     };
                     if (['Paid', 'Partly Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status)) {
-                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+                        //console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
                         // payment date
                         $scope.inv.created_date = originalDateFormatNew($scope.created_date);
-                        console.log('$scope.inv.created_date', $scope.inv.created_date)
+                        //console.log('$scope.inv.created_date', $scope.inv.created_date)
                         $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
                         if(! isValidDate($scope.inv.created_date) ) 
                             $scope.inv.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
                         
-                        console.log('invcobj', invcObj)
+                        //console.log('invcobj', invcObj)
                         var date = $filter('date')(new Date(), 'yyyy/MM/dd');
                         $scope.inv.paid_date = date;
                         
                         //var invPaidAmount = numberFormatCommaToPoint(invcObj.paid_amount);
                         var invPaidAmount = invcObj.Invoice_cost - invcObj.paid_amount;
-                        console.log('invPaidAmount', invPaidAmount)
-                        console.log('$scope.inv.paid_amount', $scope.inv.paid_amount)
+                        //console.log('invPaidAmount', invPaidAmount)
+                        //console.log('$scope.inv.paid_amount', $scope.inv.paid_amount)
                         $scope.inv.partPaid = parseFloat(invPaidAmount);
                         $scope.inv.paid_amount = parseFloat(invcObj.Invoice_cost);
                         
@@ -37642,7 +37642,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (settingData && settingData.length > 0) {
             const defaultSetting = settingData.find(elData => elData.is_default == 1);
             $scope.invoiceSettingData = defaultSetting || settingData[0];
-            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+            //console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
         }
     });
 
@@ -37658,7 +37658,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }else{
             var pdfPage = 'tpl/invoicepdfCommon.html'
         }
-        console.log('$scope.data', $scope.data)
+        //console.log('$scope.data', $scope.data)
         var modalInstance = $uibModal.open({
             templateUrl: pdfPage,
             controller: 'invoicePdfController',
@@ -37675,7 +37675,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             keyboard: false              // To prevent closing on Esc key press
         });
         modalInstance.result.then(function (rtnItem) {
-            console.log('rtnItem', rtnItem)
+            //console.log('rtnItem', rtnItem)
             $scope.selected = rtnItem;
             //$route.reload();
             //generateZip(pdfFiles);
