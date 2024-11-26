@@ -20161,25 +20161,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var start = meta.settings._iDisplayStart;
             var index = start + meta.row; // This will give you the index for unique ids
             var tempCheckedmark = '';
-            if(full.is_excel_download){
-                tempCheckedmark = `<span class="fa fa-check"  
-                        title="Excel exported" style="margin-left:10px;"> </span>`
+            
+            if (full.is_excel_download) {
+                tempCheckedmark = `
+                    <span class="fa fa-check" 
+                          ng-if="full.is_excel_download" 
+                          title="Excel exported" 
+                          style="margin-left:7px;">
+                    </span>`;
             }
-            // Constructing the HTML for the checkbox and Excel exported icon
-            var html = '<div class="nowrap ">' +
-                // Checkbox input for each row
-                '<input type="checkbox" id="invoiceCheck' + index + '" ' +
-                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + full.invoice_price_euro + ')" ' +
-                'class="invoiceCheck' + full.invoice_id + '" ' +
-                'name="invoiceCheck' + index + '" ' +
-                'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" ' +
-                'ng-checked="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']==\'invoicecheck\'" />' +
-                tempCheckedmark+
-                // Hidden input to bind the invoice ID to the check data model
-                '<input type="text" id="invoiceCheckData' + index + '" ' +
-                'name="invoiceCheckData' + index + '" style="display: none" ' +
-                'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" />' +
-                '</div>';
+        
+            // Serialize `full` object for passing
+            var fullData = JSON.stringify(full).replace(/"/g, '&quot;');
+        
+            var html = `
+                <div class="nowrap">
+                    <input type="checkbox" id="invoiceCheck${index}" 
+                           ng-click="checkInvoiceIds(${full.invoice_id}, '')" 
+                           class="invoiceCheck${full.invoice_id}" 
+                           name="invoiceCheck${index}" 
+                           ng-model="checkor" 
+                           ng-checked="checkdata['invoiceCheckData${full.invoice_id}']=='invoicecheck'" />
+                    ${tempCheckedmark}
+                    <input type="text" id="invoiceCheckData${index}" 
+                           name="invoiceCheckData${index}" 
+                           style="display: none" 
+                           ng-model="checkdata['invoiceCheckData${full.invoice_id}']" />
+                </div>`;
             return html;
         }),
         DTColumnBuilder.newColumn(null).withTitle('Invoice Number (Internal)').renderWith(function(data, type, full, meta) {
