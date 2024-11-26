@@ -2005,6 +2005,19 @@ class Client_invoice
         $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
         $data = $this->_db->rawQueryNew($baseQry);
 
+        // if multiple currency eixst then display total in EUR else just total 
+        $is_multiple_currency = false;
+        $currencyGroupbyQry = "  SELECT tmInvoice.invoice_id,tc.client_currency $jonTable  $whereCond GROUP BY tc.client_currency " ;
+        $currGrpData = $this->_db->rawQueryNew($currencyGroupbyQry);
+        if($currGrpData){
+            foreach ($currGrpData as $row) {
+                if ($row['client_currency'] == 'EUR,€' || $row['client_currency'] == '') {
+                    $is_multiple_currency = true;
+                    break;
+                }
+            }   
+        }
+
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
             $grpQry = " SELECT DATE(tmInvoice.invoice_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.invoice_due_date) " ;
             $groupByDate = $this->_db->rawQueryNew($grpQry);
@@ -2075,6 +2088,7 @@ class Client_invoice
             "data" => $retData,
             "totalPrice" => $priceTotal ? $priceTotal : 0 ,
             "totalPriceEur" => $priceTotalEur ? $priceTotalEur : 0 ,
+            "is_multiple_currency" => $is_multiple_currency ,
         ];
         return $response;
     }
