@@ -36845,6 +36845,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     $scope.jobId = id;
     // }
     $scope.isPastDate = function(date, status) {
+        //console.log('date======>', date)
+        return true;
         if(status !== 'Paid'){
             var dueDate = new Date(date); // Convert the date to a JavaScript Date object
             var today = new Date();
@@ -37145,6 +37147,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // ****** END invioce TABS ******* //
     $scope.recordgroupByPaidDate = false;
     $scope.totalPriceEuro = 0;
+    $scope.is_multiple_currency = true;
     
     rest.path = "getclientInvoiceListCount";
     rest.get().success(function (data) {
@@ -37159,6 +37162,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.credtInvcCount = data?.credited || 0 ;
     })
 
+    var todayDateTemp = new Date();
+    todayDateTemp.setHours(0, 0, 0, 0);
+
     // *******============ //
     //        clien invoice custom pagination start
     //==========**************//
@@ -37170,6 +37176,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var start = meta.settings._iDisplayStart;
             var index = start + meta.row; // This will give you the index for unique ids
             var tempCheckedmark = '';
+            const trPriceCost = $scope.is_multiple_currency == true ? full.invoice_price_euro : full.Invoice_cost
+                        
             if(full.is_excel_download){
                 tempCheckedmark = `<span class="fa fa-check"  
                         title="Excel exported" style="margin-left:10px;"> </span>`
@@ -37178,7 +37186,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var html = '<div class="nowrap ">' +
                 // Checkbox input for each row
                 '<input type="checkbox" id="invoiceCheck' + index + '" ' +
-                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + full.invoice_price_euro + ')" ' +
+                'ng-click="checkInvoiceIds(' + full.invoice_id + ', ' + trPriceCost + ')" ' +
                 'class="invoiceCheck' + full.invoice_id + '" ' +
                 'name="invoiceCheck' + index + '" ' +
                 'ng-model="checkdata[\'invoiceCheckData\' + ' + full.invoice_id + ']" ' +
@@ -37261,15 +37269,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return ` <span class="nowrap"> ${$filter('globalDtFormat')(full.invoice_date)} </span>`;
                 }
         }),
-        DTColumnBuilder.newColumn(null).withTitle('Due Date').renderWith(function(data, type, full, meta) {
-            return '<span ng-class="{\'past-date\': isPastDate(' + full.invoice_due_date + ', \'' + full.invoice_status + '\')}" >' +
-                        $filter('globalDtFormat')(full.invoice_due_date) + 
-                    '</span>' +
-                    '<a href="javascript:void(0)" ' +
-                    'title="edit duedate" class="trActionIcon" ' +
-                    'ng-click="editDueDate(\'' + full.invoice_id + '\', \'' + $filter('globalDtFormat')(full.invoice_due_date) + '\', \'' + full.invoice_date + '\')">' +
-                    '<i class="fa fa-pencil"></i></a>';
-
+        DTColumnBuilder.newColumn(null)
+        .withTitle('Due Date')
+        .renderWith(function(data, type, full, meta) {
+            const statusTemp = full.invoice_status;
+            const dueDateTemp = new Date(full.invoice_due_date);
+            const isPastDue = statusTemp !== 'Paid' && dueDateTemp < todayDateTemp;
+            const formattedDueDate = $filter('globalDtFormat')(full.invoice_due_date);
+            return `
+                <span ng-class="{'past-date': ${isPastDue}}">
+                    ${formattedDueDate}
+                </span>
+                <a href="javascript:void(0)" 
+                title="Edit Due Date" 
+                class="trActionIcon" 
+                ng-click="editDueDate('${full.invoice_id}', '${formattedDueDate}', '${full.invoice_date}')">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            `;
         }),
         DTColumnBuilder.newColumn(null).withTitle('Payment Date').renderWith(function(data, type, full, meta) {
             if(full.credit_note_id && full.credit_note_id > 0  ){
@@ -37299,7 +37316,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }),
         DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
             const tempval = full.credit_note_id ? true : false;
-            var html = `
+            return `
                 <div class="d-flex">
                     <a href="javascript:void(0)" title="PDF Report" class="trActionIcon" 
                        ng-click="pdfInvoice(${full.invoice_id}, false, ${tempval})" style="margin-left:15px;">
@@ -37311,13 +37328,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     </a>
                 </div>
             `;
-            // $timeout(function() {
-            //     var compiledHtml = $compile(html)($scope);
-            //     angular.element(document).find('table').find('tbody').find('tr').eq(meta.row)
-            //         .find('td').eq(meta.col).html(compiledHtml);
-            // }, 0);
-            return html; 
         }),
+
     ];
     $scope.filterInvoiceFn = function(tabName){
         $scope.dtOptionsClient = DTOptionsBuilder.newOptions()
@@ -37348,6 +37360,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.tripleTexinvoiceList = res?.data;
                     $scope.totalPrice = res?.totalPrice || 0;
                     $scope.totalPriceEuro = res?.totalPriceEur || 0;
+                    $scope.is_multiple_currency = res?.is_multiple_currency;
                     
                     // Pass the data to DataTables
                     callback({
@@ -37379,12 +37392,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var api = this.api();
                 var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
                 var lastClient = null;
+                const isPriceInEUR = $scope.is_multiple_currency == true ? ' (in EUR): ' : ' : ';
                 api.rows({ page: 'current' }).data().each(function(rowData, index) {
                     if (lastClient !== rowData.invoice_due_date ) {
                         const tempInvoicePrice = $filter('customNumber')( (rowData.group_total_invoice_cost_eur).toFixed(2)) ;
                         $(rows).eq(index).before(
                             '<tr class="groupdate"><td colspan="11" class="text-bold">Due date: ' +
-                            $filter('globalDtFormat')(rowData.invoice_due_date) + ' <span style="margin-left:20px"> Total (in EUR): ' + tempInvoicePrice + ' </span></td> </tr>'
+                            $filter('globalDtFormat')(rowData.invoice_due_date) + ' <span style="margin-left:20px"> Total' + isPriceInEUR + tempInvoicePrice + ' </span></td> </tr>'
                         );
                         lastClient = rowData.invoice_due_date;
                     }
@@ -37512,16 +37526,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (isCheckedAll === 'true') {
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
                     angular.forEach($scope.invoiceListAll, function(invoiceL, index) {
+                        const priceCost = $scope.is_multiple_currency == true ? invoiceL.invoice_price_euro : invoiceL.Invoice_cost
                         if (!invoiceL.credit_note_id) {
                             // Add invoice cost to total price
                             //$scope.totalSelectedPrice += invoiceL.Invoice_cost;
-                            $scope.totalSelectedPrice += invoiceL.invoice_price_euro;
+                            //$scope.totalSelectedPrice += invoiceL.invoice_price_euro;
+                            $scope.totalSelectedPrice += priceCost;
                             
                             $scope.checkedIds.push(invoiceL.invoice_id);
                         } else {
                             // Subtract invoice cost (as it's a credit note)
                             //$scope.totalSelectedPrice -= invoiceL.Invoice_cost;
-                            $scope.totalSelectedPrice -= invoiceL.invoice_price_euro;
+                            //$scope.totalSelectedPrice -= invoiceL.invoice_price_euro;
+                            $scope.totalSelectedPrice -= priceCost;
                         }
                     });
                 } else {
