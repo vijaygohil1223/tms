@@ -2027,7 +2027,7 @@ class Client_invoice
                 if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00' || $paidDate == '') {
                     $paidDate = 'unpaid';
                 }
-                $totalCostsByDate[$paidDate] = $row['total_invoice_cost_eur'];
+                $totalCostsByDate[$paidDate] = $is_multiple_currency == true ? $row['total_invoice_cost_eur'] : $row['total_invoice_cost'];
                 //$totalCostsByDate[$row['order_day']] = $row['total_invoice_cost'];
             }
         }

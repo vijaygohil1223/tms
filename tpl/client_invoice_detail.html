@@ -184,13 +184,11 @@
                           Selected Total<span ng-if="is_multiple_currency == true">EUR</span>  : <strong>{{ totalSelectedPrice | customNumber }} </strong>
                         </td>
                         <td colspan="7" style="text-align: left;"> 
-                          <span ng-if="is_multiple_currency == true">
-                            Total Price(Eur): <strong>{{ totalPriceEuro | customNumber }} </strong> 
+                          <span>
+                              Total Price{{ is_multiple_currency ? ' (EUR)' : '' }}: 
+                              <strong>{{ is_multiple_currency ? totalPriceEuro : totalPrice | customNumber }}</strong>
                           </span>
-                          <span ng-if="is_multiple_currency == false">
-                            Total Price: <strong>{{ totalPrice | customNumber }} </strong> 
-                          </span>
-                          
+                        
                         </td>
                       </tr>
                     </tfoot>

@@ -37165,12 +37165,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var api = this.api();
                 var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
                 var lastClient = null;
+                const isPriceInEUR = $scope.is_multiple_currency == true ? ' (in EUR): ' : ' : ';
                 api.rows({ page: 'current' }).data().each(function(rowData, index) {
                     if (lastClient !== rowData.invoice_due_date ) {
                         const tempInvoicePrice = $filter('customNumber')( (rowData.group_total_invoice_cost_eur).toFixed(2)) ;
                         $(rows).eq(index).before(
                             '<tr class="groupdate"><td colspan="11" class="text-bold">Due date: ' +
-                            $filter('globalDtFormat')(rowData.invoice_due_date) + ' <span style="margin-left:20px"> Total (in EUR): ' + tempInvoicePrice + ' </span></td> </tr>'
+                            $filter('globalDtFormat')(rowData.invoice_due_date) + ' <span style="margin-left:20px"> Total' + isPriceInEUR + tempInvoicePrice + ' </span></td> </tr>'
                         );
                         lastClient = rowData.invoice_due_date;
                     }
