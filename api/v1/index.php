@@ -3707,6 +3707,18 @@ $app->get('/freelanceJobForInvoice/:id','authenticate', function ($id) use($app)
     $result = $freelanceJob->freelanceJobForInvoice($id);
     echoResponse(200, $result);
 });
+
+$app->post('/getLinguistInvoiceList','authenticate', function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->getLinguistInvoiceList($data);
+    echoResponse(200, $result);
+});
+$app->get('/getLinguistInvoiceListCount', 'authenticate',function() {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->getLinguistInvoiceListCount();
+    echoResponse(200, $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {

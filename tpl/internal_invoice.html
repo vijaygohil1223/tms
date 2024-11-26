@@ -112,8 +112,20 @@
                   <div class="overview-list projecttable">
 
                     <div class="table-responsive " ng-if="invoiceActive !== 'Approved' ">
-                      <table class="table table-striped b-b" datatable="ng" id="invoiceList" dt-options="dtOptionsInv">
-                        <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
+
+                      <table datatable="" dt-options="dtOptionsClient" dt-columns="dtColumnsLinguist" id="invoiceAllTbl" style="width:100% !important" dt-instance="dtInstance" class="table m-b-none default footable-loaded footable" >
+                  
+                        <tfoot>
+                          <tr>
+                            <td colspan="4" style="text-align: left;white-space: nowrap;">Selected Total(Eur) : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
+                            <td colspan="7" style="text-align: left;"> Total Price(Eur): <strong>{{ totalPriceEuro | customNumber }} </strong> </td>
+                          </tr>
+                        </tfoot>
+                      
+                      </table>
+                      <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
+                        
+                      <!-- <table class="table table-striped b-b" datatable="ng" id="invoiceList" dt-options="dtOptionsInv">
                         <thead>
                           <th>#</th>
                           <th>Invoice Number (Internal)</th>
@@ -144,7 +156,6 @@
                               <a href="#/invoice-show/{{invoiceL.invoice_id}}"
                                 title="View"><span>{{invoiceL.org_invoice_number}}</span></a>
                             </td>
-                            <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
                             <td>
                               <a  style="color:#4ba0c3" 
                                   href="#/viewExternal/{{invoiceL.freelanceId}}" 
@@ -168,8 +179,6 @@
                             </td>
                             <td>
                               <div class="trActiontitle d-flex">
-                                <!-- <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                                      class="fa fa-eye"></i></a> -->
                                 <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
                                   ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
                                     class="fa fa-download"></i></a>
@@ -190,7 +199,8 @@
                           </tr>
                         </tfoot>
 
-                      </table>
+                      </table> -->
+
                     </div>
 
                     <div class="table-responsive " ng-if="invoiceActive === 'Approved' " style="margin-top:10px;" >

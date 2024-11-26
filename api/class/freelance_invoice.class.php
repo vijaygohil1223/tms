@@ -335,6 +335,279 @@ class Freelance_invoice
         return $data;
     }
 
+    public function getLinguistInvoiceList($post)
+    {   
+        $searchValue = $post['search'] ?? ''; 
+        $orderColumnIndex = $post['order'][0]['column'] ?? 1; 
+        $orderDir = $post['order'][0]['dir'] ?? 'asc'; 
+        $start = $post['start'] ?? 0; 
+        $length = $post['length'] ?? 100; 
+        // Define the columns array corresponding to DataTables columns
+        $columns = [
+            0 => 'invoice_id',
+            1 => 'invoice_number',
+            //1 => 'custom_invoice_no',
+            2 => 'tc.vUserName',
+            3 => 'accounting_tripletex',
+            4 => 'Invoice_cost',
+            5 => 'client_currency',
+            6 => 'invoice_date',
+            7 => 'invoice_due_date',
+            8 => 'paid_date',
+            9 => 'invoice_status',
+            //10 => 'action',
+        ];
+        // Determine the column to sort by based on DataTables order index
+        //if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
+        if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+            //$orderColumn = ' tmInvoice.invoice_due_date ';  
+            //$orderDir =  'ASC';
+            // use case if date is 00
+            $orderColumn = " CASE WHEN tmInvoice.invoice_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.invoice_due_date) DESC ";
+            $orderDir =  ' ';
+        }else{
+            $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
+            $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+        }
+
+        $whereCond = " WHERE 
+        tmInvoice.invoice_type = 'Save' 
+        AND tmInvoice.is_deleted != 1 ";
+
+        if ($post && isset($post['activeTab'])) {
+            switch ($post['activeTab']) {
+                case 'Open':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Open' 
+                                        OR tmInvoice.invoice_status = 'Outstanding' 
+                                        OR tmInvoice.invoice_status = 'Partly Paid') ";
+                    break;
+                case 'group-outstanding':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Open' 
+                                        OR tmInvoice.invoice_status = 'Outstanding' 
+                                        OR tmInvoice.invoice_status = 'Partly Paid') ";
+                    break;    
+                case 'Partly Paid':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Partly Paid') ";
+                    break;
+                case 'Completed':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Complete' 
+                                        OR tmInvoice.invoice_status = 'Completed' 
+                                        OR tmInvoice.invoice_status = 'Paid') ";
+                    break;
+                case 'Cancelled':
+                    $whereCond .= " AND (tmInvoice.invoice_status = 'Cancel' 
+                                        OR tmInvoice.invoice_status = 'Irrecoverable') ";
+                    break;
+                case 'Not-exported':
+                    $whereCond .= " AND tmInvoice.is_excel_download != 1 ";
+                    break;
+                case 'Overdue':
+                    $whereCond .= " AND tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed', 'Cancel', 'Irrecoverable') ";
+                    $whereCond .= " AND date(tmInvoice.invoice_due_date) < CURDATE() ";
+                    break;
+                default:
+                    break;
+            }
+        }
+        // search
+        // Assuming $searchValue can contain a date in dd.mm.yyyy format
+        if (!empty($searchValue)) {
+            //$searchValueConverted = convertDateFormat($searchValue);
+            $searchValueConverted = self::convertDateFormat($searchValue);
+            $searchV = str_replace('.', '', $searchValue);
+            $priceVal = str_replace(',', '.', $searchV);
+
+            $creditNo = '';
+            if($post && isset($post['activeTab']) && $post['activeTab'] == 'Credited'){
+                $creditNo = " OR tcn.credit_note_no LIKE '%" . $searchValue . "%' ";
+            }
+            $statusValue = ($searchValue =='Paid' ) ? 'Completed' : $searchValue ;
+            
+            $whereCond .= " AND ( tmInvoice.invoice_status LIKE '%" . $statusValue . "%'
+                        OR tc.vUserName LIKE '%" . $searchValue . "%'
+                        OR tmInvoice.invoice_number LIKE '%" . $searchValue . "%'
+                        OR tmInvoice.custom_invoice_no LIKE '%" . $searchValue . "%'
+                        OR tc.client_currency LIKE '%" . $searchValue . "%'
+                        OR tc.accounting_tripletex LIKE '%" . $searchValue . "%'
+                        OR tmInvoice.Invoice_cost LIKE '%" . $priceVal . "%'
+                        OR tmInvoice.paid_amount LIKE '%" . $priceVal . "%'
+                        OR tmInvoice.created_date LIKE '%" . $searchValueConverted . "%'
+                        OR tmInvoice.paid_date LIKE '%" . $searchValueConverted . "%'
+                        OR tmInvoice.invoice_due_date LIKE '%" . $searchValueConverted . "%'
+                        $creditNo
+                        )";
+        }
+        
+        $orderLimit = " ORDER BY " . $orderColumn . " " . $orderDir . " LIMIT $start, $length ";
+        //echo $userId;exit;
+        // Base query
+        $selectFld = "SELECT 
+            tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, 
+            tsv.po_number AS poNumber, tc.iClientId AS clientId, 
+            tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail,
+            tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, 
+            tu.iUserId AS freelanceId, concat(tu.vFirstName, ' ', tu.vLastName) AS freelanceName, 
+            tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, 
+            tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, 
+            tu.freelance_currency, tsv.job_code AS jobCode, 
+            tmInvoice.invoice_number, tmInvoice.invoice_id, 
+            tmInvoice.invoice_status, tmInvoice.Invoice_cost, 
+            tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, 
+            tmInvoice.created_date,tmInvoice.is_approved,
+            tmInvoice.reminder_sent,tmInvoice.is_excel_download, 
+            tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
+            tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
+            CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, 
+            tmInvoice.inv_due_date, tmInvoice.vat2 as taxInNok, 
+            tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
+            (tmInvoice.Invoice_cost/tmInvoice.currency_rate) AS Invoice_costEUR 
+            ";
+
+        $jonLeftTable = " 
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId=tmInvoice.job_id
+        LEFT JOIN tms_payment tpy ON tpy.iUserId=tu.iUserId AND tpy.iType = 1
+        ";
+
+        $jonTable = " FROM tms_invoice tmInvoice " . $jonLeftTable . "  ";
+        
+        $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
+        $data = $this->_db->rawQueryNew($baseQry);
+
+        if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+            $grpQry = " SELECT DATE(tmInvoice.invoice_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.invoice_due_date) " ;
+            $groupByDate = $this->_db->rawQueryNew($grpQry);
+            $totalCostsByDate = [];
+            foreach ($groupByDate as $row) {
+                $paidDate = $row['order_day'];
+                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00' || $paidDate == '') {
+                    $paidDate = 'unpaid';
+                }
+                $totalCostsByDate[$paidDate] = $row['total_invoice_cost_eur'];
+                //$totalCostsByDate[$row['order_day']] = $row['total_invoice_cost'];
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            $data[$key]['companyName'] = '';
+
+            $data[$key]['invoice_number'] = !empty($value['custom_invoice_no']) ? $value['custom_invoice_no'] : $value['invoice_number'];
+            $data[$key]['client_currency'] = !empty($value['client_currency']) ? explode(',', $value['client_currency'])[0] : 'EUR';
+            $data[$key]['invoice_status'] = ($value['invoice_status'] == 'Open') ? 'Outstanding' : $value['invoice_status'];
+            if (in_array($value['invoice_status'], ['Complete', 'Completed', 'Paid'])) {
+                $data[$key]['invoice_status'] = 'Paid';
+            }
+
+            
+            $data[$key]['group_total_invoice_cost_eur'] = 0;
+            if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
+                $paidDate = $value['invoice_due_date'];
+                if ($paidDate == '0000-00-00 00:00:00' || $paidDate == '0000-00-00') {
+                    $createdDate = 'unpaid';
+                }else{
+                    $createdDate = date('Y-m-d', strtotime($value['invoice_due_date'])); 
+                }
+                //print_r($createdDate);
+                $data[$key]['group_total_invoice_cost_eur'] = isset($totalCostsByDate[$createdDate]) ? $totalCostsByDate[$createdDate] : 0;
+            }
+            
+        }
+
+        $constQry = "select count(*) as total $jonTable $whereCond ";
+        $countQry = $this->_db->rawQueryNew($constQry);
+        $recordsTotal = $countQry[0]['total'];
+
+        $constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond ";
+        $priceRecord = $this->_db->rawQueryNew($constQry);
+        $priceTotal = $priceRecord[0]['priceTotal'];
+        $priceTotalEur = $priceRecord[0]['total_price_euro'];
+
+        $creditdata = [];
+        $retData = $data;
+        
+        $totalFilteredRecords = $recordsTotal ?? 0;
+        $response = [
+            "draw" => intval($post['draw']),
+            "recordsTotal" => $recordsTotal,
+            "recordsFiltered" => $totalFilteredRecords,
+            "data" => $retData,
+            "totalPrice" => $priceTotal ? $priceTotal : 0 ,
+            "totalPriceEur" => $priceTotalEur ? $priceTotalEur : 0 ,
+        ];
+        return $response;
+    }
+
+    public function getLinguistInvoiceListCount()
+    {   
+        
+        // Define the base query part
+        $jonTable = "FROM tms_invoice_client tmInvoice
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_invoice_credit_notes tcn ON tcn.invoice_id = tmInvoice.invoice_id
+        LEFT JOIN (
+            SELECT invoice_id, SUM(invoice_partial_paid_amount) AS total_partial_paid 
+            FROM tms_invoice_client_payments 
+            WHERE is_deleted = 0 
+            GROUP BY invoice_id
+        ) tcp ON tcp.invoice_id = tmInvoice.invoice_id";
+
+        // Define the base `WHERE` conditions
+        $whereCond = "WHERE tmInvoice.invoice_type = 'Save' AND tmInvoice.is_deleted != 1";
+
+        // Prepare the individual status conditions
+        $statusConditions = [
+        'outstanding' => "(tmInvoice.invoice_status IN ('Open', 'Outstanding', 'Partly Paid'))",
+        'partpaid' => "(tmInvoice.invoice_status = 'Partly Paid')",
+        'paid' => "(tmInvoice.invoice_status IN ('Complete', 'Completed', 'Paid'))",
+        'cancelled' => "(tmInvoice.invoice_status IN ('Cancel', 'Irrecoverable'))",
+        'notExported' => "(tmInvoice.is_excel_download != 1)",
+        'overdue' => "(tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed', 'Cancel', 'Irrecoverable') 
+                    AND DATE(tmInvoice.invoice_due_date) < CURDATE())"
+        ];
+        // Initialize an array to store results
+        $data = [];
+        // Query to count all invoices
+        $cntQry = "SELECT 
+                COUNT(*) AS total,
+                SUM(CASE WHEN {$statusConditions['outstanding']} THEN 1 ELSE 0 END) AS outstanding,
+                SUM(CASE WHEN {$statusConditions['partpaid']} THEN 1 ELSE 0 END) AS partpaid,
+                SUM(CASE WHEN {$statusConditions['paid']} THEN 1 ELSE 0 END) AS paid,
+                SUM(CASE WHEN {$statusConditions['cancelled']} THEN 1 ELSE 0 END) AS cancelled,
+                SUM(CASE WHEN {$statusConditions['notExported']} THEN 1 ELSE 0 END) AS notExported,
+                SUM(CASE WHEN {$statusConditions['overdue']} THEN 1 ELSE 0 END) AS overdue
+            $jonTable $whereCond";
+
+        // Execute the query
+        $countQry = $this->_db->rawQueryNew($cntQry);
+
+        // Assign values to the $data array
+        if ($countQry) {
+                $data['outstanding'] = $countQry[0]['outstanding'];
+                $data['partpaid'] = $countQry[0]['partpaid'];
+                $data['paid'] = $countQry[0]['paid'];
+                $data['cancelled'] = $countQry[0]['cancelled'];
+                $data['notExported'] = $countQry[0]['notExported'];
+                $data['overdue'] = $countQry[0]['overdue'];
+            } else {
+                $data['outstanding'] = 0;
+                $data['partpaid'] = 0;
+                $data['paid'] = 0;
+                $data['cancelled'] = 0;
+                $data['notExported'] = 0;
+                $data['overdue'] = 0;
+        }
+
+        // Query to count all invoices
+        $cntQryAll = "SELECT COUNT(*) AS total $jonTable $whereCond";
+        $countQryAll = $this->_db->rawQueryNew($cntQryAll);
+        $data['allinvoice'] = $countQryAll[0]['total'];
+
+        return $data;
+
+    }
+
     //display one invoice
     public function invoiceViewOne($id)
     {
@@ -923,6 +1196,15 @@ class Freelance_invoice
         ];
 
         return $response;
+    }
+
+    public function convertDateFormat($date)
+    {
+        $dateParts = explode('.', $date);
+        if (count($dateParts) === 3) {
+            return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+        }
+        return $date; // Return the original date if format is incorrect
     }
 
 }
