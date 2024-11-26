@@ -2007,16 +2007,21 @@ class Client_invoice
 
         // if multiple currency eixst then display total in EUR else just total 
         $is_multiple_currency = false;
-        $currencyGroupbyQry = "  SELECT tmInvoice.invoice_id,tc.client_currency $jonTable  $whereCond GROUP BY tc.client_currency " ;
+        $temp_currency_arr = [];
+        $currencyGroupbyQry = "SELECT tmInvoice.invoice_id, tc.client_currency 
+                            $jonTable $whereCond 
+                            GROUP BY tc.client_currency";
         $currGrpData = $this->_db->rawQueryNew($currencyGroupbyQry);
-        if($currGrpData){
+        if ($currGrpData) {
             foreach ($currGrpData as $row) {
-                if ($row['client_currency'] == 'EUR,€' || $row['client_currency'] == '') {
-                    $is_multiple_currency = true;
-                    break;
-                }
-            }   
+                $currencyVal = !empty($row['client_currency']) 
+                            ? explode(',', $row['client_currency'])[0] 
+                            : 'EUR';
+                $temp_currency_arr[$currencyVal] = true; // Use an associative array for unique values
+            }
         }
+        $is_multiple_currency = count($temp_currency_arr) > 1;
+
 
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'group-outstanding' ) {
             $grpQry = " SELECT DATE(tmInvoice.invoice_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.invoice_due_date) " ;
