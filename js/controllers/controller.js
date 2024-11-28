@@ -20582,7 +20582,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var invoiceselected = $('.invoiceCheck' + item1.invoice_id).is(':checked') ? 'true' : 'false';
                         const priceCost = $scope.is_multiple_currency == true ? item1.Invoice_costEUR : item1.Invoice_cost
                         if (invoiceselected == 'true') {
-                            var invoiceIds = angular.element('.invoiceCheckData' + item1.invoice_id).val();
+                            //var invoiceIds = angular.element('.invoiceCheckData' + item1.invoice_id).val();
+                            var invoiceIds = item1.invoice_id;
                             $scope.checkedIds.push(invoiceIds.toString());
                             //$scope.totalSelectedPrice += item1.Invoice_costEUR;
                             $scope.totalSelectedPrice += priceCost;
