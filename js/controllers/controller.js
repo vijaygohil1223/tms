@@ -19884,7 +19884,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return total;
     };
     
-}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder, DTColumnBuilder ) {
+}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder, DTColumnBuilder, $http ) {
     $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
@@ -20063,71 +20063,319 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     };
 
+    $scope.dtInstance = {};
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    }
+    $scope.invoiceListAll = [];
+    $scope.invoiceActive = 'Approved';
     $scope.invcStatusRecord = function (invcStatus) {
-        
+        console.log('invcStatus', invcStatus)
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
-            //$scope.invoiceListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
             $scope.invcstatusFilter = 'Approved';
-            //$scope.invcstatusFilter = 'all';
-            //$scope.invcstatusFilter = '';
         }
         $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
-        // Uncheck checkbox
+
+        $scope.activeTab = invcStatus;
+
         $('input[id^=checkAll]:checkbox').removeAttr('checked');
-        // $scope.invcList_tabFilter()
-        // .then(function (invoicePromiseData) {
-                $scope.allInvcCount = $scope.allInvcData.length;
-                /* All Invoice list for widget */
-                switch ($scope.invcstatusFilter) {
-                    case "all":
-                        $scope.invoiceListAll = $scope.allInvcData;
-                        break;
-                    case "Open":
-                        $scope.invoiceListAll = $scope.openInvc;
-                        break;
-                    case "Approved":
-                        $scope.invoiceListAll = $scope.approvedInvc;
-                        break;   
-                    case "Completed":
-                        $scope.invoiceListAll = $scope.completeInvc;
-                        break;
-                    // case "Partly Paid":
-                    //     $scope.invoiceListAll = $scope.partPaidInvc;
-                    //     break;
-                    case "Overdue":
-                        $scope.invoiceListAll = $scope.overdueInvc;
-                        break;    
-                    case "Cancelled":
-                        $scope.invoiceListAll = $scope.cancelledInvc;
-                        break;  
-                    case "Not-exported":
-                        $scope.invoiceListAll = $scope.notExportedInvc;
-                        setTimeout(() => {
-                            $("#checkAll").trigger( "click" );
-                        }, 200);
-                        break;            
-                }
-                // if ($scope.invcstatusFilter == 'all') {
-                //     $scope.invoiceListAll = $scope.allInvcData;
-                // }
-                //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
-                if ($scope.invoiceListAll) {
-                    $scope.invoiceListAll = $scope.invoiceListAll;
-                }
-                /* Start Upcoming Due Invoice - widgetBox */
-                $scope.showDataLoaderJob = false;
-                /* End */
-        //})    
+        //$scope.allInvcCount = $scope.allInvcData ? $scope.allInvcData.length : 0;
+        switch ($scope.invcstatusFilter) {
+            case "all":
+                $scope.invoiceListAll = $scope.allInvcData;
+                break;
+            case "Open":
+                $scope.invoiceListAll = $scope.openInvc;
+                break;
+            case "Approved":
+                $scope.invoiceListAll = $scope.approvedInvc;
+                break;   
+            case "Completed":
+                $scope.invoiceListAll = $scope.completeInvc;
+                break;
+            // case "Partly Paid":
+            //     $scope.invoiceListAll = $scope.partPaidInvc;
+            //     break;
+            case "Overdue":
+                $scope.invoiceListAll = $scope.overdueInvc;
+                break;    
+            case "Cancelled":
+                $scope.invoiceListAll = $scope.cancelledInvc;
+                break;  
+            case "Not-exported":
+                $scope.invoiceListAll = $scope.notExportedInvc;
+                setTimeout(() => {
+                    $("#checkAll").trigger( "click" );
+                }, 200);
+                break;            
+        }
+
+        $scope.totalSelectedPrice = '';
+        
+        $scope.showDataLoaderJob = false;
+        /* End */
+        
+        if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+            $scope.dtInstance.reloadData();
+        } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+            $scope.dtInstance.DataTable.ajax.reload();
+        } else {
+            console.error('DataTable instance not correctly initialized.');
+        }
+  
     };
 
-    $scope.invcList_tabFilter()
-        .then(function (invoicePromiseData) {
-            $scope.invcStatusRecord('Approved');
-    });
+    // $scope.invcList_tabFilter()
+    //     .then(function (invoicePromiseData) {
+    //         $scope.invcStatusRecord('Approved');
+    // });
+    $scope.invcStatusRecord('Approved');
     // ****** END invioce TABS ******* //
+
+    $scope.recordgroupByPaidDate = false;
+    $scope.totalPriceEuro = 0;
+    $scope.outStandingSelected = {}
+    
+    rest.path = "getLinguistInvoiceListCount";
+    rest.get().success(function (data) {
+        $scope.allInvcCount = data?.allinvoice || 0 ;
+        $scope.openInvcCount = data?.waitingApproval || 0 ; // waiting on approval
+        $scope.completedInvcCount = data?.paid || 0; 
+        $scope.cancelledInvcCount = data?.cancelled || 0 ;
+        $scope.overdueInvcCount = data?.overdue || 0;
+        $scope.notExportedInvcCount = data?.notExported || 0 ;
+        $scope.approvedInvcCount = data?.outstanding || 0 ; // approved and outstanding (not yet paid)
+        
+        
+    })
+
+    // *******============ //
+    //        clien invoice custom pagination start
+    //==========**************//
+    function createdRow(row, data, dataIndex) {
+        $compile(angular.element(row).contents())($scope);
+    }
+    $scope.dtColumnsLinguist = [
+        DTColumnBuilder.newColumn(null).withTitle('#').notSortable().renderWith(function(data, type, full, meta) {
+            var start = meta.settings._iDisplayStart;
+            var index = start + meta.row; // Unique index for IDs
+            var tempCheckedmark = '';
+        
+            // Checkmark for Excel download
+            $scope.temp_is_excel_download = full.is_excel_download;
+            if (full.is_excel_download) {
+                tempCheckedmark = `
+                    <span class="fa fa-check" 
+                          ng-if="temp_is_excel_download" 
+                          title="Excel exported" 
+                          style="margin-left:7px;">
+                    </span>`;
+            }
+            // TO DO
+            // temp comment = pass only price insted of full object and verify it
+            //$scope.tempinvoiceL = full; 
+            const tempPriceAmount = full.Invoice_costEUR;
+            const tempsSelectedVal = full.SELECTED;
+            // ng-model="checkor" (removed this line from input checkbox) 
+            var html1 = `
+                <div class="nowrap">
+                    <input type="checkbox" id="invoiceCheck${index}" 
+                           ng-click="checkInvoiceIds(${full.invoice_id}, ${tempPriceAmount})" 
+                           class="invoiceCheck${full.invoice_id}" 
+                           name="invoiceCheck${index}" 
+                           ng-checked="checkdata['invoiceCheckData${full.invoice_id}'] == 'invoicecheck'" ng-true-value="1" ng-false-value="0" ng-model="checkdata['${full.invoice_id}']"  />
+                    ${tempCheckedmark}
+                    <input type="text" id="invoiceCheckData${index}" 
+                           name="invoiceCheckData${index}" 
+                           class="invoiceCheckData${full.invoice_id}" 
+                           style="display: none;" 
+                           ng-model="checkdata['invoiceCheckData${full.invoice_id}']" />
+                </div>`;
+            var html2 = `
+                <div class="nowrap">
+                    <input type="checkbox" id="invoiceCheck${index}" 
+                           ng-click="checkInvoiceIds(${full.invoice_id}, ${tempPriceAmount})" 
+                           class="invoiceCheck${full.invoice_id}" 
+                           name="invoiceCheck${index}" 
+                           ng-checked="checkdata['invoiceCheckData${full.invoice_id}'] == 'invoicecheck'" />
+                    ${tempCheckedmark}
+                    <input type="text" id="invoiceCheckData${index}" 
+                           name="invoiceCheckData${index}" 
+                           class="invoiceCheckData${full.invoice_id}" 
+                           style="display: none;" 
+                           ng-model="checkdata['invoiceCheckData${full.invoice_id}']" />
+                </div>`;
+                
+            return $scope.activeTab == 'Approved' ? html1 : html2;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Invoice Number (Internal)').renderWith(function(data, type, full, meta) {
+            const originalInvoiceNo = $scope.padNumber(full.org_invoice_number);
+            return `
+                <div class="nowrap ">
+                    <a href="#/invoice-show/${full.invoice_id}"
+                                title="View"><span>${originalInvoiceNo}</span></a>
+                </div>
+            `;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Freelancer Name').renderWith(function(data, type, full, meta) {
+            return `
+            <a  style="color:#4ba0c3" 
+                                  href="#/viewExternal/${full.freelanceId}" 
+                                  title="View" class="trActionIcon">${full.freelanceName}
+                              </a>
+            `;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Amount').renderWith(function(data, type, full, meta) {
+            return ` <span >${ $filter('customNumber')(full.Invoice_cost) } </span> `;
+        }),
+        DTColumnBuilder.newColumn('freelance_currency')
+        .withTitle('Currency')
+        .renderWith(function(data, type, full, meta) {
+            return data ? data.split(',')[0].trim() : '';
+        }),
+        DTColumnBuilder.newColumn('custom_invoice_no')
+        .withTitle('Custom Invoice Number')
+        .renderWith(function(data, type, full, meta) {
+            return ` <a href="#/invoice-show/${full.invoice_id}" title="View"># ${full.invoice_number}
+                              </a> `;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Creation Date').renderWith(function(data, type, full, meta) {
+            return ` <span class="nowrap"> ${$filter('globalDtFormat')(full.invoice_date)} </span>`;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Due Date').renderWith(function(data, type, full, meta) {
+            const tempinvoiceDueDate = $filter('globalDtFormat')(full.inv_due_date);
+            const invoiceDate = full.invoice_date;
+            return `
+                ${tempinvoiceDueDate} 
+                <a href="javascript:void(0)" 
+                   title="edit duedate" 
+                   class="trActionIcon" 
+                   ng-click="editDueDate('${full.invoice_id}', '${tempinvoiceDueDate}', '${invoiceDate}')">
+                    <i class="fa fa-pencil"></i>
+                </a>`;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Payment Date').renderWith(function(data, type, full, meta) {
+            return ` <span class="nowrap"> ${$filter('globalDtFormat')(full.paid_date)} </span>`;
+        }),
+        DTColumnBuilder.newColumn('invoice_status').withTitle('Invoice Status').renderWith(function(data, type, full, meta) {
+            return full.invoice_status;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
+            return ` <div class="trActiontitle d-flex">
+                                <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
+                                  ng-click="pdfInvoice('${full.invoice_id}')" style="margin-left:15px;"><i
+                                    class="fa fa-download"></i></a>
+                                <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice('${full.invoice_id}')" style="margin-left:10px;"><i
+                                    class="fa fa-trash"></i></a>
+                              </div> `;
+        }),
+    ];
+    $scope.filterInvoiceFn = function(tabName){
+        console.log('tabName', tabName)
+        $scope.dtOptionsClient = DTOptionsBuilder.newOptions()
+        .withOption('ajax', function(data, callback, settings) {
+            if (data && data.search && data.search.value !== '') {
+                $scope.totalSelectedPrice = '';
+                $('input[id^=checkAll]:checkbox').prop('checked', false);
+            }
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                activeTab: $scope.activeTab ? $scope.activeTab : 'Approved',
+                displayGroupBy: ($scope.activeTab == 'group-outstanding') ? true : false,
+                //group_by: 'client_name',
+            };
+            // API call to fetch data
+            //viewAllInvoice1
+            //$http.post('api/v1/getclientInvoiceList', params)
+            $http.post('api/v1/getLinguistInvoiceList', params)
+                .then(function(response) {
+                    var res = response.data;
+                    //console.log('Server Response:', res);
+                    $scope.invoiceListAll = res?.data;
+                    $scope.getAllInvoice = res?.data
+                    $scope.invoiceListAllExport = res?.data;
+                    $scope.tripleTexinvoiceList = res?.data;
+                    $scope.totalPrice = res?.totalPrice || 0;
+                    $scope.totalPriceEuro = res?.totalPriceEur || 0;
+
+                    if($scope.activeTab == 'Approved'){
+                        $scope.approvedInvc = res?.data
+                    }
+                    
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                    
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withOption('footerCallback', function (tfoot, data, start, end, display) {
+            // var api = this.api();
+        })
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('createdRow', createdRow)
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[1, 'asc']])
+
+        .withOption('drawCallback', function(settings) {
+        if ($scope.activeTab && $scope.activeTab === 'Approved') {
+            var api = this.api();
+            var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
+            var lastClient = null;
+            api.rows({ page: 'current' }).data().each(function(rowData, index) {
+                if (lastClient !== rowData.inv_due_date) {
+                    var tempinvoiceDueDate = $filter('globalDtFormat')(rowData.inv_due_date);
+                    const tempInvoicePrice = $filter('customNumber')(rowData.group_total_invoice_cost_eur.toFixed(2));
+                    const tempHtml = `<label style="margin-left:35px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
+                        <input type="checkbox" ng-model="invoiceselectedAll['checkAllDate${rowData.inv_due_date}']" id="checkAllDate${rowData.inv_due_date}" 
+                            ng-change="checkAllInvoiceDateIds('all', '${rowData.inv_due_date}')" style="margin-top:-5px;"/> 
+                        <button class="btn btn-info" ng-click="editDueDate(${rowData.invoice_id}, '${tempinvoiceDueDate}', 'all')" 
+                            style="padding:0px 3px; margin-left: 30px;">
+                            <i class="fa fa-pencil"></i>&nbsp;&nbsp; Due date
+                        </button>`;
+                    const newRow = angular.element(
+                        `<tr class="groupdate">
+                            <td colspan="10" style="font-weight:bold">
+                                Due date: ${tempinvoiceDueDate} 
+                                <span style="margin-left:20px">Total (in EUR): ${tempInvoicePrice}</span>
+                                ${tempHtml}
+                            </td>
+                        </tr>`
+                    );
+                    $compile(newRow)($scope);
+                    $(rows).eq(index).before(newRow);
+                    lastClient = rowData.inv_due_date;
+                }
+            });
+        }
+    });
+
+        // DTInstances.getLast().then(function(inst) {
+        //     $scope.dtColumnsInternal = inst;
+        // })
+
+    } 
+    $scope.filterInvoiceFn('Approved');
+    // ************* END ******* //
 
     $scope.calculateTotalForApprovedDueDate = function(inv_due_date) {
         var total = 0;
@@ -20313,8 +20561,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.selectedItems = {};
     // $scope.selectAll = false;
     $scope.checkedIds = [];
-    $scope.checkInvoiceIds = function(id, item){
-
+    $scope.checkInvoiceIds = function(id, priceVal){
+        console.log('id', id)
+        console.log('priceVal', priceVal)
         //var result = arrayRemove(array, 6);
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
@@ -20372,11 +20621,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('isChecked============>', isChecked)
                 if(isChecked == 'true'){
                     $scope.checkedIds.push(id.toString());
-                    $scope.totalSelectedPrice += item.Invoice_costEUR;
+                    //$scope.totalSelectedPrice += item.Invoice_costEUR;
+                    $scope.totalSelectedPrice += priceVal;
                     
                 }else{
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
-                    $scope.totalSelectedPrice -= item.Invoice_costEUR;
+                    //$scope.totalSelectedPrice -= item.Invoice_costEUR;
+                    $scope.totalSelectedPrice -= priceVal;
                 }
                 // if ($scope.selectedItems[item.invoice_id]) {
                 //     delete $scope.selectedItems[item.invoice_id];
@@ -20949,29 +21200,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return date && date !== '0000-00-00';
     };
 
+    $scope.invoiceselectedAll = {};
     $scope.checkAllInvoiceDateIds = function(id, invDuedate) {
         $scope.checkedIds = [];
         console.log('invDuedate', $scope.checkedIds)
         var invoiceClientSelc = $('#checkAllDate' + invDuedate).is(':checked') ? 'true' : 'false';
-    
-        console.log('$scope.InvoiceResult', $scope.approvedInvc )
         angular.forEach($scope.approvedInvc, function(item) {
             if(item.inv_due_date == invDuedate && invoiceClientSelc === 'true') {
                 item.SELECTED = 1;
                 $scope.checkedIds.push(item.invoice_id.toString());
                 console.log('$scope.checkedIds', $scope.checkedIds)
+                $('.invoiceCheck'+item.invoice_id).prop('checked', true);
             } else {
                 item.SELECTED = 0;
+                $('.invoiceCheck'+item.invoice_id).prop('checked', false);
+            }
+            if(item.inv_due_date == invDuedate){
+                //$('.invoiceCheck'+item.invoice_id).prop('checked', true);
+            }else{
+                $('.invoiceCheck'+item.invoice_id).prop('checked', false);
             }
         });
         $scope.calculateTotalForSelectedInv() 
 
         angular.element('[id^=checkAllDate]').each(function() {
             if (this.id !== 'checkAllDate' + invDuedate) {
-                angular.element(this).attr('checked', false);
+                var checkboxId = this.id;
+                $scope.invoiceselectedAll[checkboxId] = false;
+                // setTimeout(() => {
+                //     $('#'+this.id).attr('checked', false);
+                // }, 50);
+                //angular.element(this).attr('checked', false);
             }
         });
-    
         // Ensure AngularJS detects the changes to the scope
         $scope.$applyAsync();
     };
@@ -21006,17 +21267,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.calculateTotalForSelectedInv = function() {
         $scope.$applyAsync(function() {
             $scope.totalPriceSelected = 0;
+            if($scope.invoiceActive == 'Approved'){
+                $scope.totalSelectedPrice = 0;
+            }
             angular.forEach($scope.approvedInvc, function(item) {
                 if (item.SELECTED) {
                     var cost = parseFloat(item.Invoice_costEUR);
                     if (!isNaN(cost)) {
                         $scope.totalPriceSelected += cost;
+                        if($scope.invoiceActive == 'Approved'){
+                            $scope.totalSelectedPrice += cost;
+                        }
                     }
                 }
             });
         });
     };
     $scope.totalPriceSelected = 0;
+    $scope.totalSelectedPrice = 0;
 
     $scope.totalInvoiceCost = 0;
 
@@ -21626,7 +21894,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var invoiceContent = compiledHTML.find(".invoiceContent").html();
             var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
             var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
-            //console.log("Specific Element Content:", specificElementContent);
+            
             invoicePdfData.pdfContent = invoiceContent
             invoicePdfData.pdfHeader = invoiceHeader
             invoicePdfData.pdfFooter = invoiceFooter
