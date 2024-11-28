@@ -542,7 +542,7 @@ class Freelance_invoice
             
         }
 
-        $constQry = "select tmInvoice.invoice_id, count(*) as total $jonTable $whereCond GROUP BY $gropbyField ";
+        $constQry = "select invoice_id, count(*) as total FROM (select invoice_id $jonTable $whereCond GROUP BY $gropbyField ) as subquery ";
         $countQry = $this->_db->rawQueryNew($constQry);
         $recordsTotal = $countQry[0]['total'];
 
@@ -585,13 +585,13 @@ class Freelance_invoice
         // Prepare the individual status conditions
         $statusConditions = [
         //'outstanding' => "(tmInvoice.invoice_status IN ('Open', 'Outstanding', 'Partly Paid'))",
-        'outstanding' => "(tmInvoice.invoice_status = 'Approved' AND tmInvoice.is_approved = 1) AND tmInvoice.invoice_status NOT IN ('Complete','Completed','Partly Paid','Paid') ",
-        'waitingApproval' => "(tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved != 1)",
-        'paid' => "(tmInvoice.invoice_status IN ('Complete', 'Completed', 'Paid'))",
-        'cancelled' => "(tmInvoice.invoice_status IN ('Cancel' ))",
-        'notExported' => "(tmInvoice.is_excel_download != 1)",
-        'overdue' => "(tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed', 'Cancel') 
-                    AND DATE(tmInvoice.inv_due_date) < CURDATE())"
+        'outstanding' => "(invoice_status = 'Approved' AND is_approved = 1) AND invoice_status NOT IN ('Complete','Completed','Partly Paid','Paid') ",
+        'waitingApproval' => "(invoice_status = 'Open' AND is_approved != 1)",
+        'paid' => "(invoice_status IN ('Complete', 'Completed', 'Paid'))",
+        'cancelled' => "(invoice_status IN ('Cancel' ))",
+        'notExported' => "(is_excel_download != 1)",
+        'overdue' => "(invoice_status NOT IN ('Paid', 'Complete', 'Completed', 'Cancel') 
+                    AND DATE(inv_due_date) < CURDATE())"
         ];
         // Initialize an array to store results
         $data = [];
@@ -604,7 +604,7 @@ class Freelance_invoice
                 SUM(CASE WHEN {$statusConditions['cancelled']} THEN 1 ELSE 0 END) AS cancelled,
                 SUM(CASE WHEN {$statusConditions['notExported']} THEN 1 ELSE 0 END) AS notExported,
                 SUM(CASE WHEN {$statusConditions['overdue']} THEN 1 ELSE 0 END) AS overdue
-            $jonTable $whereCond GROUP BY tmInvoice.invoice_id ";
+            FROM (SELECT tmInvoice.invoice_id, invoice_status, is_approved,is_excel_download, inv_due_date  $jonTable $whereCond GROUP BY tmInvoice.invoice_id) as subquery ";
 
         // Execute the query
         $countQry = $this->_db->rawQueryNew($cntQry);
