@@ -473,7 +473,9 @@ class Freelance_invoice
 
         $jonTable = " FROM tms_invoice tmInvoice " . $jonLeftTable . "  ";
         
-        $baseQry = " $selectFld $jonTable  $whereCond $orderLimit " ;
+        $gropbyField = ' tmInvoice.invoice_id ';
+        
+        $baseQry = " $selectFld $jonTable  $whereCond GROUP BY $gropbyField $orderLimit " ;
         $data = $this->_db->rawQueryNew($baseQry);
 
         // if multiple currency eixst then display total in EUR else just total 
@@ -481,7 +483,7 @@ class Freelance_invoice
         $temp_currency_arr = [];
         $currencyGroupbyQry = "SELECT tmInvoice.invoice_id, tu.freelance_currency 
                             $jonTable $whereCond 
-                            GROUP BY tu.freelance_currency";
+                            GROUP BY $gropbyField, tu.freelance_currency ";
         $currGrpData = $this->_db->rawQueryNew($currencyGroupbyQry);
         if ($currGrpData) {
             foreach ($currGrpData as $row) {
@@ -494,7 +496,10 @@ class Freelance_invoice
         $is_multiple_currency = count($temp_currency_arr) > 1;
 
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'Approved' ) {
-            $grpQry = " SELECT DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY DATE(tmInvoice.inv_due_date) " ;
+            // $grpQry = " SELECT tmInvoice.invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY $gropbyField, DATE(tmInvoice.inv_due_date) " ;
+            $select_1 = "SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur";
+            $grpQry = "SELECT  invoice_id, order_day, SUM(total_invoice_cost) AS total_invoice_cost, SUM(total_invoice_cost_eur) AS total_invoice_cost_eur  FROM ($select_1 $jonTable $whereCond GROUP BY $gropbyField ) AS subquery GROUP BY order_day " ;
+            
             $groupByDate = $this->_db->rawQueryNew($grpQry);
             $totalCostsByDate = [];
             foreach ($groupByDate as $row) {
@@ -537,11 +542,14 @@ class Freelance_invoice
             
         }
 
-        $constQry = "select count(*) as total $jonTable $whereCond ";
+        $constQry = "select tmInvoice.invoice_id, count(*) as total $jonTable $whereCond GROUP BY $gropbyField ";
         $countQry = $this->_db->rawQueryNew($constQry);
         $recordsTotal = $countQry[0]['total'];
 
-        $constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond ";
+        //$constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond GROUP BY $gropbyField ";
+        $selectSumField = " SELECT SUM(Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro, tmInvoice.currency_rate  ";
+        $constQry = " SELECT SUM(priceTotal) as priceTotal, SUM(priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro  FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery " ;
+            
         $priceRecord = $this->_db->rawQueryNew($constQry);
         $priceTotal = $priceRecord[0]['priceTotal'];
         $priceTotalEur = $priceRecord[0]['total_price_euro'];
@@ -596,7 +604,7 @@ class Freelance_invoice
                 SUM(CASE WHEN {$statusConditions['cancelled']} THEN 1 ELSE 0 END) AS cancelled,
                 SUM(CASE WHEN {$statusConditions['notExported']} THEN 1 ELSE 0 END) AS notExported,
                 SUM(CASE WHEN {$statusConditions['overdue']} THEN 1 ELSE 0 END) AS overdue
-            $jonTable $whereCond";
+            $jonTable $whereCond GROUP BY tmInvoice.invoice_id ";
 
         // Execute the query
         $countQry = $this->_db->rawQueryNew($cntQry);
