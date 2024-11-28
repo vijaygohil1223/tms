@@ -117,8 +117,15 @@
                   
                         <tfoot>
                           <tr>
-                            <td colspan="4" style="text-align: left;white-space: nowrap;">Selected Total(Eur) : <strong>{{ totalSelectedPrice | customNumber }} </strong></td>
-                            <td colspan="7" style="text-align: left;"> Total Price(Eur): <strong>{{ totalPriceEuro | customNumber }} </strong> </td>
+                            <td colspan="4" style="text-align: left;white-space: nowrap;">
+                              Selected Total <span ng-if="is_multiple_currency == true"> (EUR) </span>: <strong>{{ totalSelectedPrice | customNumber }} </strong>
+                            </td>
+                            <td colspan="7" style="text-align: left;"> 
+                              <span>
+                                  Total Price{{ is_multiple_currency ? ' (EUR)' : '' }}: 
+                                  <strong>{{ is_multiple_currency ? totalPriceEuro : totalPrice | customNumber }}</strong>
+                              </span>
+                            </td>
                           </tr>
                         </tfoot>
                       

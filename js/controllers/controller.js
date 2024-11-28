@@ -20068,8 +20068,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtInstanceCallback = function(instance) {
         $scope.dtInstance = instance;
     }
+
     $scope.invoiceListAll = [];
-    $scope.invoiceActive = 'Approved';
+    $scope.activeTab = 'Approved';
+    
     $scope.invcStatusRecord = function (invcStatus) {
         console.log('invcStatus', invcStatus)
         if (invcStatus) {
@@ -20078,8 +20080,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             $scope.invcstatusFilter = 'Approved';
         }
-        $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
-
         $scope.activeTab = invcStatus;
 
         $('input[id^=checkAll]:checkbox').removeAttr('checked');
@@ -20134,6 +20134,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //         $scope.invcStatusRecord('Approved');
     // });
     $scope.invcStatusRecord('Approved');
+    $scope.is_multiple_currency == true;
+                        
     // ****** END invioce TABS ******* //
 
     $scope.recordgroupByPaidDate = false;
@@ -20164,7 +20166,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var start = meta.settings._iDisplayStart;
             var index = start + meta.row; // Unique index for IDs
             var tempCheckedmark = '';
-        
+            const trPriceCost = $scope.is_multiple_currency == true ? full.Invoice_costEUR : full.Invoice_cost
+            
             // Checkmark for Excel download
             $scope.temp_is_excel_download = full.is_excel_download;
             if (full.is_excel_download) {
@@ -20178,13 +20181,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // TO DO
             // temp comment = pass only price insted of full object and verify it
             //$scope.tempinvoiceL = full; 
-            const tempPriceAmount = full.Invoice_costEUR;
-            const tempsSelectedVal = full.SELECTED;
+            //const tempPriceAmount = full.Invoice_costEUR;
             // ng-model="checkor" (removed this line from input checkbox) 
             var html1 = `
                 <div class="nowrap">
                     <input type="checkbox" id="invoiceCheck${index}" 
-                           ng-click="checkInvoiceIds(${full.invoice_id}, ${tempPriceAmount})" 
+                           ng-click="checkInvoiceIds(${full.invoice_id}, ${trPriceCost})" 
                            class="invoiceCheck${full.invoice_id}" 
                            name="invoiceCheck${index}" 
                            ng-checked="checkdata['invoiceCheckData${full.invoice_id}'] == 'invoicecheck'" ng-true-value="1" ng-false-value="0" ng-model="checkdata['${full.invoice_id}']"  />
@@ -20198,7 +20200,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var html2 = `
                 <div class="nowrap">
                     <input type="checkbox" id="invoiceCheck${index}" 
-                           ng-click="checkInvoiceIds(${full.invoice_id}, ${tempPriceAmount})" 
+                           ng-click="checkInvoiceIds(${full.invoice_id}, ${trPriceCost})" 
                            class="invoiceCheck${full.invoice_id}" 
                            name="invoiceCheck${index}" 
                            ng-checked="checkdata['invoiceCheckData${full.invoice_id}'] == 'invoicecheck'" />
@@ -20282,6 +20284,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.totalSelectedPrice = '';
                 $('input[id^=checkAll]:checkbox').prop('checked', false);
             }
+
             var params = {
                 draw: data.draw,
                 start: data.start,
@@ -20289,7 +20292,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 order: data.order,
                 search: data.search.value,
                 activeTab: $scope.activeTab ? $scope.activeTab : 'Approved',
-                displayGroupBy: ($scope.activeTab == 'group-outstanding') ? true : false,
+                displayGroupBy: ($scope.activeTab == 'Approved') ? true : false,
                 //group_by: 'client_name',
             };
             // API call to fetch data
@@ -20305,7 +20308,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.tripleTexinvoiceList = res?.data;
                     $scope.totalPrice = res?.totalPrice || 0;
                     $scope.totalPriceEuro = res?.totalPriceEur || 0;
-
+                    $scope.is_multiple_currency = res.is_multiple_currency == true ? true : false
+                    
                     if($scope.activeTab == 'Approved'){
                         $scope.approvedInvc = res?.data
                     }
@@ -20341,7 +20345,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var api = this.api();
             var rows = api.rows({ page: 'current' }).nodes(); // Get the nodes for the current page
             var lastClient = null;
+            const isPriceInEUR = $scope.is_multiple_currency == true ? ' (in EUR): ' : ' : ';
             api.rows({ page: 'current' }).data().each(function(rowData, index) {
+                        
                 if (lastClient !== rowData.inv_due_date) {
                     var tempinvoiceDueDate = $filter('globalDtFormat')(rowData.inv_due_date);
                     const tempInvoicePrice = $filter('customNumber')(rowData.group_total_invoice_cost_eur.toFixed(2));
@@ -20356,7 +20362,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         `<tr class="groupdate">
                             <td colspan="10" style="font-weight:bold">
                                 Due date: ${tempinvoiceDueDate} 
-                                <span style="margin-left:20px">Total (in EUR): ${tempInvoicePrice}</span>
+                                <span style="margin-left:20px">Total ${isPriceInEUR} ${tempInvoicePrice}</span>
                                 ${tempHtml}
                             </td>
                         </tr>`
@@ -20562,35 +20568,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.selectAll = false;
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, priceVal){
-        console.log('id', id)
-        console.log('priceVal', priceVal)
         //var result = arrayRemove(array, 6);
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
         }
         if(id){
             if(id == 'all'){
-                
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
-                
                 if(isCheckedAll == 'true'){
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
-                    // for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
-                    //     var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-                    //     if (invoiceselected == 'true') {
-                    //         var invoiceIds = angular.element('#invoiceCheckData' + i).val();
-                    //         $scope.checkedIds.push(invoiceIds.toString());
-                    //     }
-                    // }
-
+                    $scope.totalSelectedPrice = 0;
                     angular.forEach($scope.invoiceListAll, function(item1) {
                         var invoiceselected = $('.invoiceCheck' + item1.invoice_id).is(':checked') ? 'true' : 'false';
+                        const priceCost = $scope.is_multiple_currency == true ? item1.Invoice_costEUR : item1.Invoice_cost
                         if (invoiceselected == 'true') {
                             var invoiceIds = angular.element('.invoiceCheckData' + item1.invoice_id).val();
                             $scope.checkedIds.push(invoiceIds.toString());
-                            $scope.totalSelectedPrice += item1.Invoice_costEUR;
+                            //$scope.totalSelectedPrice += item1.Invoice_costEUR;
+                            $scope.totalSelectedPrice += priceCost;
                         }else{
-                            $scope.totalSelectedPrice -= item1.Invoice_costEUR;
+                            //$scope.totalSelectedPrice -= item1.Invoice_costEUR;
+                            $scope.totalSelectedPrice -= priceCost;
                         }
                     });
                     
@@ -20609,9 +20607,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         item.SELECTED = 0;
                     });
                 }
-                // angular.forEach($scope.invoiceListAll, function(item) {
-                //     $scope.selectedItems[item.invoice_id] = true;
-                // });
                 $scope.calculateTotalForSelectedInv() 
 
             } else {
@@ -20629,12 +20624,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.totalSelectedPrice -= item.Invoice_costEUR;
                     $scope.totalSelectedPrice -= priceVal;
                 }
-                // if ($scope.selectedItems[item.invoice_id]) {
-                //     delete $scope.selectedItems[item.invoice_id];
-                // } else {
-                //     $scope.selectedItems[item.invoice_id] = true;
-                // }   
-                $scope.calculateTotalForSelectedInv()           
 
             }        
             
@@ -21267,15 +21256,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.calculateTotalForSelectedInv = function() {
         $scope.$applyAsync(function() {
             $scope.totalPriceSelected = 0;
-            if($scope.invoiceActive == 'Approved'){
+            if($scope.activeTab == 'Approved'){
                 $scope.totalSelectedPrice = 0;
             }
             angular.forEach($scope.approvedInvc, function(item) {
                 if (item.SELECTED) {
-                    var cost = parseFloat(item.Invoice_costEUR);
+                    const selectedPriceCost = $scope.is_multiple_currency == true ? item.Invoice_costEUR : item.Invoice_cost
+                    var cost = parseFloat(selectedPriceCost);
                     if (!isNaN(cost)) {
                         $scope.totalPriceSelected += cost;
-                        if($scope.invoiceActive == 'Approved'){
+                        if($scope.activeTab == 'Approved'){
                             $scope.totalSelectedPrice += cost;
                         }
                     }
