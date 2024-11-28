@@ -547,9 +547,8 @@ class Freelance_invoice
         $recordsTotal = $countQry[0]['total'];
 
         //$constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond GROUP BY $gropbyField ";
-        $selectSumField = " SELECT SUM(Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro, tmInvoice.currency_rate  ";
+        $selectSumField = " SELECT Invoice_cost as priceTotal, tmInvoice.currency_rate  ";
         $constQry = " SELECT SUM(priceTotal) as priceTotal, SUM(priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro  FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery " ;
-            
         $priceRecord = $this->_db->rawQueryNew($constQry);
         $priceTotal = $priceRecord[0]['priceTotal'];
         $priceTotalEur = $priceRecord[0]['total_price_euro'];
@@ -597,7 +596,7 @@ class Freelance_invoice
         $data = [];
         // Query to count all invoices
         $cntQry = "SELECT 
-                COUNT(*) AS total,
+                COUNT(invoice_id) AS allinvoice,
                 SUM(CASE WHEN {$statusConditions['outstanding']} THEN 1 ELSE 0 END) AS outstanding,
                 SUM(CASE WHEN {$statusConditions['paid']} THEN 1 ELSE 0 END) AS paid,
                 SUM(CASE WHEN {$statusConditions['waitingApproval']} THEN 1 ELSE 0 END) AS waitingApproval,
@@ -617,6 +616,7 @@ class Freelance_invoice
                 $data['cancelled'] = $countQry[0]['cancelled'];
                 $data['notExported'] = $countQry[0]['notExported'];
                 $data['overdue'] = $countQry[0]['overdue'];
+                $data['allinvoice'] = $countQry[0]['allinvoice'];
             } else {
                 $data['outstanding'] = 0;
                 $data['paid'] = 0;
@@ -627,9 +627,9 @@ class Freelance_invoice
                 
         }
         // Query to count all invoices
-        $cntQryAll = "SELECT COUNT(*) AS total $jonTable $whereCond";
-        $countQryAll = $this->_db->rawQueryNew($cntQryAll);
-        $data['allinvoice'] = $countQryAll[0]['total'];
+        // $cntQryAll = "SELECT COUNT(*) AS total $jonTable $whereCond";
+        // $countQryAll = $this->_db->rawQueryNew($cntQryAll);
+        // $data['allinvoice'] = $countQryAll[0]['total'];
 
         return $data;
 
