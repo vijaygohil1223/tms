@@ -26812,11 +26812,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                         $scope.item_status = "";
                                                     }
 
+                                                    const subpmIdForJob = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
+                                                    const pmIdForJob = ($scope.itemList[formIndex].manager).toString().split(',').pop(); 
+                                                    const pmIdForJobInsert = subpmIdForJob || pmIdForJob || $scope.contact_person
+
                                                     $scope.jobitem.job_no = $scope.job_no;
                                                     $scope.jobitem.job_id = $scope.job_id;
                                                     $scope.jobitem.job_code = $scope.job_code;
                                                     //$scope.jobitem.contact_person = $scope.contact_person;
-                                                    $scope.jobitem.contact_person = $scope.contact_person;
+                                                    //$scope.jobitem.contact_person = $scope.contact_person;
+                                                    $scope.jobitem.contact_person = pmIdForJobInsert;
                                                     $scope.jobitem.order_id = $scope.routeOrderID;
                                                     $scope.jobitem.due_date = $scope.due_date;
                                                     $scope.jobitem.master_job_id = $scope.master_job_id;
@@ -30037,9 +30042,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $routeParams.id;
                     rest.get().success(function (data) {
                         $scope.itemdata = data;
+                        
                         if ($scope.jobitem.item_id) {
                             rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $routeParams.id;
                             rest.get().success(function (data) {
+                                console.log('datajobITEMDATA====>', data)
                                 $scope.iData = data;
                                 var contact_person = [];
                                 var job_id = [];
@@ -30064,11 +30071,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $scope.due_date = "";
                                     $scope.item_status = "";
                                 }
-
+                                const scoopPm = $scope.iData?.manager || ''
+                                const scoopSubPm = $scope.iData?.subPm || ''
+                                const jobProjManagerContact = scoopSubPm ||  scoopPm || $scope.contact_person
                                 $scope.jobitem.job_no = $scope.job_no;
                                 $scope.jobitem.job_id = $scope.job_id;
                                 $scope.jobitem.job_code = $scope.job_code;
-                                $scope.jobitem.contact_person = $scope.contact_person;
+                                $scope.jobitem.contact_person = jobProjManagerContact;
                                 $scope.jobitem.order_id = $routeParams.id;
                                 //$scope.jobitem.due_date = $scope.due_date;
                                 $scope.jobitem.due_date = '';
