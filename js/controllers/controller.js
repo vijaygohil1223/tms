@@ -20682,130 +20682,83 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $("#paymentExdate").trigger( "click" );        
     }
     //Linguist Invoice export to excel
+    $scope.isDownloadBtn = false
+    $scope.isDownloadBtnExcel = false
     $scope.exportData = function (type, activeTabName) {
-
-        try{
-            $scope.invoiceDisables = true;
-        }catch{
-            $scope.invoiceDisables = false;
-        }
+        $scope.isDownloadBtn = true
+        $scope.isDownloadBtnExcel = true
         console.log('type', type)
         $("#exportable .dt-loading" ).remove();
         $scope.invoiceListSelected = [];
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            //$scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
             const invoiceListClone = [...$scope.invoiceListAll];
             $scope.invoiceListSelected = invoiceListClone.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+        }else{
+            $scope.invoiceListSelected = $scope.invoiceListAll;
         }
         console.log('$scope.checkedIds', $scope.checkedIds)
         console.log('activeTabName', activeTabName)
-
         console.log('$scope.invoiceListSelected',$scope.invoiceListSelected )
         //return false;
-
         
         switch (type) {
             //case "Allexcel":
-            case "excel":    
-
-                try {
-                    setTimeout(() => {
-                        // var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                        //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                        // });
-                        // saveAs(blob, "Linguist Invoice Report.xls");
-    
-                        exportTableToExcel('exportable2','Linguist Invoice Report', '',1)
-    
-                        rest.path = 'freelanceInvoiceExcelStatus';
-                        rest.post($scope.checkedIds).success(function (data) {
-                            if (data.status == 200) {
-                                //$route.reload();
-                                notification('File downloaded successfully', 'success');
-                                // $scope.checkedIds = [];
-                            }
-                        }).error(errorCallback);
-                        // $scope.getAllInvoice = allInvoiceListArr
-                        // Remove selected
-                        //$('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-                        //$('input[id^=checkAll]:checkbox').removeAttr('checked');
-    
-                    }, 500);
-                } catch (error) {
-                    console.log('error', error)
-                    $route.reload();
-                }
+            case "excel":   
+                $scope.isDownloadBtn = false;
+                $timeout(function() {
+                    try {
+                        //setTimeout(() => {
+                            // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                            //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                            // });
+                            // saveAs(blob, "Linguist Invoice Report.xls");
+        
+                            exportTableToExcel('exportable2','Linguist Invoice Report', '',1)
+        
+                            rest.path = 'freelanceInvoiceExcelStatus';
+                            rest.post($scope.checkedIds).success(function (data) {
+                                if (data.status == 200) {
+                                    //$route.reload();
+                                    notification('File downloaded successfully', 'success');
+                                    // $scope.checkedIds = [];
+                                    $scope.isDownloadBtnExcel = false
+                                }else{
+                                    $scope.isDownloadBtnExcel = false
+                                }
+                            }).error( function(){
+                                $scope.isDownloadBtnExcel = false
+                            });
+                            setTimeout(() => {
+                                $scope.isDownloadBtnExcel = false;
+                            }, 2000);
+        
+                        //}, 500);
+                    } catch (error) {
+                        console.log('error', error)
+                        $route.reload();
+                    }
+                }, 0);
 
                 break;
             
             case "invoicePDF":
-                console.log('checkedIDDS', $scope.checkedIds);
-                console.log('$scope.invoiceListAll', $scope.invoiceListAll);
-                if($scope.invoiceListSelected.length === 0){
-                    notification('Please select check box', 'warning')
-                    return false;
+                $scope.isDownloadBtnExcel = false;
+                try {
+                    $timeout( function(){
+                        if ($scope.checkedIds.length === 0 || $scope.invoiceListSelected.length === 0) {
+                            notification('Please select check box', 'warning')
+                            $scope.isDownloadBtn = false
+                            return false;
+                        }
+                        $scope.exportPdfAll();
+                    })
+                } catch (error) {
+                    $scope.isDownloadBtn = false
                 }
-
-                $scope.exportPdfAll();
             
             break;
 
-                    
-            // case "invoicePDF":
-            //     console.log('checkedIDDS', $scope.checkedIds)
-            //     console.log('$scope.invoiceListAll', $scope.invoiceListAll)
-            //     var zipdwnld = new JSZip();
-            //     var file_count = 0;
-            //     var fileUrls = [];
-            //     var fileName = "";
-            //     var downloadfileName = '';
-            //     // Filter and collect valid file URLs
-            //     $scope.invoiceListSelected.forEach(function(val) {
-            //         if (val.resourceInvoiceFileName !== '') {
-            //             var extension = val.resourceInvoiceFileName.split('.').pop();
-            //             var fileName = val.resourceInvoiceFileName;
-            //             downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no+'.'+extension;
-            //             var fimgUrl = "uploads/invoice/" + fileName;
-            //             if (fileUrlExists(fimgUrl)) {
-            //                 fileUrls.push({
-            //                     'full_url': fimgUrl,
-            //                     'file_name': downloadfileName
-            //                 });
-            //             }
-            //         }
-            //     });
-
-            //     // Download files and generate ZIP
-            //     fileUrls.forEach(function(url) {
-            //         JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
-            //             if (err) {
-            //                 throw err;
-            //                 $route.reload();
-            //             }
-            //             file_count++;
-            //             if (data !== null) {
-            //                 zipdwnld.file(url.file_name, data, { binary: true });
-            //                 if (file_count === fileUrls.length) {
-            //                     zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
-            //                         // saveAs(content, 'invoicePDF.zip');
-            //                         saveAs(content, 'Invoices.zip');
-            //                         $route.reload();
-            //                     });
-            //                 }
-            //             }
-            //         });
-            //     });
-            //     setTimeout(() => {
-            //         if(fileUrls.length == 0){
-            //             notification('No files available', 'warning');
-            //             setTimeout(() => {
-            //                 $route.reload();
-            //             }, 200);
-            //         }
-            //     }, 500);
-
-            //     break;
         }
 
     };
@@ -21112,29 +21065,35 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const content = await zipdwnld.generateAsync({ type: 'blob' });
                         saveAs(content, 'Invoices.zip');
                         notification("Download successful.", "success");
+                        $scope.isDownloadBtn = false
                         // setTimeout(() => {
                         //     $route.reload();
                         // }, 200);
                     } catch (error) {
                         console.error('Error generating zip with files:', error);
+                        $scope.isDownloadBtn = false
                     }
                 } else {
                     // If there are no existing files, directly generate the zip
                     const content = await zipdwnld.generateAsync({ type: 'blob' });
                     saveAs(content, 'Invoices.zip');
                     notification("Download successful.", "success");
+                    $scope.isDownloadBtn = false
                     // setTimeout(() => {
                     //     $route.reload();
                     // }, 200);
                 }
             } catch (error) {
                 console.error('Error generating PDFs:', error);
+                $scope.isDownloadBtn = false
             } finally {
                 $scope.isDisabledExportpdf = false;
+                $scope.isDownloadBtn = false
             }
     
         } else {
             notification("Please select a record.", "warning");
+            $scope.isDownloadBtn = false
         }
     }
     // end export pdf
