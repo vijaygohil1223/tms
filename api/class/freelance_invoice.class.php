@@ -350,11 +350,12 @@ class Freelance_invoice
             2 => ' concat(tu.vFirstName, " ", tu.vLastName) ',
             3 => 'Invoice_cost',
             4 => 'tu.freelance_currency',
-            5 => 'invoice_number',
+            5 => 'custom_invoice_no',
             6 => 'invoice_date',
             7 => 'inv_due_date',
             8 => 'paid_date',
-            9 => 'invoice_status',
+            //9 => 'invoice_status',
+            9 => 'invoice_status_name',
             //10 => 'action',
         ];
         // Determine the column to sort by based on DataTables order index
@@ -461,7 +462,13 @@ class Freelance_invoice
             CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, 
             tmInvoice.inv_due_date, tmInvoice.vat2 as taxInNok, 
             tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
-            (tmInvoice.Invoice_cost/tmInvoice.currency_rate) AS Invoice_costEUR 
+            (tmInvoice.Invoice_cost/tmInvoice.currency_rate) AS Invoice_costEUR ,
+            CASE
+                WHEN tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved = 1 THEN 'Outstanding'
+                WHEN tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved = 0 THEN 'Waiting on approval'
+                WHEN tmInvoice.invoice_status IN ('Complete', 'Completed', 'Paid') THEN 'Paid'
+                ELSE tmInvoice.invoice_status
+            END AS invoice_status_name
             ";
 
         $jonLeftTable = " 
