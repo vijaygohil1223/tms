@@ -497,8 +497,8 @@ class Freelance_invoice
 
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'Approved' ) {
             // $grpQry = " SELECT tmInvoice.invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY $gropbyField, DATE(tmInvoice.inv_due_date) " ;
-            $select_1 = "SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur";
-            $grpQry = "SELECT  invoice_id, order_day, SUM(total_invoice_cost) AS total_invoice_cost, SUM(total_invoice_cost_eur) AS total_invoice_cost_eur  FROM ($select_1 $jonTable $whereCond GROUP BY $gropbyField ) AS subquery GROUP BY order_day " ;
+            $select_1 = "SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, Invoice_cost , currency_rate ";
+            $grpQry = "SELECT  invoice_id, order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur  FROM ($select_1 $jonTable $whereCond GROUP BY $gropbyField ) AS subquery GROUP BY order_day " ;
             
             $groupByDate = $this->_db->rawQueryNew($grpQry);
             $totalCostsByDate = [];
@@ -547,7 +547,7 @@ class Freelance_invoice
         $recordsTotal = $countQry[0]['total'];
 
         //$constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond GROUP BY $gropbyField ";
-        $selectSumField = " SELECT Invoice_cost as priceTotal, tmInvoice.currency_rate  ";
+        $selectSumField = " SELECT Invoice_cost as priceTotal, currency_rate  ";
         $constQry = " SELECT SUM(priceTotal) as priceTotal, SUM(priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro  FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery " ;
         $priceRecord = $this->_db->rawQueryNew($constQry);
         $priceTotal = $priceRecord[0]['priceTotal'];
@@ -624,6 +624,8 @@ class Freelance_invoice
                 $data['notExported'] = 0;
                 $data['overdue'] = 0;
                 $data['waitingApproval'] = 0;
+                $data['allinvoice'] = 0;
+                
                 
         }
         // Query to count all invoices
