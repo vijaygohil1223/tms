@@ -18829,6 +18829,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
         }
     }
+    $scope.totalPrice =  0;
+    $scope.totalPriceEuro = 0;
+    $scope.is_multiple_currency = false;
 
     $scope.dtColumnsInternal = [
         DTColumnBuilder.newColumn(null).withTitle('Sr.no').renderWith(function(data, type, full, meta) {
@@ -18936,8 +18939,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$http.post('api/statusJobReportFilterCustomPage.php', params)
             $http.post('api/v1/jobReportCustomFilter', params)
                 .then(function(response) {
+                    console.log('response', response)
                     var res = response.data;
                     console.log('Server Response:', res);
+                    
+                    $scope.totalPrice =  res?.totalPrice,
+                    $scope.totalPriceEuro = res?.totalPriceEuro
+                    $scope.is_multiple_currency = res?.is_multiple_currency
 
                     // Pass the data to DataTables
                     callback({

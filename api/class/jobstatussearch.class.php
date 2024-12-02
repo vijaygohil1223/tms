@@ -411,33 +411,55 @@ class jobstatussearch {
 
 			$results = $this->_db->rawQueryNew($querydata);
 
-			$totalRecordsQuery = "SELECT COUNT(DISTINCT tmv.job_summmeryId) AS count 
+			$totalRecordsQuery = "SELECT COUNT(DISTINCT tmv.job_summmeryId) AS count, SUM(tmv.total_price) AS totalPrice, SUM(tmv.total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
 			FROM 
 				tms_items ti
 			$joinTables
 			WHERE 1=1 " . $where_cond;
-
 			$totalRecordsResult = $this->_db->rawQueryNew($totalRecordsQuery);
-			$totalRecords = $totalRecordsResult[0]['count'] ?? 0;
 
-			if (!isset($post['filterParams'])) {
-				$response = [
-					"draw" => intval($post['draw']),
-					"recordsTotal" => 0,
-					"recordsFiltered" => 0,
-					"data" => [],
-					"totalPrice" => 0
-				];
-			} else {
-				$response = [
-					"draw" => intval($post['draw']),
-					"recordsTotal" => $totalRecords,
-					"recordsFiltered" => $totalRecords,
-					"data" => $results,
-				];
+			$is_multiple_currency = false;
+	        $temp_currency_arr = [];
+			$currencyQry = "SELECT tu.freelance_currency 
+			FROM 
+				tms_items ti
+			$joinTables
+			WHERE 1=1 " . $where_cond . " GROUP BY tu.freelance_currency ";
+			$currencyQryRes = $this->_db->rawQueryNew($currencyQry);
+			if ($currencyQryRes) {
+				foreach ($currencyQryRes as $row) {
+					$currencyVal = !empty($row['freelance_currency']) 
+								? explode(',', $row['freelance_currency'])[0] 
+								: 'EUR';
+					$temp_currency_arr[$currencyVal] = true; // Use an associative array for unique values
+				}
+			}
+			$is_multiple_currency = count($temp_currency_arr) > 1;
+
+			$totalRecords = $totalRecordsResult[0]['count'] ?? 0;
+			$totalPrice = $totalRecordsResult[0]['totalPrice'] ?? 0;
+			$totalPriceEuro = $totalRecordsResult[0]['total_price_euro'] ?? 0;
+
+			$response = [
+				"draw" => intval($post['draw']),
+				"recordsTotal" => 0,
+				"recordsFiltered" => 0,
+				"data" => [],
+				"totalPrice" => 0,
+				"totalPriceEuro" => 0,
+				"is_multiple_currency" => false
+			];
+			
+			// If filterParams is set, modify the response with actual data
+			if (isset($post['filterParams']) && !empty($post['filterParams'])) {
+				$response["recordsTotal"] = $totalRecords;
+				$response["recordsFiltered"] = $totalRecords;
+				$response["data"] = $results;
+				$response["totalPrice"] = $totalPrice;
+				$response["totalPriceEuro"] = $totalPriceEuro;
+				$response["is_multiple_currency"] = $is_multiple_currency;
 			}
 
-			// Return the response
 			return $response;
 
 		}

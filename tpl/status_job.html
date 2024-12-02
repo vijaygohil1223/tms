@@ -403,9 +403,13 @@
                                             </div>
                                             <div class="col-sm-4 m-b-xs">
                                                 <div class="d-flex justify-space-between">
+                                                   <!-- <div>
+                                                        <strong>Total </strong> {{ calculateTotal() | customNumber }}
+                                                   </div> -->
                                                    <div>
-                                                        <strong>Total:</strong> {{ calculateTotal() | customNumber }}
-                                                   </div>
+                                                        <strong>Total <span ng-show="is_multiple_currency">EUR</span> :</strong> 
+                                                        {{ (is_multiple_currency ? totalPriceEuro : totalPrice) | customNumber }}
+                                                    </div>
                                                    <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
                                                       ng-click="exportData('result')">Excel</button>
                                                 </div>
