@@ -3129,6 +3129,12 @@ $app->delete('/jobsearchStatusDelete/:id','authenticate', function ($id) use($ap
     $result = $statusJob->jobsearchStatusDelete($id);
     echoResponse(200, $result);
 });
+$app->post('/jobReportCustomFilter', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusJob->jobReportCustomFilter($data);
+    echoResponse(200, $result);
+});
 //---------------freelance job manage------------------//
 $app->get('/freelanceJob/:id','authenticate', function ($id) use($app) {
     $freelanceJob = new freelanceJob ();

@@ -18567,7 +18567,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //export to excel
     $scope.exportData = function () {
 
-        console.log('tessssssssssss' )
         var count = 0;
         for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
             if ($("#orderCheck" + i).prop('checked') == true) {
@@ -18860,12 +18859,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                  full.orderNum + '_' + full.jobCode + full.jobNo.toString().padStart(3, '0') + '</a>';
             
             // Compile the HTML and link it to the scope
-            $timeout(function() {
-                var compiledLink = $compile('<div>' + jobDetailsLink + '</div>')($scope);
-                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledLink);
-            }, 0);
+            // $timeout(function() {
+            //     var compiledLink = $compile('<div>' + jobDetailsLink + '</div>')($scope);
+            //     angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledLink);
+            // }, 0);
             
-            return ''; 
+            return jobDetailsLink; 
         }),
         DTColumnBuilder.newColumn('jobStatus').withTitle('Job Status'),
         DTColumnBuilder.newColumn(null).withTitle('Contact Person').renderWith(function(data, type, full, meta) {
@@ -18934,7 +18933,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             };
 
             // API call to fetch data
-            $http.post('api/statusJobReportFilterCustomPage.php', params)
+            //$http.post('api/statusJobReportFilterCustomPage.php', params)
+            $http.post('api/v1/jobReportCustomFilter', params)
                 .then(function(response) {
                     var res = response.data;
                     console.log('Server Response:', res);
@@ -19235,6 +19235,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
+            case "account":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.account = '';
+                    angular.element('#account1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;    
 
         }
     }

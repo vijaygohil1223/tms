@@ -240,6 +240,208 @@ class jobstatussearch {
 
 	    }
 
+		public function jobReportCustomFilter($post){ 
+
+    		$searchValue = $post['search'] ?? ''; // Search value
+			$orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
+			$orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
+			$start = $post['start'] ?? 0; // Starting point for pagination
+			$length = $post['length'] ?? 20; // Number of records to fetch
+			$filterParams = $post['filterParams'] ?? '';
+
+			$columns = [
+				// 0 => 'job_summmeryId',
+				// 1 => 'job_summmeryId',
+				2 => 'orderNum',
+				3 => 'jobStatus',
+				4 => 'contactPersonName',
+				5 => 'resourceName',
+				6 => 'customerName',
+				7 => 'client_account_name',
+				8 => 'ItemLanguage',
+				9 => 'jobPrice',
+				10 => 'job_due_date',
+			];
+
+			// Determine the column to sort by based on DataTables order index
+			$orderColumn = $columns[$orderColumnIndex] ?? 'tmv.job_summmeryId';
+
+			// Ensure the order direction is valid
+			$orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+
+			// Base query
+			$where_cond = '';
+			function convertDateFormat($date)
+			{
+				$dateParts = explode('.', $date);
+				if (count($dateParts) === 3) {
+					return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+				}
+				return $date; // Return the original date if format is incorrect
+			}
+
+			// Assuming $searchValue can contain a date in dd.mm.yyyy format
+			$searchValueConverted = convertDateFormat($searchValue);
+
+			// Assuming $searchValue can contain a date in dd.mm.yyyy format
+			$searchValueConverted = convertDateFormat($searchValue);
+
+			// Apply search functionality
+			if (!empty($searchValue)) {
+				$where_cond .= " AND (concat(tg.order_no,'_',tmv.job_code,tmv.job_no) LIKE '%" . $searchValue . "%' 
+							OR tmv.item_status LIKE '%" . $searchValue . "%'
+							OR CONCAT(tmu.vFirstName, ' ', tmu.vLastName) LIKE '%" . $searchValue . "%'
+							OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $searchValue . "%'
+							OR tc.vUserName LIKE '%" . $searchValue . "%'
+							OR tcia.vUserName LIKE '%" . $searchValue . "%'
+							OR tmv.ItemLanguage LIKE '%" . $searchValue . "%'
+							OR tmv.total_price LIKE '%" . $searchValue . "%'
+							OR tmv.due_date LIKE '%" . $searchValueConverted . "%'
+							)";
+							
+			}
+
+			if (isset($filterParams['contactPerson'])) {
+				$where_cond .= " AND tmu.iUserId = '" . $filterParams['contactPerson'] . "'";
+			}
+			
+			if (isset($filterParams['resource'])) {
+				$where_cond .= " AND tmv.resource = '" . $filterParams['resource'] . "'";
+			}
+			
+			if (isset($filterParams['customer'])) {
+				$where_cond .= " AND tcu.client = '" . $filterParams['customer'] . "'";
+			}
+
+			if (isset($filterParams['account'])) {
+				$where_cond .= " AND tcu.indirect_customer = '" . $filterParams['account'] . "'";
+			}
+			
+			if (isset($filterParams['projectType'])) {
+				$where_cond .= " AND ti.project_type = '" . $filterParams['projectType'] . "'";
+			}
+			
+			if (isset($filterParams['jobStatus'])) {
+				$where_cond .= " AND tmv.item_status = '" . $filterParams['jobStatus'] . "'";
+			}
+			
+			if (isset($filterParams['itemStatus'])) {
+				$where_cond .= " AND ti.item_status = '" . $filterParams['itemStatus'] . "'";
+			}
+			
+			if (isset($filterParams['orderTypes'])) {
+				$where_cond .= " AND tu.iFkUserTypeId = '" . $filterParams['orderTypes'] . "'";
+			}
+			
+			if (isset($filterParams['companyCode'])) {
+				$where_cond .= " AND tg.order_no LIKE '" . $filterParams['companyCode'] . "%'";
+			}
+			
+			if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {
+				$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
+				$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
+				$where_cond .= " AND tmv.due_date BETWEEN '" . $Frm . "' AND '" . $To . "'";
+			} else if (isset($filterParams['itemDuedateStart'])) {
+				$Frm = $filterParams['itemDuedateStart'] . ' 00:00:00';
+				$where_cond .= " AND tmv.due_date > '" . $Frm . "'";
+			} else if (isset($filterParams['itemDuedateEnd'])) {
+				$To = $filterParams['itemDuedateEnd'] . ' 00:00:00';
+				$where_cond .= " AND tmv.due_date < '" . $To . "'";
+			}
+			
+			if (isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])) {
+				$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
+				$To = $filterParams['createDateTo'] . ' 00:00:00';
+				$where_cond .= " AND tmv.created_date BETWEEN '" . $Frm . "' AND '" . $To . "'";
+			} else if (isset($filterParams['createDateFrom'])) {
+				$Frm = $filterParams['createDateFrom'] . ' 00:00:00';
+				$where_cond .= " AND tmv.created_date > '" . $Frm . "'";
+			} else if (isset($filterParams['createDateTo'])) {
+				$To = $filterParams['createDateTo'] . ' 00:00:00';
+				$where_cond .= " AND tmv.created_date < '" . $To . "'";
+			}
+
+			$joinTables = " INNER JOIN 
+				tms_summmery_view tmv ON ti.order_id = tmv.order_id
+			INNER JOIN 
+				tms_customer tcu ON ti.order_id = tcu.order_id
+			INNER JOIN 
+				tms_client tc ON tcu.client = tc.iClientId
+			INNER JOIN 
+				tms_client_indirect tcia ON tcia.iClientId = tcu.indirect_customer
+			INNER JOIN 
+				tms_general tg ON ti.order_id = tg.order_id
+			INNER JOIN 
+				tms_users tu ON tmv.resource = tu.iUserId
+			INNER JOIN 
+				tms_users tmu ON tmv.contact_person = tmu.iUserId ";
+			$querydata = "SELECT DISTINCT
+				tmv.job_summmeryId, 
+				tmv.ItemLanguage, 
+				tmv.job_no AS jobNo,
+				tmv.job_code AS jobCode,
+				tmu.iUserId AS contactPerson,
+				CONCAT(tmu.vFirstName, ' ', tmu.vLastName) AS contactPersonName, 
+				tmv.resource AS resource, 
+				CONCAT(tu.vFirstName, ' ', tu.vLastName) AS resourceName,
+				tc.vUserName AS customerName,
+				tmv.company_code AS companyCode,
+				tcu.client AS customer,
+				tu.vResourceType AS serviceGroup,
+				tg.project_type AS projectType,
+				tmv.item_status AS jobStatus,
+				tmv.due_date AS job_due_date,
+				ti.item_status AS itemStatus,
+				tu.iFkUserTypeId AS orderTypes,
+				tg.order_no AS orderNum,
+				tmv.job_summmeryId AS jobId,
+				tu.iFkUserTypeId AS ifkuserId,
+				tmv.po_number AS poNumber,
+				tmv.total_price AS jobPrice,
+				tcia.vUserName AS client_account_name
+			FROM 
+				tms_items ti
+			$joinTables
+			WHERE 
+				1=1 " . $where_cond . " 
+			GROUP BY 
+				tmv.job_summmeryId 
+			ORDER BY " . $orderColumn . " " . $orderDir . " 
+			LIMIT $start, $length";
+
+			$results = $this->_db->rawQueryNew($querydata);
+
+			$totalRecordsQuery = "SELECT COUNT(DISTINCT tmv.job_summmeryId) AS count 
+			FROM 
+				tms_items ti
+			$joinTables
+			WHERE 1=1 " . $where_cond;
+
+			$totalRecordsResult = $this->_db->rawQueryNew($totalRecordsQuery);
+			$totalRecords = $totalRecordsResult[0]['count'] ?? 0;
+
+			if (!isset($post['filterParams'])) {
+				$response = [
+					"draw" => intval($post['draw']),
+					"recordsTotal" => 0,
+					"recordsFiltered" => 0,
+					"data" => [],
+					"totalPrice" => 0
+				];
+			} else {
+				$response = [
+					"draw" => intval($post['draw']),
+					"recordsTotal" => $totalRecords,
+					"recordsFiltered" => $totalRecords,
+					"data" => $results,
+				];
+			}
+
+			// Return the response
+			return $response;
+
+		}
+
 
 
 }
