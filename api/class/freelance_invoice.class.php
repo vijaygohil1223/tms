@@ -546,6 +546,16 @@ class Freelance_invoice
                 //print_r($createdDate);
                 $data[$key]['group_total_invoice_cost_eur'] = isset($totalCostsByDate[$createdDate]) ? $totalCostsByDate[$createdDate] : 0;
             }
+
+            $data[$key]['linguist_account_holder'] = '';
+            $data[$key]['linguist_iban'] = '';
+            $data[$key]['linguist_bic_swift'] = '';
+            if (!empty($value['linguist_bankinfo'])) {
+                $tempBankInfo = json_decode($value['linguist_bankinfo']);
+                $data[$key]['linguist_account_holder'] = $tempBankInfo->holder_name ?? '';
+                $data[$key]['linguist_iban'] = $tempBankInfo->iban ?? '';
+                $data[$key]['linguist_bic_swift'] = $tempBankInfo->bic ?? '';
+            }
             
         }
 
