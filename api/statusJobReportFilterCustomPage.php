@@ -33,9 +33,10 @@ function statusJobReportFilter($post, $dbConn){
         4 => 'contactPersonName',
         5 => 'resourceName',
         6 => 'customerName',
-        7 => 'ItemLanguage',
-        8 => 'jobPrice',
-        9 => 'job_due_date',
+        7 => 'client_account_name',
+        8 => 'ItemLanguage',
+        9 => 'jobPrice',
+        10 => 'job_due_date',
     ];
 
     // Determine the column to sort by based on DataTables order index
@@ -67,11 +68,13 @@ function statusJobReportFilter($post, $dbConn){
                     OR tmv.item_status LIKE '%" . $searchValue . "%'
                     OR CONCAT(tmu.vFirstName, ' ', tmu.vLastName) LIKE '%" . $searchValue . "%'
                     OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $searchValue . "%'
-                    OR  tc.vUserName LIKE '%" . $searchValue . "%'
+                    OR tc.vUserName LIKE '%" . $searchValue . "%'
+                    OR tcia.vUserName LIKE '%" . $searchValue . "%'
                     OR tmv.ItemLanguage LIKE '%" . $searchValue . "%'
                     OR tmv.total_price LIKE '%" . $searchValue . "%'
                     OR tmv.due_date LIKE '%" . $searchValueConverted . "%'
                     )";
+                    
     }
 
     if (isset($filterParams['contactPerson'])) {
@@ -84,6 +87,10 @@ function statusJobReportFilter($post, $dbConn){
     
     if (isset($filterParams['customer'])) {
         $qry_invc .= " AND tcu.client = '" . $filterParams['customer'] . "'";
+    }
+
+    if (isset($filterParams['account'])) {
+        $qry_invc .= " AND tcu.indirect_customer = '" . $filterParams['account'] . "'";
     }
     
     if (isset($filterParams['projectType'])) {
@@ -129,6 +136,21 @@ function statusJobReportFilter($post, $dbConn){
         $To = $filterParams['createDateTo'] . ' 00:00:00';
         $qry_invc .= " AND tmv.created_date < '" . $To . "'";
     }
+
+    $joinTables = " INNER JOIN 
+        tms_summmery_view tmv ON ti.order_id = tmv.order_id
+    INNER JOIN 
+        tms_customer tcu ON ti.order_id = tcu.order_id
+    INNER JOIN 
+        tms_client tc ON tcu.client = tc.iClientId
+    INNER JOIN 
+        tms_client_indirect tcia ON tcia.iClientId = tcu.indirect_customer
+    INNER JOIN 
+        tms_general tg ON ti.order_id = tg.order_id
+    INNER JOIN 
+        tms_users tu ON tmv.resource = tu.iUserId
+    INNER JOIN 
+        tms_users tmu ON tmv.contact_person = tmu.iUserId ";
     $querydata = "SELECT DISTINCT
         tmv.job_summmeryId, 
         tmv.ItemLanguage, 
@@ -151,28 +173,19 @@ function statusJobReportFilter($post, $dbConn){
         tmv.job_summmeryId AS jobId,
         tu.iFkUserTypeId AS ifkuserId,
         tmv.po_number AS poNumber,
-        tmv.total_price AS jobPrice
+        tmv.total_price AS jobPrice,
+        tcia.vUserName AS client_account_name
     FROM 
         tms_items ti
-    INNER JOIN 
-        tms_summmery_view tmv ON ti.order_id = tmv.order_id
-    INNER JOIN 
-        tms_customer tcu ON ti.order_id = tcu.order_id
-    INNER JOIN 
-        tms_client tc ON tcu.client = tc.iClientId
-    INNER JOIN 
-        tms_general tg ON ti.order_id = tg.order_id
-    INNER JOIN 
-        tms_users tu ON tmv.resource = tu.iUserId
-    INNER JOIN 
-        tms_users tmu ON tmv.contact_person = tmu.iUserId
+    $joinTables
     WHERE 
         1=1 " . $qry_invc . " 
     GROUP BY 
         tmv.job_summmeryId 
     ORDER BY " . $orderColumn . " " . $orderDir . " 
     LIMIT $start, $length";
-        $data = $dbConn->query($querydata);
+
+    $data = $dbConn->query($querydata);
     
     $results = array();
     while ($val = $data->fetch_assoc()) {
@@ -182,18 +195,7 @@ function statusJobReportFilter($post, $dbConn){
     $totalRecordsQuery = "SELECT COUNT(DISTINCT tmv.job_summmeryId) AS count 
     FROM 
         tms_items ti
-    INNER JOIN 
-        tms_summmery_view tmv ON ti.order_id = tmv.order_id
-    INNER JOIN 
-        tms_customer tcu ON ti.order_id = tcu.order_id
-    INNER JOIN 
-        tms_client tc ON tcu.client = tc.iClientId
-    INNER JOIN 
-        tms_general tg ON ti.order_id = tg.order_id
-    INNER JOIN 
-        tms_users tu ON tmv.resource = tu.iUserId
-    INNER JOIN 
-        tms_users tmu ON tmv.contact_person = tmu.iUserId
+    $joinTables
     WHERE 1=1 " . $qry_invc;
 
     $getTotalRecordsQuery = $dbConn->query($totalRecordsQuery);

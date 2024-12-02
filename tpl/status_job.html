@@ -113,7 +113,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-sm-6 form-group">
+                                                <div class="col-sm-3 form-group">
                                                     <div class="row">
                                                         <div class="col-sm-11">
                                                             <label>Client</label>
@@ -125,6 +125,23 @@
                                                             <a href="javascript:void(0)"
                                                                 ng-click="clearCode('job-status-report','customer')"
                                                                 ng-if="jobReport.customer"><i
+                                                                    class="iconDelete glyph-icon fa-times"
+                                                                    aria-hidden="true"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3 form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <label>Account</label>
+                                                            <input type="text" select2-indirect id="account1"
+                                                                class="form-control" name="account"
+                                                                ng-model="jobReport.account" />
+                                                        </div>
+                                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="clearCode('job-status-report','account')"
+                                                                ng-if="jobReport.account"><i
                                                                     class="iconDelete glyph-icon fa-times"
                                                                     aria-hidden="true"></i></a>
                                                         </div>
@@ -466,6 +483,7 @@
                                                     <th>Project Manager</th>
                                                     <th>Resource</th>
                                                     <th>Client</th>
+                                                    <th>Account</th>
                                                     <th>Target language</th>
                                                     <th>Prices</th>
                                                     <!-- <th>Scoop Status</th> -->
@@ -480,6 +498,7 @@
                                                         <td ng-bind="result.contactPersonName"></td>
                                                         <td ng-bind="result.resourceName"></td>
                                                         <td ng-bind="result.customerName"></td>
+                                                        <td ng-bind="result.client_account_name"></td>
                                                         <td ng-if="result.ItemLanguage">{{result.ItemLanguage}}</td>
                                                         <td ng-if="!result.ItemLanguage">--</td>
                                                         <td>{{ result.jobPrice | customNumber}} <span class="none">-staticstring-</span> </td>

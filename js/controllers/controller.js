@@ -18586,7 +18586,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }
             //exportTableToExcel('job_report_table','Jobs-status-report')
-            exportTableToExcel('exportableJob_report_table','Jobs-status-report',[7], 1)
+            exportTableToExcel('exportableJob_report_table','Jobs-status-report',[8], 1)
             
             // var blob = new Blob([document.getElementById('exportable').innerHTML], {
             //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
@@ -18847,11 +18847,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                '</div>';
 
             // Use $timeout and $compile to ensure AngularJS processes the bindings
-            $timeout(function() {
-                var compiledHtml = $compile(html)($scope);
-                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledHtml);
-            }, 0);
-            return ''; 
+            // $timeout(function() {
+            //     var compiledHtml = $compile(html)($scope);
+            //     angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledHtml);
+            // }, 0);
+            return html; 
         }),
         DTColumnBuilder.newColumn(null).withTitle('Job Details').renderWith(function(data, type, full, meta) {
             var jobDetailsLink = '<a href="javascript:void(0)" ' +
@@ -18887,6 +18887,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return '--';
             }
         }),
+        DTColumnBuilder.newColumn('client_account_name').withTitle('Account'),
         DTColumnBuilder.newColumn('ItemLanguage').withTitle('Item Language'),
         DTColumnBuilder.newColumn('jobPrice').withTitle('Job Price').renderWith(function(data, type, full, meta) {
             return $filter('customNumber')(data) ; // Adjust as per your customNumber filter
@@ -18952,6 +18953,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
         })
         .withDataProp('data') 
+        .withOption('createdRow', function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        } )
         .withOption('paging', true) 
         .withOption('pageLength', 100)
         .withOption('searching', true) // Enable search
