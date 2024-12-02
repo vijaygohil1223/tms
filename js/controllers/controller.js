@@ -2486,61 +2486,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     function findIndexByTabClassName(tabClassName) {
         return $scope.dashboardTabList.findIndex(tab => tab.tabClassName === tabClassName);
     }
-    // function findIndexByTabClassName(tabClassName) {
-    //     for (var i = 0; i < $scope.dashboardTabList.length; i++) {
-    //         if ($scope.dashboardTabList[i].tabClassName === tabClassName) {
-    //             return i; // Return the index if match found
-    //         }
-    //     }
-    //     return -1; // Return -1 if no match found
-    // }
-
-    // group by for completed tab
-    // Function to group data by Client ID
-    // function groupByClientId(data) {
-    //     var grouped = {};
-    //     data.forEach(function(item) {
-    //         if (!grouped[item.contactName]) {
-    //             grouped[item.contactName] = [];
-    //         }
-    //         grouped[item.contactName].push(item);
-    //     });
-    //     return grouped;
-    // }
-    // function groupByDueDate(data) {
-    //     var grouped = {};
-    //     data.forEach(function(item) {
-    //         // Extract year and month from due date
-    //         var date = new Date(item.itemDuedate);
-    //         var yearMonth = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate() ));
-            
-    //         if (!grouped[yearMonth]) {
-    //             grouped[yearMonth] = [];
-    //         }
-    //         grouped[yearMonth].push(item);
-    //     });
-    //     return grouped;
-    // }
-
-    // $scope.filteNewFn = function(mynewData){
-    //     // Initialize groupedData based on default grouping criteria
-    //     $scope.groupedData = groupByClientId(mynewData);
-
-    //     // Watch for changes in grouping criteria
-    //     $scope.$watch('completedTabGrouped', function(newVal, oldVal) {
-    //         if (newVal === 'clientId') {
-    //             $scope.groupedData = groupByClientId(mynewData);
-    //         }
-    //         if (newVal === 'projectDuedate') {
-    //             $scope.groupedData = groupByDueDate(mynewData);
-    //             console.log('Grouped Data:======>*******', $scope.groupedData);
-    //         }
-            
-    //         // Add more cases for other grouping criteria if needed
-    //     });
-    // }
-    // group by for completed tab
-    
     
     $scope.pageDefaultArr = function(){
         $scope.currentPage = 1;
@@ -2885,26 +2830,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.activeTabfn()
         //console.log('proejectPageselectedOption', selectedPage)
     }
-
-
-
-    // $scope.customSort = function (person) {
-    //     console.log('person', person)
-    //     var fieldValue = person[$scope.sortByField];
-    //     return $scope.reverse ? -fieldValue : fieldValue;
-    // };
-    // $scope.sortBy = function(tab, column) {
-    //     console.log('column', column)
-    //     console.log('tab', tab)
-    //     if (tab.sortColumn === column) {
-    //       // If already sorting by this column, reverse the order
-    //       tab.sortOrder = !tab.sortOrder;
-    //     } else {
-    //       // Otherwise, sort by the new column in ascending order
-    //       tab.sortColumn = column;
-    //       tab.sortOrder = false;
-    //     }
-    // };
 
 
     $scope.checkedIds = [];
