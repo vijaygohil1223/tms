@@ -2323,7 +2323,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 modalInstance.result.then(function (selectedItem) {
                     $scope.selected = selectedItem;
                 }, function () {
-                    console.log('Modal dismissed at: ' + new Date());
+                    //console.log('Modal dismissed at: ' + new Date());
                 });
 
                 $rootScope.$on('$locationChangeStart', function () {
@@ -2356,14 +2356,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             setTimeout(() => {
                 if(isMessageExist > 0){
-                    console.log('isMessageExist', isMessageExist)
+                    //console.log('isMessageExist', isMessageExist)
                     $('.cmtclr' + scoopId).css("color", "#67bb0a");
                 }
             }, 200);
             modalInstance.result.then(function () {
                 setTimeout(() => {
                     if(isMessageExist > 0){
-                        console.log('isMessageExist', isMessageExist)
+                       // console.log('isMessageExist', isMessageExist)
                         $('.cmtclr' + scoopId).css("color", "#67bb0a");
                     }
                 }, 200);
@@ -2460,7 +2460,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
       
     }else{
         $scope.dashboardTabList = $scope.getDefaultDashboardTabList()
-        console.log('$scope.dashboardTabList', $scope.dashboardTabList)
+       // console.log('$scope.dashboardTabList', $scope.dashboardTabList)
     }
 
     // Tabs permission array
@@ -2482,7 +2482,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($window.localStorage.getItem("session_iUserId") != 1){ 
                 if(data.tabPermission){
                     $scope.tabPermission = JSON.parse(data.tabPermission) 
-                    console.log('$scope.tabPermission===>', $scope.tabPermission)
+                    //console.log('$scope.tabPermission===>', $scope.tabPermission)
                     $scope.dashboardTabList.map( (item) =>  { 
                         for (const keyName in $scope.tabPermission){
                             if( keyName == item.tabPermissionValue )
@@ -2496,7 +2496,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
-        console.log('scoopArr', scoopArr)
+        //console.log('scoopArr', scoopArr)
         $scope.dashboardTabList[index].projectScoopData = scoopArr
         $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
     }
@@ -2799,7 +2799,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 //if ( ([1,3,4,5,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
                 if ( ([2,10].includes(val.itemStatusId))) {
-                    console.log('scoopitemStatusId=', val.itemStatusId)
+                    //console.log('scoopitemStatusId=', val.itemStatusId)
                     // var checkAllJobComplete = false;
                     // if($scope.jobListDelivered.length > 0){
                     //     let scoopJobs = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number );
@@ -2961,12 +2961,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if($scope.userRight == 1){
         rest.path = "dashboardProjectsOrderCount/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (response) {
-            console.log('data-dashboar-project count=>', response)
+            //console.log('data-dashboar-project count=>', response)
             
             if(response){
                 angular.forEach($scope.dashboardTabList, function (itm, i) {
                     if(itm.tabClassName == 'tab-due-today'){
-                        console.log('response.dueToday', response.dueToday)
+                        //console.log('response.dueToday', response.dueToday)
                         itm.projectScoopCount = response.dueToday || 0
                     }
                     if(itm.tabClassName == 'tab-due-tomorrow'){
@@ -3023,7 +3023,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if(itm.tabClassName == 'tab-poMissing'){
                         itm.projectScoopCount = response?.poMissing || 0
-                        console.log('response===================>', response)
+                        //console.log('response===================>', response)
                     }
                     // if(itm.tabClassName == 'tab-approved'){
                     //     itm.projectScoopCount = response?.approved || 0
@@ -3104,7 +3104,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var debounceTimeout;
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
-        console.log('tabIndex==================PageChange', tabIndex)
+       // console.log('tabIndex==================PageChange', tabIndex)
         $scope.showDataLoader = true;
         var projectScoopData = [];
         var assignOrderData = [];
@@ -3119,7 +3119,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         if($scope.searchText && $scope.searchText!=''){
             urlString += '&search=' + $scope.searchText
-            console.log('urlString', urlString)
+            //console.log('urlString', urlString)
         }
         if($scope.sortByFieldName && $scope.sortByFieldName != ''){
             let sortFieldOrder = $window.localStorage.getItem("sortFieldOrder")
@@ -3137,7 +3137,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
         rest.get().success(function (response) {
-            console.log('response', response)
+            //console.log('response', response)
             projectScoopData = response?.data
 
             if($scope.completedTabGrouped && $scope.completedTabGrouped !=''){
@@ -3146,7 +3146,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             
             //$scope.dashboardTabList[1].projectScoopData = response?.data
-            console.log('$scope.dashboardTabList=======>', $scope.dashboardTabList)
+            //console.log('$scope.dashboardTabList=======>', $scope.dashboardTabList)
             // if(projectScoopData){
             //     angular.forEach(projectScoopData, function (val, i) {
             //         val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
@@ -3215,7 +3215,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dashboardTabList[tabIndex].totalPages = response?.totalPages ? response?.totalPages : 0
             $scope.dashboardTabList[tabIndex].pageShowRec = $scope.dashboardTabList[tabIndex].totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.dashboardTabList[tabIndex].totalItems ; 
 
-            console.log('tabIndex*********************------------', tabIndex)
+            //console.log('tabIndex*********************------------', tabIndex)
 
             
             // $scope.dashboardTabList.forEach((itm, indx) => {
@@ -3249,7 +3249,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //$scope.pageShowRec = $scope.totalItems ? ($scope.currentPage - 1) * ($scope.itemsPerPage + 1) : $scope.totalItems ; 
     $scope.dashboardGroupbyChange = function (type) {
-        console.log('type', type)
+        //console.log('type', type)
         if(type== 'clientId'){
             $scope.groupName = 'Client';
         }
@@ -3266,7 +3266,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dashboardScoopLoad(1, tabIndex);
         } catch (error) {
             $scope.showDataLoader = false;
-            console.log('error', error)
+            //console.log('error', error)
         }
     }
 
@@ -3278,7 +3278,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
         $scope.showDataLoader = true;
-        console.log('$scope.showDataLoader', $scope.showDataLoader)
+        //console.log('$scope.showDataLoader', $scope.showDataLoader)
         try {
             $scope.searchText = searchText;
             //$('.tab-pane.active input').val()
@@ -3296,7 +3296,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         } catch (error) {
             $scope.showDataLoader = false;
-            console.log('error', error)
+            //console.log('error', error)
         }
     };
 
@@ -3305,16 +3305,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.sortOrder = '';
     $scope.hitByuser = false;
     $scope.sortBy = function (fieldName, hitByuser=0) {
-        console.log('fieldName=======>', fieldName)
+        //console.log('fieldName=======>', fieldName)
         if(fieldName){
-            console.log('fieldName', fieldName)
+            //console.log('fieldName', fieldName)
             if ($scope.sortByField === fieldName) {
                 $scope.reverse = !$scope.reverse;
-                console.log('$scope.reverse', $scope.reverse)
+                //console.log('$scope.reverse', $scope.reverse)
             } else {
                 $scope.sortByField = fieldName;
                 $scope.reverse = false;
-                console.log('$scope.reverse', $scope.reverse)
+                //console.log('$scope.reverse', $scope.reverse)
             }
             $scope.sortByFieldName = fieldName 
             $scope.sortOrder = $scope.reverse
@@ -3337,7 +3337,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activeTabfn = function(){
 
         if($window.localStorage.getItem("projectActiveTab") ){
-            console.log('iffffffffffffffffffff', )
+            //console.log('iffffffffffffffffffff', )
 
             $scope.tabName = $window.localStorage.getItem("projectActiveTab")
 
@@ -3345,7 +3345,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.sortByFieldName = $window.localStorage.getItem("sortFieldName");
                 $scope.sortBy($scope.sortByFieldName)
                 let sortFieldOrderLocal = $window.localStorage.getItem("sortFieldOrder")
-                console.log('sortFieldOrderLocal', sortFieldOrderLocal)
+                //console.log('sortFieldOrderLocal', sortFieldOrderLocal)
                 if(sortFieldOrderLocal && sortFieldOrderLocal != '')
                     $scope.reverse = sortFieldOrderLocal
             }
@@ -3353,7 +3353,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // if($window.localStorage.getItem("sortFieldOrder"))
             //     $scope.sortOrder = $window.localStorage.getItem("sortFieldOrder");
             var tabIndex = findIndexByTabClassName($scope.tabName);
-            console.log('tabIndex============>', tabIndex)
+            //console.log('tabIndex============>', tabIndex)
             $scope.dashboardScoopLoad(1, tabIndex);
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
@@ -3394,7 +3394,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         };
     })();
     $scope.changeProjectTabs2 = function(className, tabIndex){
-        console.log('tabIndex=========>', tabIndex)
+        //console.log('tabIndex=========>', tabIndex)
         //$scope.dashboardTabList[tabIndex].projectScoopData = []
         $scope.completedTabGrouped = '';
         $scope.searchText = '';
@@ -3431,10 +3431,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // }
     $scope.selectedOptionPage = 100;
     $scope.selectChangePage = function(selectedPage) {
-        console.log('selectedPage========================================', selectedPage)
+        //console.log('selectedPage========================================', selectedPage)
         $scope.itemsPerPage = selectedPage;
         $scope.activeTabfn()
-        console.log('proejectPageselectedOption', selectedPage)
+        //console.log('proejectPageselectedOption', selectedPage)
     }
 
 
@@ -3737,7 +3737,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     rest.path = "getJobsFromTmsSummeryViewCount" ;
     rest.get().success(function (response) {
-        console.log('data-count-jobbbbb=>', response)
+        //console.log('data-count-jobbbbb=>', response)
 
         if(response){
             $scope.jobRequestesCount = response?.requested || 0;
@@ -3767,7 +3767,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.fillDashboardJobTabFn = function(index, scoopArr, scoopCount){
-        console.log('scoopArr', scoopArr)
+        //console.log('scoopArr', scoopArr)
         //$scope.dashboardTabList[index].projectScoopData = scoopArr
         //$scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
     }
@@ -3781,7 +3781,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var jobTabName = $window.localStorage.getItem("jobActiveTab")
         
         var projectjobData = [];
-        console.log('jobTabName', jobTabName)
+        //console.log('jobTabName', jobTabName)
         var assignOrderData = [];
         var tabIndex = parseInt(tabIndex)
         $scope.currentPageJob = page ? page : $scope.currentPageJob
@@ -3793,16 +3793,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // if($scope.jobtabName && $scope.jobtabName!=''){
         //     urlString += '&tabName=' + $scope.jobtabName
         // }
-        console.log('$scope.jobsearchText', $scope.jobsearchText)
+        //console.log('$scope.jobsearchText', $scope.jobsearchText)
             
         if($scope.jobsearchText && $scope.jobsearchText!=''){
             urlString += '&search=' + $scope.jobsearchText
-            console.log('urlString', urlString)
+            //console.log('urlString', urlString)
         }
-        console.log('$scope.sortByFieldName===>', $scope.jobsortByFieldName)
+        //console.log('$scope.sortByFieldName===>', $scope.jobsortByFieldName)
             
         if($scope.jobsortByFieldName && $scope.jobsortByFieldName != ''){
-            console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
+            //console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
             const sortOrderByJob = $scope.jobsortOrder ? 'DESC' : 'ASC'
             urlString += '&sortBy=' + $scope.jobsortByFieldName
             urlString += '&sortOrder=' + sortOrderByJob
@@ -3810,7 +3810,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         rest.path = 'getJobsFromTmsSummeryViewDashboard?' + urlString;
         rest.get().success(function (response) {
-            console.log('job--==>response', response)
+            //console.log('job--==>response', response)
             projectjobData = response?.data
             
             //$scope.dashboardTabList[1].projectjobData = response?.data
@@ -3854,7 +3854,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         break;
                     case 'Overdue':
                         $scope.jobOverDue = projectjobData
-                        console.log('$scope.jobOverDue==>', $scope.jobOverDue)
+                        //console.log('$scope.jobOverDue==>', $scope.jobOverDue)
                         $scope.jobsListAll = $scope.jobOverDue;
                         $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
                         break;         
@@ -3953,7 +3953,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activeJobTabfn = function(){
         if($window.localStorage.getItem("projectActiveTab") ){
             $scope.jobtabName = $window.localStorage.getItem("projectActiveTab")
-            console.log('$scope.jobtabName========>', $scope.jobtabName)
+            //console.log('$scope.jobtabName========>', $scope.jobtabName)
             var tabIndex = findIndexByTabClassName($scope.jobtabName);
             $scope.dashboardJobLoad(1, tabIndex);
             setTimeout(() => {
@@ -3962,7 +3962,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }else{
             var tabIndex = findIndexByTabClassName('tab-due-today');
-            console.log('tabIndex====>', tabIndex)
+            //console.log('tabIndex====>', tabIndex)
             $scope.jobtabName = 'tab-due-today';
             $scope.dashboardJobLoad(1,tabIndex);
         }
@@ -3988,19 +3988,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.jobsortByFieldName = '';
     $scope.jobsortOrder = '';
     $scope.jobsortBy = function (fieldName) {
-        console.log('fieldName', fieldName)
+        //console.log('fieldName', fieldName)
         if(fieldName){
-            console.log('fieldName', fieldName)
+            //console.log('fieldName', fieldName)
             if ($scope.jobsortByFieldName === fieldName) {
                 $scope.jobreverse = !$scope.jobreverse;
-                console.log('$scope.jobreverse', $scope.jobreverse)
+                //console.log('$scope.jobreverse', $scope.jobreverse)
             } else {
                 $scope.jobsortByFieldName = fieldName;
                 $scope.jobreverse = false;
-                console.log('$scope.jobreverse', $scope.jobreverse)
+                //console.log('$scope.jobreverse', $scope.jobreverse)
             }
             $scope.jobsortByFieldName = fieldName 
-            console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
+            //console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
             $scope.jobsortOrder = $scope.jobreverse 
             //$scope.activeTabfn()
             $scope.jobtabName = $window.localStorage.getItem("jobActiveTab")
@@ -4020,7 +4020,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.jobtabName = $window.localStorage.getItem("jobActiveTab")
         //var tabIndex = findIndexByTabClassName($scope.jobtabName);
         $scope.dashboardJobLoad(1, 0, $scope.jobtabName);
-        console.log('proejectPageselectedOption', selectedPage)
+        //console.log('proejectPageselectedOption', selectedPage)
     }
 
 
@@ -4267,7 +4267,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }, 2000);
                     }
                 } catch (error) {
-                    console.log('error', error)
+                    //console.log('error', error)
                     
                 }
             }
@@ -4278,7 +4278,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //job action like all, request etc
     $scope.highlightSearch = "All";
     $scope.sortJob = function (action, eID) {
-        console.log('action', action)
+        //console.log('action', action)
         //pagination controls
         // $scope.currentPage = 1;
         // $scope.totalItems = $scope.jobList.length;
@@ -4303,7 +4303,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.highlightSearch = "Requested";
                 $scope.jobList = $scope.freelanceJobRequested
                 
-                console.log('$scope.jobRequested_freelance', $scope.jobRequested_freelance)
+                //console.log('$scope.jobRequested_freelance', $scope.jobRequested_freelance)
                 break;
             case "Waiting":
                 $scope.jobRow = "Waiting";
@@ -4387,13 +4387,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.showLoder = true;
             rest.path = 'getfolderByjobid/' + jobID;
             rest.get().success(function (data) {
-                console.log('filemanager-data', data)
+                //console.log('filemanager-data', data)
                 // took next id of filemanagerid to avoid external uploaded file
                 const inJobobFolderId = data.fmanager_id + 1
                 rest.path = 'filemanagerfolderDownload/' + inJobobFolderId;
                 rest.get().success(function (data) {
                     $scope.downloadAllfile = data;
-                    console.log('$scope.downloadAllfile', $scope.downloadAllfile)
+                    //console.log('$scope.downloadAllfile', $scope.downloadAllfile)
                     var zipdwnld = new JSZip();
                     var fileUrls = [];
                     var folderArr = [];
@@ -4500,7 +4500,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'customer/' + orderId;
         rest.get().success(function (res) {
             $scope.customer = res;
-            console.log('$scope.customer', $scope.customer)
+            //console.log('$scope.customer', $scope.customer)
             if (res) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
