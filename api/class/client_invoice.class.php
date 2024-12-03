@@ -1870,7 +1870,7 @@ class Client_invoice
             //$orderColumn = ' tmInvoice.invoice_due_date ';  
             //$orderDir =  'ASC';
             // use case if date is 00
-            $orderColumn = " CASE WHEN tmInvoice.invoice_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.invoice_due_date) DESC ";
+            $orderColumn = " CASE WHEN tmInvoice.invoice_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.invoice_due_date) $orderDir ";
             $orderDir =  ' ';
         }else{
             $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';

@@ -36513,6 +36513,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 if ($scope.dtInstance && $scope.dtInstance.reloadData) {
                     $scope.dtInstance.reloadData();
+                    try {
+                        $scope.dtColumnsClient.forEach(function(element, index) {
+                            if([0,10].includes(index) ){
+                                //element.withOption('orderable', false); // Disable sorting for this column
+                                $scope.dtColumnsClient[index].orderable= false;
+                                //$scope.dtColumnsClient[index].bSortable= false;
+                            }else{
+                                if($scope.activeTab == 'group-outstanding'){
+                                    if(index !=7)
+                                        element.withOption('orderable', false);
+                                }else{
+                                    element.withOption('orderable', true);
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.log('error', error)
+                    }
                 } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
                     $scope.dtInstance.DataTable.ajax.reload();
                 } else {
