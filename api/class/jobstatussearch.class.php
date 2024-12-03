@@ -332,6 +332,10 @@ class jobstatussearch {
 			if (isset($filterParams['orderTypes'])) {
 				$where_cond .= " AND tu.iFkUserTypeId = '" . $filterParams['orderTypes'] . "'";
 			}
+
+			if (isset($filterParams['currency'])) {
+				$where_cond .= " AND tu.freelance_currency LIKE '" . $filterParams['currency'] . "%'";
+			}
 			
 			if (isset($filterParams['companyCode'])) {
 				$where_cond .= " AND tg.order_no LIKE '" . $filterParams['companyCode'] . "%'";
