@@ -356,12 +356,12 @@ class Freelance_invoice
             8 => 'paid_date',
             //9 => 'invoice_status',
             9 => 'invoice_status_name',
-            //10 => 'action',
+            10 => 'invoice_id',
         ];
         // Determine the column to sort by based on DataTables order index
         //if(isset($post['displayGroupBy']) && $post['displayGroupBy'] == true ){
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'Approved' ) {
-            $orderColumn = " CASE WHEN tmInvoice.inv_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.inv_due_date) DESC ";
+            $orderColumn = " CASE WHEN tmInvoice.inv_due_date = '0000-00-00 00:00:00' THEN 1 ELSE 0 END, DATE(tmInvoice.inv_due_date) $orderDir ";
             $orderDir =  ' ';
         }else{
             $orderColumn = $orderColumnIndex>0 ? $columns[$orderColumnIndex] : ' tmInvoice.invoice_id';
