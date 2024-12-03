@@ -19701,8 +19701,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const tempHtmlBottom = `<span>Total ${isPriceInEUR} ${tempInvoicePrice}</span>`;
                         return angular.element(
                             `<tr class="groupdate">
-                                <td colspan="7"></td>
-                                <td colspan="3" style="font-weight:bold;">
+                                <td colspan="8"></td>
+                                <td colspan="2" style="font-weight:bold; ">
                                     ${tempHtmlBottom}
                                 </td>
                             </tr>`
