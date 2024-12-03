@@ -19413,7 +19413,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //console.log('$scope.dtInstance', $scope.dtInstance)
             $scope.dtInstance.reloadData();
             //$scope.dtInstance.DataTable.draw();
-            //$scope.dtOptionsClient.ordering = true
+            //$scope.dtOptionsLinguist.ordering = true
+
+            //console.log('$scope.$scope.dtOptionsLinguist', $scope.dtOptionsLinguist)
             $scope.dtColumnsLinguist.forEach(function(element, index) {
                 if([0,10].includes(index) ){
                     //element.withOption('orderable', false); // Disable sorting for this column
@@ -19586,7 +19588,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     ];
     $scope.filterInvoiceFn = function(tabName){
         console.log('tabName', tabName)
-        $scope.dtOptionsClient = DTOptionsBuilder.newOptions()
+        $scope.dtOptionsLinguist = DTOptionsBuilder.newOptions()
         .withOption('ajax', function(data, callback, settings) {
             $scope.totalSelectedPrice = '';
             $('input[id^=checkAll]:checkbox').prop('checked', false);
@@ -19655,7 +19657,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('pageLength', 100)
         .withOption('searching', true) // Enable search
         .withOption('scrollX', true)
-        .withOption('order', [[1, 'asc']])
+        //.withOption('order', [[1, 'asc']])
         //.withOption('ordering', $scope.activeTab != 'Approved' )
         .withOption('drawCallback', function(settings) {
             if ($scope.activeTab && $scope.activeTab === 'Approved') {
