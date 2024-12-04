@@ -28067,6 +28067,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data1) {
             $scope.itemLength = data1;
+            console.log('$scope.itemLength', $scope.itemLength)
             
             rest.path = 'jobsummeryGet/' + $routeParams.id;
             rest.get().success(function (data) {
@@ -41406,7 +41407,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveitems = function (formId, formIndex) {
         // check PoNumber Exist call fun
         $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
-
+        
         if (angular.element('#item-form' + formId).valid()) {
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {

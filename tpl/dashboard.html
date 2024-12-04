@@ -653,7 +653,7 @@ td { font-size: 11px; } */
                             </thead>
                             <tbody ng-if="completedTabGrouped == '' ">
                               <tr ng-if=" completedTabGrouped == '' "
-                                ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder track by order.itemId ">
+                                ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder track by order.itemId " ng-style="{{order.is_urgent_scoop ? {'color':'#800080'} : {'color':'initial'} ;}} ">
 
                                 <td>
                                   <input type="checkbox" id="scoopCheck{{$index}}"
@@ -664,7 +664,7 @@ td { font-size: 11px; } */
                                 <td>
                                   <a href="javascript:void(0)"
                                     ng-click="goToScoopViewdetail(order.itemId, order.orderId, order.item_number, $event)"
-                                    style="color:{{order.scoop_projectColor}}">
+                                    style="color:{{order.is_urgent_scoop ? '#800080' : order.scoop_projectColor}}">
                                     {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                   </a>
                                   <!-- <small class="block m-t-sm">
@@ -683,7 +683,7 @@ td { font-size: 11px; } */
                                       <i class="fa fa-user fa-stack-1x text-white"></i>
                                     </span>
                                     <div class="media-body">
-                                      <a href="#/viewdirect/{{order.iClientId}}" class="h5">{{order.contactName}} </a>
+                                      <a href="#/viewdirect/{{order.iClientId}}" class="h5" ng-style="{{order.is_urgent_scoop ? {'color':'#800080'} : {'color':'initial'} ;}} ">{{order.contactName}} </a>
                                     </div>
                                   </article>
                                   <br />
@@ -692,7 +692,7 @@ td { font-size: 11px; } */
                                       <i class="fa fa-address-card"></i>
                                     </span>
                                     <div class="media-body">
-                                      <a href="" class="h5">{{order.accountname}}</a>
+                                      <a href="" class="h5" ng-style="{{order.is_urgent_scoop ? {'color':'#800080'} : {'color':'initial'} ;}} ">{{order.accountname}}</a>
                                     </div>
                                   </article>
                                 </td>
@@ -746,7 +746,10 @@ td { font-size: 11px; } */
                                 <td>
                                   <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                   <span ng-if="order.itemDuedate" class="labeltitle mytooltip"
-                                    ng-style="(order.itemDuedate < dateToday && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1) ? {'color':'red'} : {'color':'initial'} ">
+                                  ng-style="{
+                                    'color': order.is_urgent_scoop ? '#800080' : 
+                                            (order.itemDuedate < dateToday && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1 ? 'red' : 'initial')
+                                  }" >
                                     {{ order.itemDuedate | dateFormatDisplayFront }}
                                     <div class="mytooltip_div">
                                       <ul class="timeline">
