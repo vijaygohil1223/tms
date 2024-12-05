@@ -7413,9 +7413,10 @@ app.directive('dueDateColor', function() {
                 const diff = dueDate - now;
 
                 let color = 'initial';
-                if (diff <= 3600000 && diff > 1800000 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'yellow';
-                else if (diff <= 1800000 && diff > 0 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1 ) color = 'orange';
-                else if (diff < 0 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'red';
+                //if (scope.order.is_urgent_scoop==1 && [4, 5, 6,7, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'purple';
+                if (diff <= 3600000 && diff > 1800000 && [4, 5, 6,7, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'yellow';
+                else if (diff <= 1800000 && diff > 0 && [4, 5, 6, 7,8, 9].indexOf(scope.order.itemStatusId) === -1 ) color = 'orange';
+                else if (diff < 0 && [4, 5, 6, 7, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'red';
 
                 if(color=='yellow'){
                     element.css('background', color);

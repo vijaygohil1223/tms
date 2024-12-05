@@ -427,7 +427,7 @@ class dashboard {
                     $val['projectstatus_color'] = '#8d9296';
                     
                     // is_urgent_scoop - update value to 0 if invoiced or Paid 
-                    $val['is_urgent_scoop'] = isset($val['itemStatusId']) && ($val['itemStatusId'] == 6 || $val['itemStatusId'] == 7) ? 0 : $val['is_urgent_scoop'];
+                    $val['is_urgent_scoop'] = isset($val['itemStatusId']) && ( in_array($val['itemStatusId'], [4, 5, 6, 7, 8, 9]) ) ? 0 : $val['is_urgent_scoop'];
 
                 }
             }catch (Exception $e) {
