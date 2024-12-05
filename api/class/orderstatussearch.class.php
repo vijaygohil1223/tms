@@ -431,20 +431,56 @@ class orderstatussearch {
 				) ";
 
 				$response = $this->_db->rawQuery($updateSql);
+
+				$jobStatus = '';
+				switch ($item_status) {
+					case '4':
+						$jobStatus = 'Approved';
+						break;
+					case '5':
+						$jobStatus = 'Completed';
+						break;
+					case '6':
+						$jobStatus = 'Invoice Ready';
+						break;
+					case '9':
+							$jobStatus = 'Cancelled';
+							break;
+					default:
+					//$andWhere = " AND resource != ''  ";
+				}
+
+				if($jobStatus !=''){
+					$updateJobSql = "
+					UPDATE tms_summmery_view AS tsv 
+					JOIN tms_items AS its ON its.order_id = tsv.order_id AND its.item_number = tsv.item_id 
+					SET tsv.item_status = '$jobStatus' 
+					WHERE its.itemId IN ($updateIdsArrSttring) AND tsv.resource != '' AND NOT EXISTS (
+						SELECT 1 FROM tms_invoice_jobs AS tij 
+						WHERE tij.invc_job_id = tsv.job_summmeryId
+					) ";
+
+					$updateJobStatus = $this->_db->rawQuery($updateJobSql);
+				}
+
+				
+
 				
 				return $response;
 			}
 		
 			// Update status only for the remaining selected items
 			if (!empty($itemIdsString)) {
-				$update_date = date('Y-m-d H:i:s');
-				$item_status = $post['scoop_status'];
+				return 'No items to update';
+				// below query is used for update bulk - all searched record
+				// $update_date = date('Y-m-d H:i:s');
+				// $item_status = $post['scoop_status'];
 				
-				$sql = "UPDATE tms_items SET item_status = $item_status, updated_date = '$update_date' 
-						WHERE itemId IN ($itemIdsString)";
-				// Execute update query
-				$response = $this->_db->rawQuery($sql);
-				return $response;
+				// $sql = "UPDATE tms_items SET item_status = $item_status, updated_date = '$update_date' 
+				// 		WHERE itemId IN ($itemIdsString)";
+				// // Execute update query
+				// $response = $this->_db->rawQuery($sql);
+				// return $response;
 			} else {
 				return 'No items to update';
 			}

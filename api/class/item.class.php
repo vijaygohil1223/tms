@@ -228,17 +228,45 @@ class item {
             // scoop status Approved = 5 , jobs will get Invoice ready status 
             $jobStatus = '';
             $andWhere = "";
-            if ($data['item_status'] == '9')
+            
+            // if ($data['item_status'] == '5') {
+            //     $jobStatus = 'Invoice Ready'; // if job is complete by linguist then status will be Invoice Ready
+            //     //$andWhere = " AND resource!=''  AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid') ";
+            //     $andWhere = " AND resource!='' AND item_status='Completed' ";
+            // }
+            if ($data['item_status'] == '9'){
                 $jobStatus = 'Cancelled';
-            if ($data['item_status'] == '5') {
-                $jobStatus = 'Invoice Ready'; // if job is complete by linguist then status will be Invoice Ready
-                //$andWhere = " AND resource!=''  AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid') ";
-                $andWhere = " AND resource!='' AND item_status='Completed' ";
-            }    
-            if (isset($data['order_id']) && $jobStatus != '' ) {
-                $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ".$andWhere." ";
-                $this->_db->rawQuery($qry_up);
             }
+            switch ($data['item_status']) {
+                case '4':
+                    $jobStatus = 'Approved';
+                    break;
+                case '5':
+                    $jobStatus = 'Completed';
+                    break;
+                case '6':
+                    $jobStatus = 'Invoice Ready';
+                    break;
+                default:
+                $andWhere = " AND resource != '' ";
+                //$andWhere = " AND resource!='' AND item_status='Completed' ";
+            }
+            if (isset($data['order_id']) && $jobStatus != '') {
+                // Sanitize the inputs
+                $order_id = $this->_db->escape($data['order_id']);
+                $item_number = $this->_db->escape($data['item_number']);
+                
+                $qry_up = "UPDATE tms_summmery_view 
+                           SET item_status = ? 
+                           WHERE order_id = ? AND item_id = ? " . $andWhere;
+                $this->_db->rawQuery($qry_up, [$jobStatus, $order_id, $item_number]);
+            }
+
+            // if (isset($data['order_id']) && $jobStatus != '' ) {
+            //     $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ".$andWhere." ";
+            //     $this->_db->rawQuery($qry_up);
+            // }
+            
             // End job status update
 
             $return['status'] = 200;
