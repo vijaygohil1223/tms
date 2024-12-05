@@ -4457,6 +4457,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     };
+
+    // $scope.getDueDateColor = function(order) {
+    //     const now = new Date();
+    //     const dueDate = new Date(order.itemDuedate);
+    //     const diff = dueDate - now;
+    
+    //     if (diff <= 3600000 && diff > 1800000 && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1 ) return 'yellow'; // 1 hour to 30 minutes
+    //     if (diff <= 1800000 && diff > 0 && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1) return 'orange';      // 30 minutes to deadline
+    //     if (diff < 0 && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1) return '#e54e4e'; // Overdue
+    //     return 'initial'; // Default
+    // };
     
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
@@ -41407,7 +41418,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveitems = function (formId, formIndex) {
         // check PoNumber Exist call fun
         $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
-        
+
         if (angular.element('#item-form' + formId).valid()) {
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {

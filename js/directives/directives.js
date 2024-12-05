@@ -7400,3 +7400,31 @@ app.filter('nl2br', function() {
         return text ? text.replace(/\n/g, '<br/>') : '';
     };
 });
+app.directive('dueDateColor', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            order: '='
+        },
+        link: function(scope, element) {
+            const updateColor = function() {
+                const now = new Date();
+                const dueDate = new Date(scope.order.itemDuedate);
+                const diff = dueDate - now;
+
+                let color = 'initial';
+                if (diff <= 3600000 && diff > 1800000 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'yellow';
+                else if (diff <= 1800000 && diff > 0 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1 ) color = 'orange';
+                else if (diff < 0 && [4, 5, 6, 8, 9].indexOf(scope.order.itemStatusId) === -1) color = 'red';
+
+                if(color=='yellow'){
+                    element.css('background', color);
+                }else{
+                    element.css('color', color);
+                }
+            };
+            //scope.$watch('order.itemDuedate', updateColor);
+            scope.$watchGroup(['order.itemDuedate', 'order.itemStatusId'], updateColor);
+        }
+    };
+});

@@ -178,6 +178,10 @@ td { font-size: 11px; } */
   .langflag {
     margin-right: 5px;
   }
+  .langflag img {
+    height: 12px;
+    width: 16px;
+  }
 
   .projectpopup {
     width: 80%;
@@ -745,11 +749,12 @@ td { font-size: 11px; } */
                                 </td>
                                 <td>
                                   <span style="display: none;">{{ order.itemDuedate_new }}</span>
-                                  <span ng-if="order.itemDuedate" class="labeltitle mytooltip"
-                                  ng-style="{
-                                    'color': order.is_urgent_scoop ? '#800080' : 
-                                            (order.itemDuedate < dateToday && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1 ? 'red' : 'initial')
-                                  }" >
+                                  <span ng-if="order.itemDuedate" class="labeltitle mytooltip" due-date-color order="order">
+                                    <!-- <span ng-if="order.itemDuedate" class="labeltitle mytooltip"
+                                    ng-style="{
+                                      'color': order.is_urgent_scoop ? '#800080' : 
+                                              (order.itemDuedate < dateToday && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1 ? 'red' : 'initial')
+                                    }" > -->
                                     {{ order.itemDuedate | dateFormatDisplayFront }}
                                     <div class="mytooltip_div">
                                       <ul class="timeline">
@@ -859,7 +864,7 @@ td { font-size: 11px; } */
                               </tr>
                               <tr ng-repeat-end
                                 ng-repeat="order in clientData | orderBy:tab.sortColumn:tab.sortOrder track by order.itemId"
-                                ng-if="completedTabGrouped !='' && tabName == 'tab-completed'">
+                                ng-if="completedTabGrouped !='' && tabName == 'tab-completed'" ng-style="{{order.is_urgent_scoop ? {'color':'#800080'} : {'color':'initial'} ;}} ">
 
                                 <td>
                                   <input type="checkbox" id="scoopCheck{{$index}}"
