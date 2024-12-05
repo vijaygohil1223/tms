@@ -415,11 +415,14 @@ class jobstatussearch {
 
 			$results = $this->_db->rawQueryNew($querydata);
 
-			$totalRecordsQuery = "SELECT COUNT(DISTINCT tmv.job_summmeryId) AS count, SUM(tmv.total_price) AS totalPrice, SUM(tmv.total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
-			FROM 
-				tms_items ti
-			$joinTables
-			WHERE 1=1 " . $where_cond;
+			$totalRecordsQuery = "SELECT COUNT(DISTINCT job_summmeryId) AS count, SUM(total_price) AS totalPrice, SUM(total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
+			FROM (
+			SELECT DISTINCT 
+				tmv.job_summmeryId, 
+				tmv.total_price, 
+				user_base_currency_rate 
+			FROM tms_items ti 
+			$joinTables WHERE 1=1 $where_cond ) as subquery ";
 			$totalRecordsResult = $this->_db->rawQueryNew($totalRecordsQuery);
 
 			$is_multiple_currency = false;
