@@ -254,6 +254,39 @@ class awsFileupload
         }
     }
 
+    // temp api to list down all files in folder 
+    public function tempAwsFilelist($tempfolder){
+        $folder = '2024/11/2024-11-22/'; // Corrected prefix format
+
+        try {
+            // List objects (files) within the folder
+            $result = $this->_s3Client->listObjectsV2([
+                'Bucket' => AWS_S3_BUCKET_NAME,
+                'Prefix' => $folder,   // Limits results to the folder
+                'Delimiter' => '/',    // Treats folder structure as directories
+            ]);
+
+            // Debug the response to verify contents
+            $tempArr = [];
+            // Check if objects are found
+            if (!empty($result['Contents'])) {
+                //echo "Files in folder '$folder':\n";
+                foreach ($result['Contents'] as $object) {
+                    //$tempArr[] = 'https://tmsbetconnected.s3.amazonaws.com/'.$object['Key'];
+                    $tempArr[] = $object['Key'];
+                }
+            } else {
+                echo "No files found in the folder '$folder'.\n";
+            }
+            return $tempArr;
+            // echo "<PRE>";
+            // print_r($tempArr);
+        } catch (AwsException $e) {
+            echo "Error: " . $e->getMessage() . "\n";
+        }
+        return true;
+    }
+
 
 }
 

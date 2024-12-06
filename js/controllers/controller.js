@@ -2881,12 +2881,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                             if($scope.checkedIds.length){
                                 rest.path = "scoopStatusChange";
-                                rest.post(objStatus).success(function (data) {
-                                    if(data && data.all_update == 1){
+                                rest.post(objStatus).success(function (res) {
+                                    if(res && res.status == 200){
                                         notification('Status successfully updated (Status will remain unchanged if an invoice is created for the scoop.)', 'success');
                                         setTimeout(() => {
                                             $route.reload(); 
                                         }, 200);
+                                    }else{
+                                        notification('Status not uodated. Something went wrong)', 'warning');
                                     }
                                 }).error(errorCallback);
                             }    

@@ -567,53 +567,121 @@ class item {
     }
 
     public function scoopStatusChange($updateRec) {
-        $scoopId = json_decode($updateRec['scoop_id'], TRUE);
-        
-        $result['all_update'] = 0;
-        foreach ($scoopId as $key => $value) {
-            $statusData['item_status'] = $updateRec['item_status'];
-            // $this->_db->where("itemId", $value);
-            // $id = $this->_db->update('tms_items', $statusData);
+        //$scoopId = json_decode($updateRec['scoop_id'], TRUE);
+
+        try {
+            $result['all_update'] = 1;
+            $scoopIds = json_decode($updateRec['scoop_id'], TRUE);
+            $item_status = $updateRec['item_status'];
             $update_date = date('Y-m-d H:i:s');
-			$item_status = $updateRec['item_status'];
-            $updateSql = "
-            UPDATE tms_items 
-            SET item_status = $item_status, updated_date = '$update_date' 
-            WHERE itemId = $value 
-            AND itemId NOT IN (
-                SELECT invc_scoop_id FROM tms_invoice_scoops
-            ) ";
-            $id = $this->_db->rawQuery($updateSql);
+            $updateIdsArrSttring = implode(',', $scoopIds);
+                    
+            try {
+                $updateSql = "
+                UPDATE tms_items 
+                SET item_status = $item_status, updated_date = '$update_date' 
+                WHERE itemId IN ($updateIdsArrSttring) 
+                AND itemId NOT IN (
+                    SELECT invc_scoop_id FROM tms_invoice_scoops
+                ) ";
 
-            if($key == count($scoopId)-1 ){
-                $result['all_update'] = 1;
+                $response = $this->_db->rawQuery($updateSql);
+
+            } catch (Exception $e) {
+                $result = [
+                    'status' => 422,
+                    'msg' => 'Record not updated',
+                    'message_error' => $e->getMessage(),
+                ];
+
+                return $result;
             }
 
-            // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
-            // scoop status Approved = 5 , jobs will get Invoice ready status 
-            $this->_db->where("itemId", $value);
-            $itemData = $this->_db->getOne('tms_items');
-            
             $jobStatus = '';
-            $andWhere = "";
-            if ($updateRec['item_status'] == 9)
-                $jobStatus = 'Cancelled';
-            if ($updateRec['item_status'] == 5) {
-                $jobStatus = 'Invoice Ready';
-                $andWhere = " AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid','Invoiced') ";
-            }    
-            if (isset($itemData['order_id']) && $jobStatus != '' ) {
-                $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$itemData['order_id']."' AND item_id = '".$itemData['item_number']."' ".$andWhere." ";
-                $this->_db->rawQuery($qry_up);
+            switch ($item_status) {
+                case '4':
+                    $jobStatus = 'Approved';
+                    break;
+                case '5':
+                    $jobStatus = 'Completed';
+                    break;
+                case '6':
+                    $jobStatus = 'Invoice Ready';
+                    break;
+                case '9':
+                        $jobStatus = 'Cancelled';
+                        break;
+                default:
+                //$andWhere = " AND resource != ''  ";
             }
-            // End job status update
 
+            if($jobStatus !=''){
+                $updateJobSql = "
+                UPDATE tms_summmery_view AS tsv 
+                JOIN tms_items AS its ON its.order_id = tsv.order_id AND its.item_number = tsv.item_id 
+                SET tsv.item_status = '$jobStatus' 
+                WHERE its.itemId IN ($updateIdsArrSttring) AND tsv.resource != '' AND NOT EXISTS (
+                    SELECT 1 FROM tms_invoice_jobs AS tij 
+                    WHERE tij.invc_job_id = tsv.job_summmeryId
+                ) ";
+
+                $updateJobStatus = $this->_db->rawQuery($updateJobSql);
+            }
+
+            $result = [
+                'all_update' => 0,
+                'status' => 200,
+                'msg' => 'Record updated',
+            ];
+
+        } catch (Exception $e) {
+            $result = [
+                'status' => 422,
+                'msg' => 'Record not updated',
+                'message_error' => $e->getMessage(),
+            ];
         }
-        
-        $result['status'] = 200;
-        $result['msg'] = 'Record updated';
 
         return $result;
+        
+        // foreach ($scoopId as $key => $value) {
+        //     $statusData['item_status'] = $updateRec['item_status'];
+        //     $update_date = date('Y-m-d H:i:s');
+		// 	$item_status = $updateRec['item_status'];
+        //     $updateSql = "
+        //     UPDATE tms_items 
+        //     SET item_status = $item_status, updated_date = '$update_date' 
+        //     WHERE itemId = $value 
+        //     AND itemId NOT IN (
+        //         SELECT invc_scoop_id FROM tms_invoice_scoops
+        //     ) ";
+        //     $id = $this->_db->rawQuery($updateSql);
+
+        //     if($key == count($scoopId)-1 ){
+        //         $result['all_update'] = 1;
+        //     }
+
+        //     // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
+        //     // scoop status Approved = 5 , jobs will get Invoice ready status 
+        //     $this->_db->where("itemId", $value);
+        //     $itemData = $this->_db->getOne('tms_items');
+            
+        //     $jobStatus = '';
+        //     $andWhere = "";
+        //     if ($updateRec['item_status'] == 9)
+        //         $jobStatus = 'Cancelled';
+        //     if ($updateRec['item_status'] == 5) {
+        //         $jobStatus = 'Invoice Ready';
+        //         $andWhere = " AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid','Invoiced') ";
+        //     }    
+        //     if (isset($itemData['order_id']) && $jobStatus != '' ) {
+        //         $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$itemData['order_id']."' AND item_id = '".$itemData['item_number']."' ".$andWhere." ";
+        //         $this->_db->rawQuery($qry_up);
+        //     }
+        //     // End job status update
+
+        // }
+
     }
 
     public function languagesGet() {

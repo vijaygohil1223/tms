@@ -1631,4 +1631,21 @@ array(
         }
     }
 
+    public function tempFIleListApi() {
+
+        $awsFile = new awsFileupload();
+        $test = $awsFile->tempAwsFilelist('Anil');
+        
+        $getNoramalImages = $this->_db->rawQuery("SELECT name FROM `tms_filemanager` WHERE DATE(created_date) = '2024-11-22' AND is_s3bucket = 1 ");
+        $tempdbArr = [];
+        foreach($getNoramalImages as  $val){
+            $tempdbArr[] = $val['name'];
+        }
+        
+        $newtemp = array_diff($test, $tempdbArr);
+        print_r($newtemp);
+
+        return true;
+    }
+
 }
