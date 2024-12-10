@@ -5816,7 +5816,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // end
             //$window.localStorage.ItemClient = ItemClient;
 
-            var filemanagerPopup = $window.open('#/filemanager/' + name, "popup", "width=1000,height=650");
+            const internaljobfileManagerUrl = `#/filemanager/${name}?isLinguistjob=0&jobid=${$scope.jobdetail.job_summmeryId}&orderId=${$scope.jobdetail.order_id}&sourceTargetType=${name}` ;
+            var filemanagerPopup = $window.open(internaljobfileManagerUrl, "popup", "width=1000,height=650");
+            //var filemanagerPopup = $window.open('#/filemanager/' + name, "popup", "width=1000,height=650");
             filemanagerPopup.addEventListener("beforeunload", function () {
                 localStorage['parentId'] = ' ';
                 return false;
@@ -6006,7 +6008,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.breadcrums = [''];
     $scope.statusName = $window.localStorage.jobstatusName;
     $scope.statussource = $routeParams.id;
+    $scope.hideuploadBtn = false;
+    
     var FilesLength;
+
+    $scope.isLinguistjob = $location.search().isLinguistjob;
+    $scope.linguistJobid = $location.search().jobid;
+    $scope.sourceTargetType = $location.search().sourceTargetType;
+    $scope.qryOrderId = $location.search().orderId || 0;
+
+    console.log('isLinguistjob:', $scope.isLinguistjob);
+    console.log('jobid:', $scope.linguistJobid);
+    console.log('sourcetargettype:', $scope.sourceTargetType );
+    console.log('$window.localStorage.jobfolderId', $window.localStorage.jobfolderId)
+    console.log('routeparamsIDDD', $routeParams.id)
+    console.log('routeparams====>jobId', $routeParams.jobId)
 
     // check file extesion
     //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
@@ -6050,24 +6066,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-    $scope.hideuploadBtn = false;
-    if ($window.localStorage.jobFoldertype == 'source') {
-        $scope.hideuploadBtn = ($scope.userRight == 2) ? true : false;
-        //$scope.hideuploadBtn = ($scope.userRight == 2) ? false : false;
+    // if ($window.localStorage.jobFoldertype == 'source'  ) {
+    //     $scope.hideuploadBtn = ($scope.userRight == 2) ? true : false;
+    //     //$scope.hideuploadBtn = ($scope.userRight == 2) ? false : false;
+    // }
+    // if ($window.localStorage.jobFoldertype == 'target'  ) {
+    //     $scope.hideuploadBtn = ($scope.userRight == 2) ? false : true;
+    // }
+    if ($scope.sourceTargetType) {
+        if ($scope.sourceTargetType == 'source') {
+            $scope.hideuploadBtn = ($scope.userRight == 1) ? false : ($scope.userRight == 2) ? true : false;
+        } else if ($scope.sourceTargetType == 'target' && $scope.userRight == 1) {
+            $scope.hideuploadBtn = true;
+        }
     }
-    if ($window.localStorage.jobFoldertype == 'target') {
-        $scope.hideuploadBtn = ($scope.userRight == 2) ? false : true;
-    }
-    if($routeParams.id == 'target' && $scope.userRight == 1){
-        //$scope.hideuploadBtn = true;
-    }
-
+    
     console.log('$window.localStorage.getItem("parentId")', $window.localStorage.getItem("parentId"))
             
     //project root get display front
-    if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
+    if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " " ) {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            //console.log('AAA')
+            console.log('AAA')
             rest.path = 'filefrontroot/' + $window.localStorage.orderID + '/' + $routeParams.id;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
@@ -6076,21 +6095,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            //console.log('BBBB')
+            console.log('BBBB')
+            // TODO remove comment
             //For download popup source-target to display file-folder (Parent id will be change)  
             //$routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
-            $routeParams.id = $routeParams.id; 
-            rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
-            rest.get().success(function (data) {
-                $window.localStorage.setItem("parentId", data[0].fmanager_id);
-                //setting variable for jobfilecounter
-                $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
-                $window.localStorage.setItem("jobFoldertype", $routeParams.id);
+            // $routeParams.id = $routeParams.id; 
+            // rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
+            // rest.get().success(function (data) {
+            //     $window.localStorage.setItem("parentId", data[0].fmanager_id);
+            //     //setting variable for jobfilecounter
+            //     $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
+            //     $window.localStorage.setItem("jobFoldertype", $routeParams.id);
 
-                //$interval($scope.getJobRootFileCount, 1000);
+            //     //$interval($scope.getJobRootFileCount, 1000);
 
-                $route.reload();
-            }).error(errorCallback);
+            //     $route.reload();
+            // }).error(errorCallback);
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
@@ -6098,21 +6118,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // For download popup source-target to display file-folder (Parent id will be change)  
             //let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             let routeParamsid = $routeParams.id; 
+            // todo on monday (got id in params)
             //rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
-            rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + routeParamsid;
-            rest.get().success(function (data) {
-                console.log('data', data)
-                $window.localStorage.pId = data[0].fmanager_id;
-                console.log('$window.localStorage.pId', $window.localStorage.pId)
-                $window.localStorage.setItem("parentId", data[0].fmanager_id);
+            // rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + routeParamsid;
+            // rest.get().success(function (data) {
+            //     console.log('data', data)
+            //     $window.localStorage.pId = data[0].fmanager_id;
+            //     console.log('$window.localStorage.pId', $window.localStorage.pId)
+            //     $window.localStorage.setItem("parentId", data[0].fmanager_id);
 
-                //setting variable for jobfilecounter for freelancer project detail
-                $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
-                $window.localStorage.setItem("jobFoldertype", $routeParams.id);
+            //     //setting variable for jobfilecounter for freelancer project detail
+            //     $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
+            //     $window.localStorage.setItem("jobFoldertype", $routeParams.id);
 
-                //$interval($scope.getJobRootFileCount, 1000);
-                $route.reload();
-            }).error(errorCallback);
+            //     //$interval($scope.getJobRootFileCount, 1000);
+            //     $route.reload();
+            // }).error(errorCallback);
         }
     }
 
@@ -6597,9 +6618,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.paramsID = $routeParams.id ? $routeParams.id : '';
 
-    setTimeout( function(){
-        if ($window.localStorage.getItem("parentId") && $window.localStorage.getItem("parentId") != " ") {
-        //if ($window.localStorage.getItem("parentId") != " ") {    
+    const getFileListDatalist = (paentId) => {
+         //if ($window.localStorage.getItem("parentId") != " ") {    
             var id = $window.localStorage.getItem("parentId");
             
             var externalResourceUserId = null;
@@ -7198,7 +7218,57 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }, 200);
             }).error(errorCallback);
+
+    } 
+
+    setTimeout( function(){
+        if ($window.localStorage.getItem("parentId") && $window.localStorage.getItem("parentId") != " ") {
+            const localParentId = $window.localStorage.getItem("parentId");
+            getFileListDatalist(localParentId);
+
         } else {
+            if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0 && ($scope.linguistJobid > 1)) {
+                if($scope.isLinguistjob && $scope.userRight==2){
+                    let routeParamsid = $routeParams.id; 
+                    rest.path = 'jobfileuserfrontroot/' + $scope.linguistJobid + '/' + routeParamsid;
+                    //rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + routeParamsid;
+                    rest.get().success(function (data) {
+                        console.log('lastelsepart=>jobfileuserfrontroot-data==>', data)
+                        $window.localStorage.pId = data[0].fmanager_id;
+                        console.log('$window.localStorage.pId', $window.localStorage.pId)
+                        $window.localStorage.setItem("parentId", data[0].fmanager_id);
+        
+                        //setting variable for jobfilecounter for freelancer project detail
+                        $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
+                        $window.localStorage.setItem("jobFoldertype", $routeParams.id);
+                        
+                        const localParentId = $window.localStorage.getItem("parentId");
+                        getFileListDatalist(localParentId);
+                        //$route.reload();
+                    }).error(errorCallback);
+                }
+                if($scope.userRight==1){
+                    $routeParams.id = $routeParams.id; 
+                    console.log('$routeParams.id==', $routeParams.id)
+                    //rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
+                    rest.path = 'jobfilefrontroot/' + $scope.qryOrderId + '/' + $scope.linguistJobid + '/' + $routeParams.id;
+                    rest.get().success(function (data) {
+                        console.log('jobfilefrontroot-data==>', data)
+                        console.log('last part called')
+                        $window.localStorage.setItem("parentId", data[0].fmanager_id);
+                        //setting variable for jobfilecounter
+                        $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
+                        $window.localStorage.setItem("jobFoldertype", $routeParams.id);
+                        //$interval($scope.getJobRootFileCount, 1000);
+                        //$route.reload();
+                        const localParentId = $window.localStorage.getItem("parentId");
+                        getFileListDatalist(localParentId);
+
+
+                    }).error(errorCallback);
+                }
+            }else{
+
                 rest.path = 'fileManagerGet';
                 rest.get().success(function (data) {
                     console.log('para-idd=>', $routeParams.id)
@@ -7231,8 +7301,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
                     }
                 }).error(errorCallback);
+
+            }
+            
+            
+                
         }
-    }, 500);    
+    }, 0);     // todo - update timeout
 
     $scope.mkdir = function () {
         var folderName = prompt("Please enter folder name");
@@ -27735,8 +27810,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
         // end
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-
-        var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
+        
+        const internaljobfileManagerUrl = `#/filemanager/${name}?isLinguistjob=0&jobid=${id}&orderId=${$routeParams.id}&sourceTargetType=${name}` ;
+        var JobFolders = window.open(internaljobfileManagerUrl, "popup", "width=1000,height=750");
+        //var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
         JobFolders.addEventListener("beforeunload", function () {
             var id1 = $window.localStorage.getItem("jobFolderRoot");
             var type1 = $window.localStorage.getItem("jobFoldertype");
@@ -38270,7 +38347,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.jobfolderId = defaultParamsJobid;
     }
 
-    $scope.popupOpenFilemanager = function (id) {
+    $scope.popupOpenFilemanager = function (id, type) {
         closeWindows();
         $window.localStorage.ItemClient = '';
         var ItemcodeNumber = angular.element('#companyCode').text();
@@ -38292,7 +38369,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         })
         // end
-        var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
+        const jobSourcefileManagerUrl = `${id}/${$routeParams.id}?isLinguistjob=1&jobid=${$routeParams.id}&sourceTargetType=${type}` ;
+        var soPopup = $window.open(jobSourcefileManagerUrl, "popup", "width=1000,height=650");
+        //var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
         soPopup.addEventListener("beforeunload", function () {
             localStorage['parentId'] = ' ';
             localStorage['pId'] = ' ';
