@@ -1503,6 +1503,91 @@ array(
         
     }
 
+    public function saveFileuploadAWS_db($data) {
+        $output_dir = UPLOADS_ROOT . "fileupload/";
+        $currentDate = date('Y/m') . '/' . date('Y-m-d');
+        $awsFile = new awsFileupload();
+        $response = ['status' => 422, 'msg' => 'File not uploaded'];
+    
+        $originalFilename = '';
+        if (isset($_FILES["myfile"])) {
+            $isMultiple = is_array($_FILES["myfile"]['name']);
+            $fileCount = $isMultiple ? count($_FILES["myfile"]['name']) : 1;
+            $uploadedFiles = [];
+    
+            for ($i = 0; $i < $fileCount; $i++) {
+
+                $originalFilename = $isMultiple ? $_FILES['myfile']['name'][$i] : $_FILES['myfile']['name'];
+                $fileTempName = $isMultiple ? $_FILES['myfile']['tmp_name'][$i] : $_FILES['myfile']['tmp_name'];
+                $fileSize = $isMultiple ? $_FILES['myfile']['size'][$i] : $_FILES['myfile']['size'];
+                $error = $isMultiple ? $_FILES['myfile']['error'][$i] : $_FILES['myfile']['error'];
+    
+                if ($error !== UPLOAD_ERR_OK) {
+                    $response['msg'] = "Error uploading file: $originalFilename";
+                    continue;
+                }
+    
+                // Generate sanitized file name with timestamp
+                $defaultFileName = self::sanitizeFileName($originalFilename);
+                $extensionName = strtolower(pathinfo($defaultFileName, PATHINFO_EXTENSION));
+                $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
+                $timestamp = time();
+                $filename = $filenameWithoutExtension . '_' . $timestamp . '.' . $extensionName;
+                $keyName = $currentDate . '/' . $filename;
+    
+                // Upload file to AWS
+                $awsResult = $awsFile->awsFileUpload($fileTempName, $keyName);
+                if (!$awsResult || !isset($awsResult['file_url'])) {
+                    $response['msg'] = "Failed to upload file to AWS: $originalFilename";
+                    continue;
+                }
+    
+                // Format file size
+                $formattedSize = self::formatSizeUnits($fileSize);
+                
+                $postData = $_POST;
+                $insertData = [
+                    'ext' => $extensionName,
+                    'size' => $formattedSize,
+                    'name' => $awsResult['file_url'],
+                    'original_filename' => $originalFilename,
+                    'is_s3bucket' => 1,
+                    'role_id' => $postData['role_id'] ?? null,
+                    'f_id' => $postData['f_id'] ?? null,
+                    'parent_id' => $postData['parent_id'] ?? null,
+                    'updated_date' => date('Y-m-d H:i:s'),
+                    'created_date' => date('Y-m-d H:i:s')
+                ];
+    
+                // Insert into database
+                $insertId = $this->_db->insert('tms_filemanager', $insertData);
+                if ($insertId) {
+                    $uploadedFiles[] = [
+                        'status' => 200,
+                        'ext' => $extensionName,
+                        'size' => $formattedSize,
+                        'name' => $awsResult['file_url'],
+                        'original_filename' => $originalFilename
+                    ];
+                } else {
+                    $response['msg'] = "Failed to save file data in DB: $originalFilename";
+                }
+            }
+    
+            // Prepare response
+            if (!empty($uploadedFiles)) {
+                $response = [
+                    'status' => 200,
+                    'msg' => 'Files uploaded successfully',
+                    'original_filename' => $originalFilename,
+                    'files' => $uploadedFiles
+                ];
+            }
+        }
+    
+        return $response;
+    }
+    
     public function downloadSingleFile($fileData) {
         $basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . DIRECTORY_SEPARATOR;
     

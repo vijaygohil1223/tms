@@ -6178,7 +6178,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allFilesArr = [];
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            url: rest.baseUrl+'fileManagerFileuploadAWS',
+            url: rest.baseUrl+'fileManagerFileuploadAWS_db',
+            //url: rest.baseUrl+'fileManagerFileuploadAWS',
             //url: rest.baseUrl+'fileManagerFileupload',
             //url: 'filemanager-upload.php',
             multiple: true,
@@ -6194,13 +6195,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             showDelete: true,
             autoSubmit: false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
+            dynamicFormData: function () {
+                return {
+                    role_id: $scope.userRight || 0,
+                    name: '',
+                    original_filename: '',
+                    f_id: 1,
+                    parent_id: $window.localStorage.getItem("parentId") || 0,
+                    ext: '',
+                    size: 0,
+                    is_s3bucket: 1 // For AWS s3 bucket
+                };
+            },
             onLoad: function (obj) { },
             afterUploadAll: function (obj) {
-                notification('Files uploaded successfully', 'success');
+                //notification('Files uploaded successfully', 'success');
                 $timeout(function () {
                     $route.reload();
                 }, 200);
-
             },
             onCancel: function (files, pd) {
                 $timeout(function () {
@@ -6211,72 +6223,91 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         length--;
                     })
                 }, 100);
-
             },
-            onSuccess: function (files, datalist, xhr, pd) {
-                var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
-                var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
-                var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
-                if (fileDivText) {
-                    var dataU = $('.upimg' + fileDivText.charAt(0)).text();
+            onSuccess: function (files, response, xhr, pd) {
+                var totalFiles = angular.element('.ajax-file-upload-statusbar').length;
+                if (!$scope.uploadedFileCount) {
+                    $scope.uploadedFileCount = 0; // Initialize if not set
                 }
-                //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
-                //var regExp = /\(([^)]+)\)/;
-                //var getFileSize = regExp.exec(size);
-                const regex = /\(([^)]+)\)[^)]*$/;
-                var getFileSize = fileDivText.match(regex);
-                getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
-                $scope.name = dataU;
-                $scope.f_id = 1;
-                $scope.parent_id = $window.localStorage.getItem("parentId");
-                if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
-                    $scope.filedata = {};
-                }
-                $scope.role_id = $scope.userRight;
-                $scope.filedata.role_id = $scope.role_id;
-                $scope.filedata.name = $scope.name;
-                $scope.filedata.f_id = $scope.f_id;
-                $scope.filedata.parent_id = $scope.parent_id;
-                $scope.filedata.filename = files[0];
-                $scope.filedata.filetype = fileType;
-                $scope.filedata.size = getFileSize;
-                
-
-                var filelength = angular.element('.ajax-file-upload-statusbar').length;
-                
-                if (datalist) {
-                    var alldata = JSON.parse(datalist);
-                    var allFiles = {
-                        role_id: $scope.role_id,
-                        name: alldata["name"],
-                        original_filename: alldata["original_filename"],
-                        f_id: 1,
-                        parent_id: $scope.filedata.parent_id,
-                        ext: alldata["ext"],
-                        size: alldata["size"],
-                        is_s3bucket: 1 // For AWS s3 bucket
-                    };
-                    $scope.allFilesArr.push(allFiles);
-                    rest.path = 'fileAdd';
-                    if (filelength == $scope.allFilesArr.length) {
-                        rest.post($scope.allFilesArr).success(function (data) {
-                            if (data.status == 200) {
-                                // notification('Files uploaded successfully', 'success');
-                                // $timeout(function () {
-                                //     $route.reload();
-
-                                // }, 100);
-                            } else {
-                                notification('Some files not uploaded!', 'success');
-                                $timeout(function () {
-                                    $route.reload();
-                                }, 100);
-                            }
-                        }).error(errorCallback);
+                if (response) {
+                    if (response.status === 200) {
+                        $scope.uploadedFileCount++; // Increment successful upload count
+                        notification( `File "${response.original_filename}" has been uploaded successfully (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'success' );
+                    } else {
+                        notification( `File "${response.original_filename}" was uploaded, but not saved in the database (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'warning' );
                     }
+                } else {
+                    notification( `An error occurred while uploading file (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'error' );
                 }
-
+                if ($scope.uploadedFileCount === totalFiles) {
+                    notification('All files have been processed.', 'info');
+                }
             },
+            // onSuccess: function (files, datalist, xhr, pd) {
+            //     console.log('datalist', datalist)
+            //     var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
+            //     var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
+            //     var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
+            //     if (fileDivText) {
+            //         var dataU = $('.upimg' + fileDivText.charAt(0)).text();
+            //     }
+            //     //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
+            //     //var regExp = /\(([^)]+)\)/;
+            //     //var getFileSize = regExp.exec(size);
+            //     const regex = /\(([^)]+)\)[^)]*$/;
+            //     var getFileSize = fileDivText.match(regex);
+            //     getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
+            //     $scope.name = dataU;
+            //     console.log('dataU==>', dataU)
+            //     $scope.f_id = 1;
+            //     $scope.parent_id = $window.localStorage.getItem("parentId");
+            //     if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
+            //         $scope.filedata = {};
+            //     }
+            //     $scope.role_id = $scope.userRight;
+            //     $scope.filedata.role_id = $scope.role_id;
+            //     $scope.filedata.name = $scope.name;
+            //     $scope.filedata.f_id = $scope.f_id;
+            //     $scope.filedata.parent_id = $scope.parent_id;
+            //     $scope.filedata.filename = files[0];
+            //     $scope.filedata.filetype = fileType;
+            //     $scope.filedata.size = getFileSize;
+                
+
+            //     var filelength = angular.element('.ajax-file-upload-statusbar').length;
+            //     if (datalist) {
+            //         var alldata = JSON.parse(datalist);
+            //         var allFiles = {
+            //             role_id: $scope.role_id,
+            //             name: alldata["name"],
+            //             original_filename: alldata["original_filename"],
+            //             f_id: 1,
+            //             parent_id: $scope.filedata.parent_id,
+            //             ext: alldata["ext"],
+            //             size: alldata["size"],
+            //             is_s3bucket: 1 // For AWS s3 bucket
+            //         };
+            //         $scope.allFilesArr.push(allFiles);
+            //         rest.path = 'fileAdd';
+            //         if (filelength == $scope.allFilesArr.length) {
+            //             rest.post($scope.allFilesArr).success(function (data) {
+            //                 if (data.status == 200) {
+            //                     // notification('Files uploaded successfully', 'success');
+            //                     // $timeout(function () {
+            //                     //     $route.reload();
+
+            //                     // }, 100);
+            //                 } else {
+            //                     notification('Some files not uploaded!', 'success');
+            //                     $timeout(function () {
+            //                         $route.reload();
+            //                     }, 100);
+            //                 }
+            //             }).error(errorCallback);
+            //         }
+            //     }
+
+            // },
             onSelect: function (files) {
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
                 angular.forEach(files, function (val, i) {
@@ -7242,7 +7273,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
                         $window.localStorage.setItem("jobFoldertype", $routeParams.id);
                         
-                        const localParentId = $window.localStorage.getItem("parentId");
+                        const localParentId = data[0].fmanager_id;
+                        $scope.parent_id = localParentId;
                         getFileListDatalist(localParentId);
                         //$route.reload();
                     }).error(errorCallback);
@@ -7261,9 +7293,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $window.localStorage.setItem("jobFoldertype", $routeParams.id);
                         //$interval($scope.getJobRootFileCount, 1000);
                         //$route.reload();
-                        const localParentId = $window.localStorage.getItem("parentId");
+                        const localParentId = data[0].fmanager_id;
+                        $scope.parent_id = localParentId;
                         getFileListDatalist(localParentId);
-
 
                     }).error(errorCallback);
                 }

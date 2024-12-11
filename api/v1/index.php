@@ -3010,6 +3010,12 @@ $app->post('/fileManagerFileuploadAWS', function () use($app) {
     $result = $filemanager->saveFileuploadAWS($data);
     echoResponse(200, $result);
 });
+$app->post('/fileManagerFileuploadAWS_db', function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $filemanager->saveFileuploadAWS_db($data);
+    echoResponse(200, $result);
+});
 $app->post('/downloadSignleFile', function () use($app) {
     $filemanager = new filemanager ();
     $data = json_decode($app->request->getBody(), TRUE);
