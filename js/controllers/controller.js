@@ -6009,7 +6009,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusName = $window.localStorage.jobstatusName;
     $scope.statussource = $routeParams.id;
     $scope.hideuploadBtn = false;
-    $scope.displayfolder = [];
     
     var FilesLength;
 
@@ -6192,9 +6191,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             previewWidth: "35px",
             maxFileCount: 100,
             //maxFileSize: 15 * 1024 * 1024,
-            showDelete: true,
             autoSubmit: false,
-            dynamicDisplay: false,
+            //dynamicDisplay: false,
+            showDelete: false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
             dynamicFormData: function () {
                 return {
@@ -6228,11 +6227,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             onSuccess: function (files, response, xhr, pd) {
                 var totalFiles = angular.element('.ajax-file-upload-statusbar').length;
                 if (!$scope.uploadedFileCount) {
-                    $scope.uploadedFileCount = 0; // Initialize if not set
+                    $scope.uploadedFileCount = 0;
+                }
+                if (!$scope.displayfolder) {
+                    $scope.displayfolder = [];
                 }
                 if (response) {
                     if (response.status === 200) {
-                        $scope.uploadedFileCount++; // Increment successful upload count
+                        $scope.uploadedFileCount++;
                         notification( `File "${response.original_filename}" has been uploaded successfully (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'success' );
 
                         if (response.insertedData && response.insertedData.fmanager_id) {
@@ -7999,7 +8001,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             previewWidth: "35px",
             maxFileCount: 100,
             //maxFileSize: 15 * 1024 * 1024,
-            showDelete: true,
+            showDelete: false,
             autoSubmit: false,
             //serialize:false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
