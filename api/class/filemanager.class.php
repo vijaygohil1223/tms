@@ -1508,7 +1508,7 @@ array(
         $currentDate = date('Y/m') . '/' . date('Y-m-d');
         $awsFile = new awsFileupload();
         $response = ['status' => 422, 'msg' => 'File not uploaded'];
-    
+        $insertedData = [];
         $originalFilename = '';
         if (isset($_FILES["myfile"])) {
             $isMultiple = is_array($_FILES["myfile"]['name']);
@@ -1562,6 +1562,11 @@ array(
                 // Insert into database
                 $insertId = $this->_db->insert('tms_filemanager', $insertData);
                 if ($insertId) {
+                    $this->_db->where('fmanager_id',$insertId);
+                    $insertedData = $this->_db->getOne('tms_filemanager');
+                    $insertedData['category'] = [];
+                    $insertedData['countChild'] = 0;
+
                     $uploadedFiles[] = [
                         'status' => 200,
                         'ext' => $extensionName,
@@ -1580,7 +1585,8 @@ array(
                     'status' => 200,
                     'msg' => 'Files uploaded successfully',
                     'original_filename' => $originalFilename,
-                    'files' => $uploadedFiles
+                    'files' => $uploadedFiles,
+                    'insertedData' => $insertedData
                 ];
             }
         }

@@ -6009,6 +6009,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusName = $window.localStorage.jobstatusName;
     $scope.statussource = $routeParams.id;
     $scope.hideuploadBtn = false;
+    $scope.displayfolder = [];
     
     var FilesLength;
 
@@ -6022,7 +6023,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     console.log('sourcetargettype:', $scope.sourceTargetType );
     console.log('$window.localStorage.jobfolderId', $window.localStorage.jobfolderId)
     console.log('routeparamsIDDD', $routeParams.id)
-    console.log('routeparams====>jobId', $routeParams.jobId)
 
     // check file extesion
     //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
@@ -6194,6 +6194,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
+            dynamicDisplay: false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
             dynamicFormData: function () {
                 return {
@@ -6233,6 +6234,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (response.status === 200) {
                         $scope.uploadedFileCount++; // Increment successful upload count
                         notification( `File "${response.original_filename}" has been uploaded successfully (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'success' );
+
+                        if (response.insertedData && response.insertedData.fmanager_id) {
+                            $scope.displayfolder.push(response.insertedData)
+                        }
                     } else {
                         notification( `File "${response.original_filename}" was uploaded, but not saved in the database (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'warning' );
                     }
@@ -38429,7 +38434,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
-    $interval(getCountJobFolderProjectDetail, 1000);
+    //$interval(getCountJobFolderProjectDetail, 1000);
 
     if ($routeParams.id) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
