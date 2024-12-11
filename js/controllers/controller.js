@@ -42814,7 +42814,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //$scope.jobDetailsData();
 
-        $scope.countAction = function (id, name) {
+    $scope.countAction = function (id, name) {
         closeWindows();
         localStorage['jobfolderId'] = id;
         localStorage['typeOfJobFolder'] = name;
@@ -42835,7 +42835,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // end
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
 
-        var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
+        const internaljobfileManagerUrl = `#/filemanager/${name}?isLinguistjob=0&jobid=${id}&orderId=${$scope.order_id}&sourceTargetType=${name}` ;
+        var JobFolders = window.open(internaljobfileManagerUrl, "popup", "width=1000,height=750");
+        //var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
         JobFolders.addEventListener("beforeunload", function () {
             var id1 = $window.localStorage.getItem("jobFolderRoot");
             var type1 = $window.localStorage.getItem("jobFoldertype");
