@@ -5846,7 +5846,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
-    $interval(getCountJobFolder, 1000);
+    //$interval(getCountJobFolder, 1000);
 
     $scope.jobsumemailResource = function (resourceName, jobSummeryId, jobNumber) {
         $scope.data = {
@@ -27897,7 +27897,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
-    $interval(getCountJobFolder, 1000);
+    //$interval(getCountJobFolder, 1000);
 
     $scope.jobNoDetails = function (id) {
         scrollBodyToTop();
@@ -42888,7 +42888,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
-    $interval(getCountJobFolder, 1000);
+    //$interval(getCountJobFolder, 1000);
 
     $scope.edit = function (jobId) {
         $window.localStorage.projectJobChainOrderId = $scope.order_id;
