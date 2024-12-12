@@ -1554,6 +1554,7 @@ array(
                     'is_s3bucket' => 1,
                     'role_id' => $postData['role_id'] ?? null,
                     'f_id' => $postData['f_id'] ?? null,
+                    'f_scoop_id' => $postData['f_scoop_id'] ?? 0,
                     'parent_id' => $postData['parent_id'] ?? null,
                     'updated_date' => date('Y-m-d H:i:s'),
                     'created_date' => date('Y-m-d H:i:s')
