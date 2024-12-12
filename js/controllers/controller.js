@@ -7830,20 +7830,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userIdInternal = $window.localStorage.getItem("internal");
     $scope.IndirectClientId = $window.localStorage.getItem("IndirectClientId");
 
-    // new changes
-    $scope.isScoop = $location.search().isScoop || 0;
-    $scope.scoopId = $location.search().scoopId || 0;
-    $scope.qryOrderId = $location.search().orderId || 0;
-
-    console.log('$scope.isScoop', $scope.isScoop)
-    console.log('$scope.scoopId', $scope.scoopId)
-    console.log('$scope.qryOrderId', $scope.qryOrderId)
-
     // if poup open from scoop
     $scope.scoopIdFileManager = $window.localStorage.getItem("scoopIdFileManager");
-    console.log('$scope.scoopIdFileManager', $scope.scoopIdFileManager)
-    console.log('$window.localStorage.ItemFolderid', $window.localStorage.ItemFolderid)
-
+    
     $scope.copyfile = [];
     //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlppx','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
     //$scope.fileExtensionList = [ "doc", "docx", "pdf", "csv", "xls", "xlsx", "xlsm", "ppt", "pptx", "jpg", "jpeg", "png", "gif", "svg", "webp", "jfif", "bmp", "mp3", "mp4", "avi", "mov", "wmv", "vob", "zip", "rar", "tar", "gz", "exe" ];
@@ -7995,12 +7984,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allFilesArr = [];
 
     console.log('rest',rest)
-    const fileuploadApiUrl = ($scope.isScoop>0 && $scope.scoopId>0 ) ? rest.baseUrl+'fileManagerFileuploadAWS_db' : rest.baseUrl+'fileManagerFileuploadAWS' ;
+
     var uploadObj;
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            url: fileuploadApiUrl ,
-            //url: rest.baseUrl+'fileManagerFileuploadAWS',
+            url: rest.baseUrl+'fileManagerFileuploadAWS',
             //url: rest.baseUrl+'fileManagerFileupload',
             //url: 'filemanager-upload.php',
             multiple: true,
@@ -8017,32 +8005,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             autoSubmit: false,
             //serialize:false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
-            dynamicFormData: function () {
-                return {
-                    role_id: $scope.userRight || 0,
-                    name: '',
-                    original_filename: '',
-                    f_id: 1,
-                    parent_id: $window.localStorage.getItem("parentId") || 0,
-                    ext: '',
-                    size: 0,
-                    is_s3bucket: 1 // For AWS s3 bucket
-                };
-            },
             onLoad: function (obj) { },
-            afterUploadAll: function(obj) {
-                if($scope.isScoop>0 && $scope.scoopId>0){
+            /*afterUploadAll: function(obj) {
+                //debugger
+                notification('Files uploaded successfully', 'success');
+                $timeout(function() {
+                    angular.element('.ajax-file-upload-progress').css('display', 'none');
+                    //$route.reload();
+                }, 100);
+                $timeout(function() {
                     $route.reload();
-                }
-                // notification('Files uploaded successfully', 'success');
-                // $timeout(function() {
-                //     angular.element('.ajax-file-upload-progress').css('display', 'none');
-                // }, 100);
-                // $timeout(function() {
-                //     $route.reload();
-                //     $scope.is_settimeout = 1;
-                // }, 200);
-            },
+                    $scope.is_settimeout = 1;
+                }, 200);
+            },*/
             onCancel: function (files, pd) {
                 $timeout(function () {
                     var filenameContains = angular.element('.ajax-file-upload-filename').text();
@@ -8055,110 +8030,82 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             },
             onSuccess: function (files, datalist, xhr, pd) {
-                if($scope.isScoop>0 && $scope.scoopId>0){
-                    var totalFiles = angular.element('.ajax-file-upload-statusbar').length;
-                    if (!$scope.uploadedFileCount) {
-                        $scope.uploadedFileCount = 0;
-                    }
-                    if (!$scope.displayfolder) {
-                        $scope.displayfolder = [];
-                    }
-                    if (datalist) {
-                        if (datalist.status === 200) {
-                            $scope.uploadedFileCount++;
-                            notification( `File "${datalist.original_filename}" has been uploaded successfully (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'success' );
+                //debugger;
+                var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
+                var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
+                var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
+                if (fileDivText) {
+                    var dataU = $('.upimg' + fileDivText.charAt(0)).text();
+                }
 
-                            if (datalist.insertedData && datalist.insertedData.fmanager_id) {
-                                $scope.displayfolder.push(datalist.insertedData)
-                            }
-                        } else {
-                            notification( `File "${datalist.original_filename}" was uploaded, but not saved in the database (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'warning' );
-                        }
-                    } else {
-                        notification( `An error occurred while uploading file (${ $scope.uploadedFileCount } of ${ totalFiles }).`, 'error' );
-                    }
-                    if ($scope.uploadedFileCount === totalFiles) {
-                        notification('All files have been processed.', 'info');
-                    }
-                }else{
-                    //debugger;
-                    var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
-                    var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
-                    var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
-                    if (fileDivText) {
-                        var dataU = $('.upimg' + fileDivText.charAt(0)).text();
-                    }
+                //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
+                //var regExp = /\(([^)]+)\)/;
+                //var getFileSize = regExp.exec(size);
+                const regex = /\(([^)]+)\)[^)]*$/;
+                var getFileSize = fileDivText.match(regex);
+                console.log('getFileSize', getFileSize)
+                getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
+                $scope.name = dataU;
+                $scope.f_id = 1;
+                $scope.parent_id = $window.localStorage.getItem("parentId");
+                if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
+                    $scope.filedata = {};
+                }
+                $scope.role_id = $scope.userRight;
+                $scope.filedata.role_id = $scope.role_id;
+                $scope.filedata.name = $scope.name;
+                $scope.filedata.f_id = $scope.f_id;
+                $scope.filedata.parent_id = $scope.parent_id;
+                $scope.filedata.filename = files[0];
+                $scope.filedata.filetype = fileType;
+                $scope.filedata.size = getFileSize;
+                $scope.chkfilesize = getFileSize;
 
-                    //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
-                    //var regExp = /\(([^)]+)\)/;
-                    //var getFileSize = regExp.exec(size);
-                    const regex = /\(([^)]+)\)[^)]*$/;
-                    var getFileSize = fileDivText.match(regex);
-                    console.log('getFileSize', getFileSize)
-                    getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
-                    $scope.name = dataU;
-                    $scope.f_id = 1;
-                    $scope.parent_id = $window.localStorage.getItem("parentId");
-                    if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
-                        $scope.filedata = {};
-                    }
-                    $scope.role_id = $scope.userRight;
-                    $scope.filedata.role_id = $scope.role_id;
-                    $scope.filedata.name = $scope.name;
-                    $scope.filedata.f_id = $scope.f_id;
-                    $scope.filedata.parent_id = $scope.parent_id;
-                    $scope.filedata.filename = files[0];
-                    $scope.filedata.filetype = fileType;
-                    $scope.filedata.size = getFileSize;
-                    $scope.chkfilesize = getFileSize;
+                //rest.path = 'fileAdd';
+                /*var allFiles = {
+                    role_id: $scope.role_id,
+                    name: $scope.filedata.name,
+                    f_id: 1,
+                    parent_id: $scope.filedata.parent_id,
+                    filename: $scope.filedata.filename,
+                    filetype: $scope.filedata.filetype,
+                    size: $scope.filedata.size
+                };*/
+                //$scope.allFilesArr.push(allFiles);
+                var filelength = angular.element('.ajax-file-upload-statusbar').length;
 
-                    //rest.path = 'fileAdd';
-                    /*var allFiles = {
+                if (datalist) {
+                    var alldata = JSON.parse(datalist);
+                    var allFiles = {
                         role_id: $scope.role_id,
-                        name: $scope.filedata.name,
+                        name: alldata["name"],
+                        original_filename: alldata["original_filename"],
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
-                        filename: $scope.filedata.filename,
-                        filetype: $scope.filedata.filetype,
-                        size: $scope.filedata.size
-                    };*/
-                    //$scope.allFilesArr.push(allFiles);
-                    var filelength = angular.element('.ajax-file-upload-statusbar').length;
+                        ext: alldata["ext"],
+                        size: alldata["size"],
+                        is_s3bucket: 1 // For AWS s3 bucket
+                    };
+                    $scope.allFilesArr.push(allFiles);
 
-                    if (datalist) {
-                        var alldata = JSON.parse(datalist);
-                        var allFiles = {
-                            role_id: $scope.role_id,
-                            name: alldata["name"],
-                            original_filename: alldata["original_filename"],
-                            f_id: 1,
-                            parent_id: $scope.filedata.parent_id,
-                            ext: alldata["ext"],
-                            size: alldata["size"],
-                            is_s3bucket: 1 // For AWS s3 bucket
-                        };
-                        $scope.allFilesArr.push(allFiles);
+                    rest.path = 'fileAddScoop';
+                    if (filelength == $scope.allFilesArr.length) {
+                        rest.post($scope.allFilesArr).success(function (data) {
+                            if (data.status == 200) {
+                                notification('Files uploaded successfully', 'success');
+                                $timeout(function () {
+                                    $route.reload();
 
-                        rest.path = 'fileAddScoop';
-                        if (filelength == $scope.allFilesArr.length) {
-                            rest.post($scope.allFilesArr).success(function (data) {
-                                if (data.status == 200) {
-                                    notification('Files uploaded successfully', 'success');
-                                    $timeout(function () {
-                                        $route.reload();
-
-                                    }, 100);
-                                } else {
-                                    notification('Some files not uploaded!', 'success');
-                                    $timeout(function () {
-                                        $route.reload();
-                                    }, 100);
-                                }
-                            }).error(errorCallback);
-                        }
+                                }, 100);
+                            } else {
+                                notification('Some files not uploaded!', 'success');
+                                $timeout(function () {
+                                    $route.reload();
+                                }, 100);
+                            }
+                        }).error(errorCallback);
                     }
                 }
-                
                 
                 // previous code
                 /*rest.post($scope.filedata).success(function(data) {
@@ -8638,7 +8585,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.GetRootFolderName();
 
 
-    const filesListManageFn = () => {
+        //var setintrvl = setInterval(function() {
         if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
             var externalResourceUserId = null;
@@ -9171,13 +9118,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     ];
                 }, 200);
             }).error(errorCallback);
-        }
-    }     
-        //var setintrvl = setInterval(function() {
-        if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
-            
-            filesListManageFn();
-
         } else {
             // we can not display all folders
             // rest.path = 'fileManagerGet';
@@ -25628,7 +25568,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.itemfolderOpen = function (id) {
-        console.log('scoop-id', id)
         closeWindows();
         localStorage['scoopfolderId'] = id;
         localStorage['scoopIdFileManager'] = id;
@@ -25641,9 +25580,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var ItemcodeNumber = angular.element('.itemCode' + id).text();
         //var ItemClient = angular.element('.itemClient'+id).text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        const scoopFileManagerUrl = `#/filemanage/item?isScoop=1&scoopId=${id}&orderId=${$routeParams.id}` ;
-        var itemPopup = $window.open(scoopFileManagerUrl, "popup", "width=1000,height=650");
-        //var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
+        var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         
         itemPopup.addEventListener("beforeunload", function () {
             localStorage['parentId'] = ' ';
@@ -41246,8 +41183,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var ItemcodeNumber = angular.element('.itemCode' + id).text();
         //var ItemClient = angular.element('.itemClient'+id).text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        const scoopFileManagerUrl = `#/filemanage/item?isScoop=1&scoopId=${id}&orderId=${$routeParams.id}` ;
-        var itemPopup = $window.open(scoopFileManagerUrl , "popup", "width=1000,height=650");
+        var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         itemPopup.addEventListener("beforeunload", function () {
             localStorage['parentId'] = ' ';
             var id1 = $window.localStorage.getItem("scoopFolderRoot");
