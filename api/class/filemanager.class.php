@@ -1740,4 +1740,84 @@ array(
         return true;
     }
 
+    public function tempFilemanagerFieldUpdate($pagenumber) { 
+        // Set page size (number of records per page)
+        $pageSize = 5;
+    
+        // Calculate the offset based on the page number
+        $offset = ($pagenumber - 1) * $pageSize;
+    
+        // Fetch paginated data from the database
+        $filedata = $this->_db->rawQuery("
+            SELECT its.itemId, tfm.fmanager_id, tfm.parent_id 
+            FROM tms_items its 
+            LEFT JOIN tms_filemanager tfm ON tfm.item_id = its.itemId  
+            ORDER BY its.itemId DESC 
+            LIMIT ? OFFSET ?
+        ", [$pageSize, $offset]);
+    
+        // Iterate through each record in the result
+        foreach ($filedata as $val) {
+            // Extract the filemanager_id for the recursive query
+            $filemanager_id = $val['fmanager_id'];
+            $itemId = $val['itemId'];
+    
+            // Skip if filemanager_id is null or invalid
+            if (empty($filemanager_id)) {
+                continue;
+            }
+    
+            // Define the recursive query
+            $recursiveQuery = "
+                WITH RECURSIVE FileTree AS (
+                    SELECT
+                        fmanager_id,
+                        parent_id,
+                        1 AS depth
+                    FROM
+                        tms_filemanager
+                    WHERE
+                        parent_id = $filemanager_id
+                    UNION ALL
+                    SELECT
+                        t.fmanager_id,
+                        t.parent_id,
+                        ft.depth + 1 AS depth
+                    FROM
+                        tms_filemanager t
+                    INNER JOIN FileTree ft ON
+                        t.parent_id = ft.fmanager_id
+                    WHERE
+                        ft.depth < 50
+                )
+                SELECT fmanager_id
+                FROM FileTree;
+            ";
+    
+            // Execute the recursive query with parameterized input
+            // echo $recursiveQuery;
+            // exit;
+            
+            $result = $this->_db->rawQueryNew($recursiveQuery);
+    
+            // Extract fmanager_id values for the update
+            $idsToUpdate = array_column($result, 'fmanager_id');
+    
+            // If there are IDs to update, perform the update
+            if (!empty($idsToUpdate)) {
+                $idsString = implode(',', $idsToUpdate);
+                $updateQuery = "
+                    UPDATE tms_filemanager
+                    SET f_scoop_id = ?
+                    WHERE fmanager_id IN ($idsString);
+                ";
+                $this->_db->rawQueryNew($updateQuery, [$itemId]);
+            }
+        }
+    
+        return true;
+    }
+    
+    
+
 }

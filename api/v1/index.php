@@ -4385,6 +4385,11 @@ $app->post('/jobStatusUpdateBulk', function () use($app) {
 //     $result = $item->tempFIleListApi();
 //     echoResponse(200, $result);
 // });
+$app->get('/tempFilemanagerFieldUpdate/:id',function ($id) use($app) {
+    $item = new filemanager ();
+    $result = $item->tempFilemanagerFieldUpdate($id);
+    echoResponse(200, $result);
+});
 
 $app->run();
 ?>
