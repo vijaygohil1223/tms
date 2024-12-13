@@ -1740,10 +1740,10 @@ array(
         return true;
     }
 
+    // update file manager table with scoop id
     public function tempFilemanagerFieldUpdate($pagenumber) { 
         // Set page size (number of records per page)
         $pageSize = 5;
-    
         // Calculate the offset based on the page number
         $offset = ($pagenumber - 1) * $pageSize;
     
@@ -1817,6 +1817,18 @@ array(
     
         return true;
     }
+
+    
+    public function tempDatabaseBackup() { 
+        try{
+            $awsFile = new awsFileupload();
+            $databasebackup = $awsFile->backupDatabaseToS3();
+            return true;
+        }catch( Exception $e){
+            return false;
+        }
+    }
+
     
     
 

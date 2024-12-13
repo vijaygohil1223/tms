@@ -4396,6 +4396,12 @@ $app->get('/tempFilemanagerFieldUpdate/:id',function ($id) use($app) {
     $result = $item->tempFilemanagerFieldUpdate($id);
     echoResponse(200, $result);
 });
+$app->get('/tempDatabaseBackup',function () use($app) {
+    $item = new filemanager ();
+    $result = $item->tempDatabaseBackup();
+    echoResponse(200, $result);
+});
+
 
 $app->run();
 ?>

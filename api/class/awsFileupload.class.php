@@ -287,6 +287,44 @@ class awsFileupload
         return true;
     }
 
+    function backupDatabaseToS3()
+    {
+        $dbHost = DB_SERVER;
+        $dbUser = DB_USERNAME; 
+        $dbPass = DB_PASSWORD;
+        $dbName = DB_DATABASE; 
+        $s3KeyPrefix = 'db_backup/'. date('Y/F_d').'/';
+
+        try {
+            // Step 1: Dump the database to a temporary file
+            $dumpFile = sys_get_temp_dir() . '/' . $dbName . '_' . date('Y_m_d_His') . '.sql';
+            $command = "mysqldump --host={$dbHost} --user={$dbUser} --password={$dbPass} {$dbName} > {$dumpFile}";
+            exec($command, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                throw new Exception('Failed to create database dump. Command: ' . $command);
+            }
+
+            // Step 3: Upload the dump file to S3
+            $s3Key = $s3KeyPrefix . basename($dumpFile); // Define S3 object key
+            $result = $this->_s3Client->putObject([
+                'Bucket'      => AWS_S3_BUCKET_NAME,
+                'Key'         => $s3Key,
+                'SourceFile'  => $dumpFile,
+                'ContentType' => 'application/sql',
+            ]);
+            // Step 4: Clean up the temporary file
+            unlink($dumpFile);
+
+            // Return the uploaded file's URL
+            return $result['ObjectURL'];
+        } catch (AwsException $e) {
+            return 'AWS Error: ' . $e->getMessage();
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
+
 
 }
 
