@@ -27519,6 +27519,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    $scope.itemDueDateChange = function (id , createDateItems, duedateItems ) {
+        function convertDateToISOFormat(dateStr) {
+            let parts = dateStr.split('.');
+            return parts[2] + '-' + parts[1] + '-' + parts[0]; 
+        }
+        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
+        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
+        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        if (formattedCreateDate === formattedDueDate) {
+            angular.element('#urgentscoop' + id).prop('checked', true);
+        } else {
+            console.log("The dates are different.");
+        }
+    }
+
 
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -43189,6 +43204,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Modal dismissed - handle if needed
             });
 
+        }
+    }
+
+    $scope.itemDueDateChange = function (id , createDateItems, duedateItems ) {
+        function convertDateToISOFormat(dateStr) {
+            let parts = dateStr.split('.');
+            return parts[2] + '-' + parts[1] + '-' + parts[0]; 
+        }
+        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
+        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
+        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        if (formattedCreateDate === formattedDueDate) {
+            angular.element('#urgentscoop' + id).prop('checked', true);
+        } else {
+            console.log("The dates are different.");
         }
     }
 

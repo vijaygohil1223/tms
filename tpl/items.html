@@ -439,7 +439,7 @@
                                                                      id="showEditedByName_date{{it.itemId}}" type="text"
                                                                      class="form-control end_date due_date_class{{$index}}"
                                                                      name="end_date" ng-model="it.due_date" required
-                                                                     autocomplete="" onkeydown="return false" />
+                                                                     autocomplete="" onkeydown="return false" ng-change="itemDueDateChange( it.itemId, it.due_date,it.start_date)" />
 
                                                                </div>
                                                             </div>
@@ -573,6 +573,7 @@
                                                                         ng-true-value="1" ng-false-value="0"
                                                                         ng-model="it.is_urgent_scoop"
                                                                         ng-checked="it.is_urgent_scoop && it.is_urgent_scoop != 0"
+                                                                        id="urgentscoop{{it.itemId}}"
                                                                         >
                                                                      <i></i>
                                                                   </label>
