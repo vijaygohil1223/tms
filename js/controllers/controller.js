@@ -19768,12 +19768,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return full.invoice_status;
         }).withOption('orderable', $scope.activeTab !== 'Approved'),
         DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
+            const isPaymentRequest = `
+                <a href="javascript:void(0)" title="Payment Requested" class="trActionIcon"
+                ng-click="paymentRequestedEmail('${full.invoice_id}', '${full.is_payment_requested_email}' )"
+                style="margin-left:10px;">
+                <i class="fa fa-exclamation"></i>
+                </a>
+            `;
             return ` <div class="trActiontitle d-flex">
                                 <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
                                   ng-click="pdfInvoice('${full.invoice_id}')" style="margin-left:15px;"><i
                                     class="fa fa-download"></i></a>
                                 <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice('${full.invoice_id}')" style="margin-left:10px;"><i
                                     class="fa fa-trash"></i></a>
+                                    ${isPaymentRequest}
                               </div> `;
         }),
     ];
@@ -19842,6 +19850,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('serverSide', true) 
         .withOption('createdRow', function (row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
+            angular.element(row).attr('id', `invoicerow${data.invoice_id}`);
+            if (data.is_payment_requested_email == 1) {
+                angular.element(row).addClass(`paymentRequested`);
+            }
         })
         .withDataProp('data') 
         .withOption('paging', true) 
@@ -20825,6 +20837,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.calculateTotal();
         }
     }, true);
+
+    $scope.paymentRequestedEmail = function(id, status) {
+        const postObj = { id: id, requested_payment: status }
+        rest.path = "linguistInvoiceRequestUpdate";
+        rest.post(postObj).success(function (response) {
+            console.log('response', response)
+            if(response  ){
+                if(response.status == 200){
+                    notification(response.msg, 'success');
+                    if(response.data.is_payment_requested_email ==1){
+                        angular.element(document.querySelector('#invoicerow' + id)).addClass('rowPaymentRequested');
+                    }else{
+                        angular.element(document.querySelector('#invoicerow' + id)).removeClass('rowPaymentRequested');
+                        angular.element(document.querySelector('#invoicerow' + id)).removeClass('paymentRequested ');
+                    }
+                }else{
+                    notification(response.msg, 'warning');
+                }
+            }else{
+                notification('Something went wrong.', 'warning');
+            }
+            
+        });
+    };
 
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {

@@ -3731,6 +3731,12 @@ $app->get('/getLinguistInvoiceListCount', 'authenticate',function() {
     $result = $invoice->getLinguistInvoiceListCount();
     echoResponse(200, $result);
 });
+$app->post('/linguistInvoiceRequestUpdate','authenticate', function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->linguistInvoiceRequestUpdate($data);
+    echoResponse(200, $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {

@@ -452,16 +452,27 @@ class Freelance_invoice
             tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, 
             tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, 
             tu.freelance_currency, tsv.job_code AS jobCode, 
-            tmInvoice.invoice_number, tmInvoice.invoice_id, 
-            tmInvoice.invoice_status, tmInvoice.Invoice_cost, 
-            tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, 
-            tmInvoice.created_date,tmInvoice.is_approved,
-            tmInvoice.reminder_sent,tmInvoice.is_excel_download, 
-            tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
-            tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
+            tmInvoice.invoice_number,
+            tmInvoice.invoice_id, 
+            tmInvoice.invoice_status, 
+            tmInvoice.Invoice_cost, 
+            tmInvoice.paid_amount,
+            tmInvoice.invoice_date,
+            tmInvoice.paid_date, 
+            tmInvoice.created_date,
+            tmInvoice.is_approved,
+            tmInvoice.reminder_sent,
+            tmInvoice.is_excel_download, 
+            tmInvoice.is_payment_requested_email, 
+            tmInvoice.currency_rate, 
+            tmInvoice.job_id as jobInvoiceIds, 
+            tmInvoice.custom_invoice_no, 
+            tmInvoice.resourceInvoiceFileName, 
             CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, 
-            tmInvoice.inv_due_date, tmInvoice.vat2 as taxInNok, 
-            tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
+            tmInvoice.inv_due_date, 
+            tmInvoice.vat2 as taxInNok, 
+            tmInvoice.Invoice_cost2 as priceInNok, 
+            tpy.vBankInfo as linguist_bankinfo, 
             (tmInvoice.Invoice_cost/tmInvoice.currency_rate) AS Invoice_costEUR ,
             CASE
                 WHEN tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved = 1 THEN 'Outstanding'
@@ -1251,6 +1262,44 @@ class Freelance_invoice
             return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
         }
         return $date; // Return the original date if format is incorrect
+    }
+
+    // If the linguist sends an email requesting payment. update flag 1
+    public function linguistInvoiceRequestUpdate($post)
+    {
+        $response = [
+            "status" => 200,
+            "is_update" => 0,
+            "msg" => 'Invoice marked as payment requested successfully.',
+            'data' => []
+        ];
+        if (empty($post['id'])) {
+            $response['status'] = 400;  
+            $response['msg'] = 'Id does not exist';
+            return $response;
+        }
+        try {
+            $this->_db->where('invoice_id', $post['id'] );
+            $currentStatus = $this->_db->getOne('tms_invoice', 'is_payment_requested_email');
+            
+            $upData['is_payment_requested_email'] = isset($currentStatus['is_payment_requested_email']) && $currentStatus['is_payment_requested_email'] == 0 ? 1 : 0;
+            $upData['modified_date'] = date('Y-m-d H:i:s');
+            $this->_db->where('invoice_id', $post['id']);
+            $upSuccess = $this->_db->update('tms_invoice', $upData);
+            if($upSuccess){
+                $response['is_update'] = 1;    
+            }
+            $this->_db->where('invoice_id', $post['id'] );
+            $data = $this->_db->getOne('tms_invoice', 'is_payment_requested_email');
+            $response['data'] = $data;    
+            
+        } catch (Exception $e) {
+            $response['status'] = 422;
+            $response['msg'] = 'Something went wrong';
+            $response['error_message'] = $e->getMessage();
+        }
+        return $response;
+
     }
 
 }
