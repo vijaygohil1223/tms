@@ -22461,6 +22461,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.invoiceDetail.invoice_status != 'Open' || $scope.invoiceDetail.is_approved == '1' || ($scope.userRight == 2 && $scope.invoiceDetail.is_invoice_sent == 1 )){
                 $scope.hideElemnt = false;
             }
+
+            $scope.invoiceDetail.adjustment_input_name = $scope.invoiceDetail.adjustment_input_name ? invoiceDetail.adjustment_input_name : 'Additional/Missing Amount' ;
             
             console.log('$scope.hideElemnt', $scope.hideElemnt)
 
@@ -22631,7 +22633,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
-
+            
+            $scope.taxValue2 = $scope.invoiceDetail.vat2 > 0 ? $filter('customNumber')($scope.invoiceDetail.vat2) : '';
+            
             $scope.taxValue2 = $scope.invoiceDetail.vat2 > 0 ? $filter('customNumber')($scope.invoiceDetail.vat2) : '';
             
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
@@ -22681,16 +22685,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.upInvoiceData = {};
     $scope.editInvoiceLinguist = function (id) {
-        
         try {
-
             const customVatNOK =  $('#vatnok').val();
             const grandTotalNokInv =  $('#grandTotalNok').val();
             if($scope.showSecondCUrrency && $scope.showSecondCUrrency == true && (customVatNOK === '' || grandTotalNokInv === '') ){
                 notification('Please enter price in NOK.', 'warning');
                 return false;
             }
-
             //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
             $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
                     
@@ -22740,6 +22741,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         } catch (error) {
             console.log('error', error)
+            notification('Something went wrong' , 'warning');
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
         }
         
@@ -23084,6 +23086,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         return deferred.promise;
     }
+
+    $scope.changeAdditionalPrice = function (additionalPrice, total) {
+        console.log('total', total)
+        console.log('additionalPrice', additionalPrice)
+        return false;
+        var invoiceSum = 0;
+        $(".invoiceCal").each(function () {
+            var invPrice = numberFormatCommaToPoint(this.value)
+            if (!isNaN(invPrice) && this.value.length != 0) {
+                invoiceSum += parseFloat(invPrice);
+            }
+        });
+        if ($scope.vat && $scope.vat.indexOf(',') > -1) {
+            $scope.vat = numberFormatCommaToPoint($scope.vat);
+        }
+        if (type == 'vat') {
+            $scope.vat = numberFormatCommaToPoint(itemVal);
+            //$scope.grandJobTotal = parseFloat(invoiceSum) + parseFloat($scope.vat);
+            var invoiceTotal = $scope.invoiceTotal
+            if ($scope.invoiceTotal.indexOf(',') > -1) {
+                invoiceTotal = numberFormatCommaToPoint($scope.invoiceTotal);
+            }
+            $scope.grandJobTotal = parseFloat(invoiceTotal) + parseFloat($scope.vat);
+            //$scope.grandJobTotal = parseFloat(invoiceSubTotal) + parseFloat(invoiceVat);
+        }
+        if (type == 'invoiceTotal') {
+            $scope.invoiceTotal = numberFormatCommaToPoint(itemVal);
+            $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            //$scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat(invoiceVat);
+            if ($scope.invoiceTotal.indexOf('.') > -1)
+                $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
+        }
+        if (type == 'itemPrice') {
+            $scope.grandJobTotal = parseFloat(invoiceSum) + parseFloat($scope.vat);
+            $scope.invoiceTotal = $filter('customNumber')(invoiceSum);
+            $scope.vat = ($scope.vat == 0) ? 0 : $scope.vat;
+            angular.element('#invSubtotal').val($scope.invoiceTotal);
+        }
+        if ($scope.vat.indexOf('.') > -1)
+            $scope.vat = $filter('customNumber')($scope.vat);
+    }
+
 
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, $q, $http, $compile, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

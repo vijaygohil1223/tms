@@ -381,6 +381,16 @@
                         allow-decimal-comma-number name="vatnok" style="width: 100px;" />
                     </td>
                   </tr>
+                  <tr >
+                    <td class="table-data-txt" > 
+                      <input class="form-control" type="text" ng-model="invoiceDetail.adjustment_input_name" id="adjustment_input_name"
+                      name="adjustment_input_name" style="width: 300px;" />
+                    </td>
+                    <td class="table-data-txt"> 
+                      <input class="form-control" type="text" ng-model="invoiceDetail.adjustment_amount" id="adjustment_amount"
+                        allow-decimal-comma-number name="adjustment_amount" style="width: 100px;" ng-change="changeAdditionalPrice(invoiceDetail.adjustment_amount, grandJobTotal)" />
+                    </td>
+                  </tr>
                   <tr ng-if="invoiceDetail.paid_amount > 0">
                     <td class="table-data-txt" > Paid </td>
                     <td class="table-data-txt"> {{invoiceDetail.paid_amount |
