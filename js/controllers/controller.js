@@ -19768,9 +19768,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return full.invoice_status;
         }).withOption('orderable', $scope.activeTab !== 'Approved'),
         DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
+            const payReqDisabled = (! ['Paid', 'Cancel'].includes(full.invoice_status) ) ? `ng-click="paymentRequestedEmail('${full.invoice_id}', '${full.is_payment_requested_email}' )" ` : '';
             const isPaymentRequest = `
                 <a href="javascript:void(0)" title="Payment Requested" class="trActionIcon"
-                ng-click="paymentRequestedEmail('${full.invoice_id}', '${full.is_payment_requested_email}' )"
+                 ${payReqDisabled}
                 style="margin-left:10px;">
                 <i class="fa fa-exclamation"></i>
                 </a>
@@ -19851,7 +19852,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('createdRow', function (row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
             angular.element(row).attr('id', `invoicerow${data.invoice_id}`);
-            if (data.is_payment_requested_email == 1) {
+            if (data.is_payment_requested_email == 1 && !['Paid', 'Cancel'].includes(data.invoice_status) ) {
                 angular.element(row).addClass(`paymentRequested`);
             }
         })
@@ -20845,7 +20846,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('response', response)
             if(response  ){
                 if(response.status == 200){
-                    notification(response.msg, 'success');
+                    notification('Invoice updated successfully ', 'success');
                     if(response.data.is_payment_requested_email ==1){
                         angular.element(document.querySelector('#invoicerow' + id)).addClass('rowPaymentRequested');
                     }else{
@@ -27568,12 +27569,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let parts = dateStr.split('.');
             return parts[2] + '-' + parts[1] + '-' + parts[0]; 
         }
-        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
-        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
-        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        let duedateOnly = duedateItems.split(' ')[0]; 
+        let formattedCreateDate = convertDateToISOFormat(createDateItems); 
+        let formattedDueDate = convertDateToISOFormat(duedateOnly); 
+        let item = $scope.itemList.find(it => it.itemId === id);
         if (formattedCreateDate === formattedDueDate) {
             angular.element('#urgentscoop' + id).prop('checked', true);
+            item.is_urgent_scoop = 1;
         } else {
+            item.is_urgent_scoop = 0;
             console.log("The dates are different.");
         }
     }
@@ -43256,12 +43260,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let parts = dateStr.split('.');
             return parts[2] + '-' + parts[1] + '-' + parts[0]; 
         }
-        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
-        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
-        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        let duedateOnly = duedateItems.split(' ')[0]; 
+        let formattedCreateDate = convertDateToISOFormat(createDateItems); 
+        let formattedDueDate = convertDateToISOFormat(duedateOnly); 
+        let item = $scope.itemList.find(it => it.itemId === id);
         if (formattedCreateDate === formattedDueDate) {
             angular.element('#urgentscoop' + id).prop('checked', true);
+            item.is_urgent_scoop = 1;
         } else {
+            item.is_urgent_scoop = 0;
             console.log("The dates are different.");
         }
     }
