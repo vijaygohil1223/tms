@@ -27524,12 +27524,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let parts = dateStr.split('.');
             return parts[2] + '-' + parts[1] + '-' + parts[0]; 
         }
-        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
-        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
-        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        let duedateOnly = duedateItems.split(' ')[0]; 
+        let formattedCreateDate = convertDateToISOFormat(createDateItems); 
+        let formattedDueDate = convertDateToISOFormat(duedateOnly); 
+        let item = $scope.itemList.find(it => it.itemId === id);
         if (formattedCreateDate === formattedDueDate) {
             angular.element('#urgentscoop' + id).prop('checked', true);
+            item.is_urgent_scoop = 1;
         } else {
+            item.is_urgent_scoop = 0;
             console.log("The dates are different.");
         }
     }
@@ -43212,12 +43215,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let parts = dateStr.split('.');
             return parts[2] + '-' + parts[1] + '-' + parts[0]; 
         }
-        let duedateOnly = duedateItems.split(' ')[0]; // '13.12.2024' from '13.12.2024 18:33'
-        let formattedCreateDate = convertDateToISOFormat(createDateItems);  // Convert createDateItems
-        let formattedDueDate = convertDateToISOFormat(duedateOnly);  // Convert duedateItems (date part only)
+        let duedateOnly = duedateItems.split(' ')[0]; 
+        let formattedCreateDate = convertDateToISOFormat(createDateItems); 
+        let formattedDueDate = convertDateToISOFormat(duedateOnly); 
+        let item = $scope.itemList.find(it => it.itemId === id);
         if (formattedCreateDate === formattedDueDate) {
             angular.element('#urgentscoop' + id).prop('checked', true);
+            item.is_urgent_scoop = 1;
         } else {
+            item.is_urgent_scoop = 0;
             console.log("The dates are different.");
         }
     }
