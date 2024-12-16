@@ -19768,9 +19768,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return full.invoice_status;
         }).withOption('orderable', $scope.activeTab !== 'Approved'),
         DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().renderWith(function(data, type, full, meta) {
+            const payReqDisabled = (! ['Paid', 'Cancel'].includes(full.invoice_status) ) ? `ng-click="paymentRequestedEmail('${full.invoice_id}', '${full.is_payment_requested_email}' )" ` : '';
             const isPaymentRequest = `
                 <a href="javascript:void(0)" title="Payment Requested" class="trActionIcon"
-                ng-click="paymentRequestedEmail('${full.invoice_id}', '${full.is_payment_requested_email}' )"
+                 ${payReqDisabled}
                 style="margin-left:10px;">
                 <i class="fa fa-exclamation"></i>
                 </a>
