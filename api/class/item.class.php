@@ -509,6 +509,13 @@ class item {
             $genData = $this->_db->getOne('tms_general');
             $gen_due_date = $genData['due_date']; // default due date for scoop item
             //echo $itemId;exit;
+            $current_date = date('Y-m-d');
+            $due_date = date('Y-m-d', strtotime($gen_due_date));
+            $is_urgent_scoop = 0;
+            if ($due_date == $current_date) {
+                $is_urgent_scoop = 1;  // Mark as urgent if due date is today
+            }
+
             $this->_db->where('is_default',1);
             $this->_db->where('is_active',1);
             $scoopStatus = $this->_db->getOne('tms_item_status');
@@ -520,6 +527,7 @@ class item {
                 $Idata['order_id'] = $data['order_id'];
                 $Idata['item_status'] = $statusId;
                 $Idata['due_date'] = $gen_due_date;
+                $Idata['is_urgent_scoop'] = $is_urgent_scoop;
                 $Idata['created_date'] = date('Y-m-d H:i:s');
                 $Idata['updated_date'] = date('Y-m-d H:i:s');
 
