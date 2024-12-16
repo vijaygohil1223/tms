@@ -19851,7 +19851,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('createdRow', function (row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
             angular.element(row).attr('id', `invoicerow${data.invoice_id}`);
-            if (data.is_payment_requested_email == 1) {
+            if (data.is_payment_requested_email == 1 && !['Paid', 'Cancel'].includes(data.invoice_status) ) {
                 angular.element(row).addClass(`paymentRequested`);
             }
         })
@@ -20845,7 +20845,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('response', response)
             if(response  ){
                 if(response.status == 200){
-                    notification(response.msg, 'success');
+                    notification('Invoice updated successfully ', 'success');
                     if(response.data.is_payment_requested_email ==1){
                         angular.element(document.querySelector('#invoicerow' + id)).addClass('rowPaymentRequested');
                     }else{
