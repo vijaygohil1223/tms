@@ -4401,6 +4401,11 @@ $app->get('/tempDatabaseBackup',function () use($app) {
     $result = $item->tempDatabaseBackup();
     echoResponse(200, $result);
 });
+$app->get('/tempAwsFilelist',function () use($app) {
+    $item = new filemanager ();
+    $result = $item->tempAwsFilelist();
+    echoResponse(200, $result);
+});
 
 
 $app->run();

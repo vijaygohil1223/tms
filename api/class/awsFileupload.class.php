@@ -256,7 +256,7 @@ class awsFileupload
 
     // temp api to list down all files in folder 
     public function tempAwsFilelist($tempfolder){
-        $folder = '2024/11/2024-11-22/'; // Corrected prefix format
+        $folder = 'db_backup/2024/December_17/'; // Corrected prefix format
 
         try {
             // List objects (files) within the folder
@@ -293,7 +293,7 @@ class awsFileupload
         $dbUser = DB_USERNAME; 
         $dbPass = DB_PASSWORD;
         $dbName = DB_DATABASE; 
-        $s3KeyPrefix = 'db_backup/'. date('Y/F_d').'/';
+        $s3KeyPrefix = 'db_backup/'. date('Y/F_m').'/';
 
         try {
             // Step 1: Dump the database to a temporary file

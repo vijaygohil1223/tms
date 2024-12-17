@@ -1062,42 +1062,60 @@ class Freelance_invoice
     // Save edited invoice
     public function saveEditedInvoice($data, $id)
     {
-        $updata['value_date'] = date('Y-m-d H:i');
-        $updata['Invoice_cost'] = $data['Invoice_cost'];
-        $updata['Invoice_cost2'] = $data['Invoice_cost2'];
-        $updata['job_total'] = $data['item_total'];
-        $updata['custom_invoice_no'] = $data['custom_invoice_no'];
-        $updata['invoice_type'] = 'save';
-        $updata['vat'] = $data['vat'];
-        $updata['vat2'] = $data['vat2'];
-        if ($data['inv_due_date']) {
-            $updata['inv_due_date'] = $data['inv_due_date'];
-        }
-        if (isset($data['invoice_date'])) {
-            $updata['invoice_date'] = $data['invoice_date'];
-        }
+        if(!$id){
+            $res['status'] = 401;
+            $res['msg'] = "Id does not exist";
 
-        if ($id) {
-            $this->_db->where('invoice_id', $id);
-            $up_id = $this->_db->update('tms_invoice', $updata);
-            // if each job in linguist invoice is editable than update below table 
-            // if($up_id){
-            //     foreach($data['item'] as $item){
-            //         $jobData['updated_date'] = date('Y-m-d H:i:s');
-            //         $jobData['total_price'] = $item['value'];
-            //         $this->_db->where('job_summmeryId', $item['id']);
-            //         $scpstsId = $this->_db->update('tms_summmery_view', $jobData);
-            //     }
-            // }
+            return $res;
         }
-        if ($id) {
-            $res['status'] = 200;
-            $res['msg'] = "Successfully updated";
-        } else {
+        try {
+            $updata['value_date'] = date('Y-m-d H:i');
+
+            if(isset($data['Invoice_cost']))
+                $updata['Invoice_cost'] = $data['Invoice_cost'];
+
+            $updata['Invoice_cost2'] = $data['Invoice_cost2'];
+            $updata['job_total'] = $data['item_total'];
+            $updata['custom_invoice_no'] = $data['custom_invoice_no'];
+
+            if(isset($data['adjustment_amount']))
+                $updata['adjustment_amount'] = $data['adjustment_amount'];
+
+            if(isset($data['adjustment_input_name']))
+                $updata['adjustment_input_name'] = $data['adjustment_input_name'];
+            
+            $updata['invoice_type'] = 'save';
+            $updata['vat'] = $data['vat'];
+            $updata['vat2'] = $data['vat2'];
+            if ($data['inv_due_date']) {
+                $updata['inv_due_date'] = $data['inv_due_date'];
+            }
+            if (isset($data['invoice_date'])) {
+                $updata['invoice_date'] = $data['invoice_date'];
+            }
+
+            if ($id) {
+                $this->_db->where('invoice_id', $id);
+                $up_id = $this->_db->update('tms_invoice', $updata);
+                // if each job in linguist invoice is editable than update below table 
+                // if($up_id){
+                //     foreach($data['item'] as $item){
+                //         $jobData['updated_date'] = date('Y-m-d H:i:s');
+                //         $jobData['total_price'] = $item['value'];
+                //         $this->_db->where('job_summmeryId', $item['id']);
+                //         $scpstsId = $this->_db->update('tms_summmery_view', $jobData);
+                //     }
+                // }
+
+                $res['status'] = 200;
+                $res['msg'] = "Successfully updated";
+   
+            }
+        } catch (Exception $e) {
             $res['status'] = 401;
             $res['msg'] = "Not updated";
         }
-
+   
         return $res;
     }
 

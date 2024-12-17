@@ -288,6 +288,12 @@
                 <td class="table-data-txt" > Total Due Amount</td>
                 <td class="table-data-txt"> {{grandJobTotal - invoiceDetail.paid_amount | customNumber}} </td>
               </tr>
+              <tr ng-if="adjustment_amount != 0 ">
+                <td class="table-data-txt"> <span> {{invoiceDetail.adjustment_input_name}} </span> </td>
+                <td class="table-data-txt">
+                  <span > {{invoiceDetail.adjustment_amount }} </span>
+                </td>
+              </tr>
               <tr class="linguistcurrency" ng-if="showSecondCUrrency">
                 <td class="table-data-txt" > <strong>Total Price (In NOK)</strong> </td>
                 <td class="table-data-txt">

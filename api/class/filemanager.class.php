@@ -1823,7 +1823,16 @@ array(
         try{
             $awsFile = new awsFileupload();
             $databasebackup = $awsFile->backupDatabaseToS3();
-            return true;
+            return $databasebackup;
+        }catch( Exception $e){
+            return false;
+        }
+    }
+    public function tempAwsFilelist() { 
+        try{
+            $awsFile = new awsFileupload();
+            $databasebackup = $awsFile->tempAwsFilelist('db_backup/2024/December_17/');
+            return $databasebackup;
         }catch( Exception $e){
             return false;
         }
