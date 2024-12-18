@@ -3601,6 +3601,7 @@ $app->post('/invoiceSave', 'authenticate',function () use($app) {
     $result = $invoice->saveInvoice($data);
     echoResponse(200, $result);
 });
+// temp api to insert job id in invoice_job table
 $app->get('/invoicejobsSaveTemprory',function () use($app) {
     $invoice = new Freelance_invoice ();
     $result = $invoice->invoicejobsSaveTemporary();
@@ -4404,6 +4405,13 @@ $app->get('/tempDatabaseBackup',function () use($app) {
 $app->get('/tempAwsFilelist',function () use($app) {
     $item = new filemanager ();
     $result = $item->tempAwsFilelist();
+    echoResponse(200, $result);
+});
+
+// cron to update jobs based due time
+$app->get('/jobStatusUpdateArchivedCron',function () use($app) {
+    $jobDetail = new jobs_detail();
+    $result = $jobDetail->jobStatusUpdateArchivedCron();
     echoResponse(200, $result);
 });
 

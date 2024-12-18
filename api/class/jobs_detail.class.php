@@ -2600,5 +2600,60 @@ class jobs_detail
     }
 
 
+    //  ------ ***** Cron job to update job status to archived *********----- //
+    public function jobStatusUpdateArchivedCron() {
+        try {
+
+            $baseQry = "
+                SELECT tsv.job_summmeryId 
+                FROM `tms_summmery_view` tsv
+                LEFT JOIN `tms_invoice_jobs` tij 
+                    ON tij.invc_job_id = tsv.job_summmeryId
+                WHERE tsv.due_date <= CURDATE() - INTERVAL 6 MONTH
+                    AND tij.invc_job_id IS NULL
+                    AND tsv.due_date != '0000-00-00 00:00:00'  
+                    AND tsv.due_date IS NOT NULL AND item_status != 'Archived'
+            ";
+
+            $data = $this->_db->rawQueryNew($baseQry);
+    
+            if (!empty($data)) {
+                $jbData = [
+                    'updated_date' => date('Y-m-d H:i:s'),
+                    'item_status'  => 'Archived'
+                ];
+                $update_date = date('Y-m-d H:i:s');
+                $item_status = "Archived";
+    
+                $jobSummaries = array_column($data, 'job_summmeryId');
+
+                $jobSummaryIds = implode(',', $jobSummaries);
+                $sql = "UPDATE tms_summmery_view SET item_status = '$item_status', updated_date = '$update_date' 
+                WHERE job_summmeryId IN ($jobSummaryIds) ";
+                $response = $this->_db->rawQuery($sql);
+
+                // $this->_db->where('job_summmeryId', $jobSummaries , ' IN ');
+                // $this->_db->update('tms_summmery_view', $jbData);
+    
+                $ret['msg'] = "Status updated successfully";
+                $ret['status'] = 200;
+                $ret['response_query'] = $response;
+            } else {
+                // No records found for the last 6 months
+                $ret['msg'] = "No record available for the last 6 months";
+                $ret['status'] = 200;
+            }
+            
+        } catch (Exception $e) {
+            // Handle exceptions and provide error details
+            $ret['status'] = 400;
+            $ret['msg'] = "Failed to update status";
+            $ret['message_error'] = $e->getMessage(); // Log the exception message
+        }
+    
+        return $ret;
+    }
+    //  END  Cron job to update job status to archived ********-------- //
+
 
 }
