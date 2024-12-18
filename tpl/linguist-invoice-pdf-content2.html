@@ -384,13 +384,13 @@
                   <tr ng-if="!invoiceCreatePage">
                     <td class="table-data-txt" > 
                       <input class="form-control" type="text" ng-model="invoiceDetail.adjustment_input_name" id="adjustment_input_name"
-                      name="adjustment_input_name" style="width: 300px;" ng-if="userRight == 1"/>
-                      <span ng-if="userRight ==2"> {{invoiceDetail.adjustment_input_name}} </span>
+                      name="adjustment_input_name" style="width: 300px;" ng-if="userRight == 1 && invoiceDetail.is_approved==0 "/>
+                      <span ng-if="userRight ==2 || invoiceDetail.is_approved==1"> {{invoiceDetail.adjustment_input_name}} </span>
                     </td>
                     <td class="table-data-txt"> 
                       <input class="form-control" type="text" ng-model="invoiceDetail.adjustment_amount" id="adjustment_amount"
-                        allow-decimal-comma-number name="adjustment_amount" style="width: 100px;" ng-change="changeAdditionalPrice(invoiceDetail.adjustment_amount, inputGrandJobTotal)" ng-if="userRight == 1"/>
-                      <span ng-if="userRight ==2"> {{invoiceDetail.adjustment_amount}} </span>
+                        allow-decimal-comma-number name="adjustment_amount" style="width: 100px;" ng-change="changeAdditionalPrice(invoiceDetail.adjustment_amount, inputGrandJobTotal)" ng-if="userRight == 1 && invoiceDetail.is_approved==0"/>
+                      <span ng-if="userRight ==2 || invoiceDetail.is_approved==1"> {{invoiceDetail.adjustment_amount}} </span>
                     </td>
                   </tr>
                   <tr ng-if="invoiceDetail.paid_amount > 0">
