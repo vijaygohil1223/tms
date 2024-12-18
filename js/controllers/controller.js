@@ -39890,6 +39890,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
+            // $scope.invoiceDetail.adjustment_input_name = $scope.invoiceDetail.adjustment_input_name ? $scope.invoiceDetail.adjustment_input_name : 'Additional/Missing Amount' ;
+            // $scope.adjustment_amount = 0 ;
+            // $scope.invoiceDetail.adjustment_amount = $filter('customNumber')(0) ;
+
             // Currency display for invoice
             // rest.path = 'customerpriceAll/' + 2;  //2 for external userID
             // rest.get().success(function (data) {
@@ -40203,6 +40207,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.cancel = function () {
         $location.path('/invoice-detail');
+    }
+
+    $scope.changeAdditionalPrice__temp = function (additionalPrice, total) {
+        const additionalPrice_temp = additionalPrice ? additionalPrice.replace(/[^0-9.,+\-]/g, '') : '0';
+        console.log('additionalPrice_temp', additionalPrice_temp)
+        var invPriceTemp = numberFormatCommaToPoint(additionalPrice_temp)
+        const invPrice = invPriceTemp ? invPriceTemp : 0;
+        console.log('invPrice', invPrice)
+        const grandJobTotal = parseFloat(total) + parseFloat(invPrice);
+        console.log('grandJobTotal', grandJobTotal)
+        $scope.grandJobTotal = grandJobTotal;
+        return false;
     }
 
 }).controller('clientInvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter, $uibModal) {

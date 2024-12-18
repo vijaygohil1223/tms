@@ -381,7 +381,7 @@
                         allow-decimal-comma-number name="vatnok" style="width: 100px;" />
                     </td>
                   </tr>
-                  <tr >
+                  <tr ng-if="!invoiceCreatePage">
                     <td class="table-data-txt" > 
                       <input class="form-control" type="text" ng-model="invoiceDetail.adjustment_input_name" id="adjustment_input_name"
                       name="adjustment_input_name" style="width: 300px;" ng-if="userRight == 1"/>
