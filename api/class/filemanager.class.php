@@ -1706,7 +1706,7 @@ array(
                 $timestamp = time().mt_rand();
                 $extensionName = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
-                $keyNameTimestamp = '2024/06/'.$folderName . $filename ;
+                $keyNameTimestamp = '2024/02/'.$folderName . $filename ;
                 $keyName = $keyNameTimestamp;
                 $awsResult = $awsFile->awsFileUploadAnother($filePath, $keyName , $file['name']);
                 

@@ -23105,9 +23105,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.changeAdditionalPrice = function (additionalPrice, total) {
-        console.log('total', total)
-        console.log('additionalPrice', additionalPrice)
-        var invPrice = numberFormatCommaToPoint(additionalPrice)
+        const additionalPrice_temp = additionalPrice ? additionalPrice.replace(/[^0-9.,+\-]/g, '') : '0';
+        console.log('additionalPrice_temp', additionalPrice_temp)
+        var invPriceTemp = numberFormatCommaToPoint(additionalPrice_temp)
+        const invPrice = invPriceTemp ? invPriceTemp : 0;
         console.log('invPrice', invPrice)
         const grandJobTotal = parseFloat(total) + parseFloat(invPrice);
         console.log('grandJobTotal', grandJobTotal)
