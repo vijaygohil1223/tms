@@ -2634,6 +2634,13 @@ class jobs_detail
 
                 // $this->_db->where('job_summmeryId', $jobSummaries , ' IN ');
                 // $this->_db->update('tms_summmery_view', $jbData);
+
+                // log update
+                // foreach ($jobSummaries as $jobId) {
+                //     $logSql = "INSERT INTO tms_cron_log (item_id, type, updated_at, remarks)
+                //                VALUES ('$jobId', '2', '$update_date', 'Status updated to Archived the record which are older than 6 month')";
+                //     $this->_db->rawQuery($logSql);
+                // }
     
                 $ret['msg'] = "Status updated successfully";
                 $ret['status'] = 200;
