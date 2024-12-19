@@ -2612,7 +2612,7 @@ class jobs_detail
                             tij.invc_job_id = tsv.job_summmeryId
                         WHERE
                             tsv.due_date <= CURDATE() - INTERVAL 6 MONTH AND tij.invc_job_id IS NULL AND tsv.due_date != '0000-00-00 00:00:00' AND tsv.due_date IS NOT NULL AND (
-                                item_status != 'Invoiced' AND item_status != 'Without invoice' AND item_status != 'Cancelled' AND item_status != 'Archived'
+                                item_status != 'Invoiced' AND item_status != 'Without invoice' AND item_status != 'Cancelled' AND item_status != 'Paid' AND item_status != 'Archived'
                             ) ";
 
             $data = $this->_db->rawQueryNew($baseQry);
