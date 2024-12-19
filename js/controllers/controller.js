@@ -3560,7 +3560,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
-            $scope.jobList = data;
+            //$scope.jobList = data;
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
             var Requested = [];
@@ -3675,7 +3675,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.highlightSearch = "Requested";
                 $scope.jobList = $scope.freelanceJobRequested
                 //console.log('$scope.jobRequested_freelance', $scope.jobRequested_freelance)
-                $route.reload();
+                //$route.reload();
                 break;
             case "All":
                 $scope.highlightSearch = "All";
@@ -3710,8 +3710,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     $scope.highlightSearch = "Calculated";
             //     break;
         }
-        scrollToId(eID);
+        //scrollToId(eID);
     }
+    $scope.sortJob('Requested');
 
     $scope.resetFilters = function () {
         // needs to be a function or it won't trigger a $watch
