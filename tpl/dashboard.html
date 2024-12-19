@@ -1526,14 +1526,6 @@ td { font-size: 11px; } */
                               </div>
                               <div class="table-responsive">
                                 <ul class="alt projectjobdv2 overviewli">
-                                  <li class="list-group-item tab-requested"
-                                    ng-class="(highlightSearch == 'All') ? 'active' : ''">
-                                    <a href="javascript:void(0)" ng-click="sortJob('All', 'middle')">
-                                      All
-                                      <span ng-if="allCount" class="badge bg-info">{{allCount}}</span>
-                                      <span ng-if="!allCount" class="badge bg-info">0</span>
-                                    </a>
-                                  </li>
                                   <li class="list-group-item tab-in-progress"
                                     ng-class="(highlightSearch == 'Requested') ? 'active' : ''">
                                     <a href="javascript:void(0)" ng-click="sortJob('Requested', 'middle')">
@@ -1578,6 +1570,14 @@ td { font-size: 11px; } */
                                       Invoice Ready
                                       <span ng-if="Approved" class="badge bg-info">{{Approved}}</span>
                                       <span ng-if="!Approved" class="badge bg-info">0</span>
+                                  </li>
+                                  <li class="list-group-item tab-requested"
+                                    ng-class="(highlightSearch == 'All') ? 'active' : ''">
+                                    <a href="javascript:void(0)" ng-click="sortJob('All', 'middle')">
+                                      All
+                                      <span ng-if="allCount" class="badge bg-info">{{allCount}}</span>
+                                      <span ng-if="!allCount" class="badge bg-info">0</span>
+                                    </a>
                                   </li>
                                   <li class="list-group-item tab-overdue"
                                     ng-class="(highlightSearch == 'Calculated') ? 'active' : ''" style="display: none;">

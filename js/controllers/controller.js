@@ -3653,9 +3653,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //job action like all, request etc
-    $scope.highlightSearch = "All";
+    $scope.highlightSearch = "Requested";
     $scope.sortJob = function (action, eID) {
-        //console.log('action', action)
+        console.log('action', action)
         //pagination controls
         // $scope.currentPage = 1;
         // $scope.totalItems = $scope.jobList.length;
@@ -3670,17 +3670,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // }, true);
 
         switch (action) {
-            case "All":
-                $scope.highlightSearch = "All";
-                $scope.jobList = $scope.freelanceJobAll
-                $route.reload();
-                break;
             case "Requested":
                 $scope.jobRow = "Requested";
                 $scope.highlightSearch = "Requested";
                 $scope.jobList = $scope.freelanceJobRequested
-                
                 //console.log('$scope.jobRequested_freelance', $scope.jobRequested_freelance)
+                $route.reload();
+                break;
+            case "All":
+                $scope.highlightSearch = "All";
+                $scope.jobList = $scope.freelanceJobAll
+                //$route.reload();
                 break;
             case "Waiting":
                 $scope.jobRow = "Waiting";
