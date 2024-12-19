@@ -1695,7 +1695,7 @@ array(
     public function getAWSImageMigrate() {
         // Fetch records without AWS path
         $folderName = 'aug_'.time().'/';
-        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1 ORDER BY fmanager_id ASC limit 10 ");
+        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1 ORDER BY fmanager_id ASC limit 50 ");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
             $createdDate = $file['created_date'];
