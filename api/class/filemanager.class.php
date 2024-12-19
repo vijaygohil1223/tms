@@ -1695,18 +1695,27 @@ array(
     public function getAWSImageMigrate() {
         // Fetch records without AWS path
         $folderName = 'aug_'.time().'/';
-        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1  limit 50 ");
+        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1 ORDER BY fmanager_id ASC limit 10 ");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
+            $createdDate = $file['created_date'];
+            $dateObj = new DateTime($createdDate);
+            $dateObj_created = $dateObj->format('y_m_d');
+            $dateCreatedMonth = strtolower(date('M_d', strtotime($createdDate )));
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
-            $filePath = UPLOADS_ROOT_NEW. 'fileupload/' . $file['name'];
+            //$filePath = UPLOADS_ROOT_NEW. 'fileupload/' . $file['name'];
+            $filePath = '/home/dosinxdu/tms.dosina.no/uploads/fileupload/' . $file['name'];
+            //echo $filePath;
+            //exit;
             if (file_exists($filePath)) {
                 //$currentDate = date('Y-m-d');
                 $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
+                $filenameWithoutExtension = preg_replace('/[^a-zA-Z0-9 ]/', '_', $filenameWithoutExtension);
+                $filenameWithoutExtension = trim($filenameWithoutExtension);
                 $timestamp = time().mt_rand();
                 $extensionName = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
-                $keyNameTimestamp = '2024/02/'.$folderName . $filename ;
+                $keyNameTimestamp = '2024/'.$dateCreatedMonth .'/'.$dateObj_created.'/' . $filename ;
                 $keyName = $keyNameTimestamp;
                 $awsResult = $awsFile->awsFileUploadAnother($filePath, $keyName , $file['name']);
                 
