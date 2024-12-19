@@ -1561,17 +1561,24 @@ td { font-size: 11px; } */
                                   <li class="list-group-item tab-due-tomorrow"
                                     ng-class="(highlightSearch == 'Delivered') ? 'active' : ''">
                                     <a href="javascript:void(0)" ng-click="sortJob('Delivered', 'middle')">
-                                      Delivered
+                                      Completed
                                       <span ng-if="Delivered" class="badge bg-info">{{Delivered}}</span>
                                       <span ng-if="!Delivered" class="badge bg-info">0</span>
                                   </li>
                                   <!-- <li class="list-group-item tab-due-tomorrow"
+                                    ng-class="(highlightSearch == 'Delivered') ? 'active' : ''">
+                                    <a href="javascript:void(0)" ng-click="sortJob('Delivered', 'middle')">
+                                      Delivered
+                                      <span ng-if="Delivered" class="badge bg-info">{{Delivered}}</span>
+                                      <span ng-if="!Delivered" class="badge bg-info">0</span>
+                                  </li> -->
+                                  <li class="list-group-item tab-due-tomorrow"
                                     ng-class="(highlightSearch == 'Approved') ? 'active' : ''">
                                     <a href="javascript:void(0)" ng-click="sortJob('Approved', 'middle')">
-                                      Approved
+                                      Invoice Ready
                                       <span ng-if="Approved" class="badge bg-info">{{Approved}}</span>
                                       <span ng-if="!Approved" class="badge bg-info">0</span>
-                                  </li> -->
+                                  </li>
                                   <li class="list-group-item tab-overdue"
                                     ng-class="(highlightSearch == 'Calculated') ? 'active' : ''" style="display: none;">
                                     <a href="javascript:void(0)" ng-click="sortJob('Calculated', 'middle')">Calculated

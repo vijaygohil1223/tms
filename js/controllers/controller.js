@@ -3593,8 +3593,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.freelanceJobDelivered.push(val);
                 }
                 // Approved status rename as Invoice Ready
-                if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
-                    Approved.push(val.item_status);
+                if (val.item_status == 'Invoice Ready') {
+                //if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
+                        Approved.push(val.item_status);
                     $scope.freelanceJobApproved.push(val);
                 }
             });
