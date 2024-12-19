@@ -22671,7 +22671,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.userRight != 1)
                 $scope.isDisabledApprvd = true;
             if ( ['Complete','Paid','Partly Paid','Cancel','Approved'].includes($scope.invoiceDetail.invoice_status)) {
-                $scope.editDisabled = true;
+                if($scope.invoiceDetail.is_approved==0 && $scope.userRight==1 ){
+                    $scope.editDisabled = false;
+                }else{
+                    $scope.editDisabled = true;
+                }
             }    
 
             var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
