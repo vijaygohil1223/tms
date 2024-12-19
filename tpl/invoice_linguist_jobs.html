@@ -50,7 +50,8 @@
                       </span>
                     </td>
                     <td>{{ invoiceL.poNumber }}</td>
-                    <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
+                    <!-- <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td> -->
+                    <td ng-bind="invoiceL.due_date | globalDtFormat"></td>
                     <td>
                       <button class="btn approvedColor" ng-if="invoiceL.item_status == 'Invoice Ready' || invoiceL.item_status == 'Approved'"></button>
                       &nbsp;{{invoiceL.item_status}}
