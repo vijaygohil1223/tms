@@ -1701,7 +1701,7 @@ array(
             $createdDate = $file['created_date'];
             $dateObj = new DateTime($createdDate);
             $dateObj_created = $dateObj->format('y_m_d');
-            $dateCreatedMonth = strtolower(date('M_d', strtotime($createdDate )));
+            $dateCreatedMonth = strtolower(date('M_m', strtotime($createdDate )));
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
             //$filePath = UPLOADS_ROOT_NEW. 'fileupload/' . $file['name'];
             $filePath = '/home/dosinxdu/tms.dosina.no/uploads/fileupload/' . $file['name'];

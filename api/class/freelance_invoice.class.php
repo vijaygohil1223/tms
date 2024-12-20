@@ -268,7 +268,13 @@ class Freelance_invoice
     }
 
     public function invoicejobsSaveTemporary() {
-        // Fetch all invoice data from tms_invoice table
+        //     $baseQry = "SELECT ti.*
+        //     FROM tms_invoice AS ti
+        //     LEFT JOIN tms_invoice_jobs AS job ON job.invc_Id = ti.invoice_id
+        //     WHERE ti.is_deleted = 0 AND job.invc_Id IS NULL
+        // ";
+        // $invData = $this->_db->rawQueryNew($baseQry);
+
         $this->_db->where('is_deleted ', 0);
         $invData = $this->_db->get('tms_invoice');
         

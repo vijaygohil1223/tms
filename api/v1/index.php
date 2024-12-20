@@ -3601,12 +3601,6 @@ $app->post('/invoiceSave', 'authenticate',function () use($app) {
     $result = $invoice->saveInvoice($data);
     echoResponse(200, $result);
 });
-// temp api to insert job id in invoice_job table
-$app->get('/invoicejobsSaveTemprory',function () use($app) {
-    $invoice = new Freelance_invoice ();
-    $result = $invoice->invoicejobsSaveTemporary();
-    echoResponse(200, $result);
-});
 
 $app->get('/viewAllInvoice/:type/:userId', 'authenticate',function($type,$userId) {
     $invoice = new Freelance_invoice ();
@@ -4405,6 +4399,12 @@ $app->get('/tempDatabaseBackup',function () use($app) {
 $app->get('/tempAwsFilelist',function () use($app) {
     $item = new filemanager ();
     $result = $item->tempAwsFilelist();
+    echoResponse(200, $result);
+});
+// temp api to insert job id in invoice_job table
+$app->get('/invoicejobsSaveTemprory',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->invoicejobsSaveTemporary();
     echoResponse(200, $result);
 });
 
