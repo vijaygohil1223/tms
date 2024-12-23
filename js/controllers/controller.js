@@ -45504,7 +45504,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$('.textarea').val($('.textarea').val()+emoji);
                         });
 
-                    }, 500);
+                    }, 0);
                 },
                 searchUsers: function (term, success, error) {
                     setTimeout(function () {
@@ -45692,7 +45692,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, 500);
                 }
             });
-        }, 1000);
+        }, 0);
     }
     //$scope.commentsFn()
 
