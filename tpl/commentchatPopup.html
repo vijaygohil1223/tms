@@ -298,7 +298,8 @@
                 <a href="" ng-click="selectTab(1)">Internal </a>
               </li>
               <li ng-class="{active: selectedTab === 2}">
-                <a href="" ng-click="selectTab(2)">External </a>
+                <a href="" ng-click="selectTab(2)" ng-if="isJobExist" >External </a>
+                <a href="#" ng-if="!isJobExist" title="No jobs in current scoop" >External </a>
               </li>
             </ul>
           </div>
@@ -364,7 +365,7 @@
                           </select>
                         </div>
                         <div class="mt-15 d-flex" ng-if="selectedTab==2">
-                          <span>Job </span>
+                          <span style="margin-right: 10px; margin-top: 5px;">Job </span>
                           <!-- removed scoopItemnumber="{{scoopItemnumber}}" -->
                           <input type="text" select2-jobs typeid="{{orderId}}" isMultiple="false" id="linguistJob"
                             class="form-control" name="linguistJob" ng-model="linguistJob"

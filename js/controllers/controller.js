@@ -30278,10 +30278,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 return 0;
                             });
 
-                            //$('#comment-list').find(' > li[data-id^=c]').hide();
-                            //$('#comment-list').find(' > li[data-id^=c]').css('display','none');
-                            //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
-                            //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
 
                             if (userprofilepic) {
                                // $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
@@ -30289,131 +30285,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var filedata = '';
 
                             // if (val.fileURL != "") {
-                            //     var filetype = val.fileMimeType;
-                            //     var filetype1 = filetype.includes("image/");
-                            //     var file_format = '';
-                            //     var file_type = '';
-                            //     var mimeTypeParts = val.fileMimeType.split('/');
-                            //     if (mimeTypeParts.length == 2) {
-                            //         file_format = mimeTypeParts[1];
-                            //         file_type = mimeTypeParts[0];
-                            //     }
-                            //     // Icon
-                            //     var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                            //         'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                            //     ];
-
-                            //     var iconClass = 'fa fa-file-o';
-                            //     // File Extension name
-                            //     var extName = '';
-                            //     var extParts = val.fileURL.split('/');
-                            //     var extFileName = extParts[extParts.length - 1];
-                            //     var extFileName = extFileName.split('?')[0];
-                            //     extName = extFileName.split('.')[1];
-
-                            //     if (availableIcons.indexOf(file_format) > 0) {
-                            //         iconClass = 'fa fa-file-' + file_format + '-o';
-                            //     } else if (availableIcons.indexOf(file_type) > 0) {
-                            //         iconClass = 'fa fa-file-' + file_type + '-o';
-                            //     } else if (extName == 'docx' || extName == 'rtf') {
-                            //         iconClass = 'fa fa-file-word-o';
-                            //     } else if (extName == 'xlsx' || extName == 'xlsm') {
-                            //         iconClass = 'fa fa-file-excel-o';
-                            //     } else if (extName == 'zip') {
-                            //         iconClass = 'fa fa-file-archive-o';
-                            //     }
-
-                            //     //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                            //     //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                            //     var cmtimgName = val.fileURL + '?v=' + jQuery.now();
-
-                            //     if (file_type == 'image') {
-                            //         var filehtml = '<img src=' + cmtimgName + '></img>';
-                            //     } else if (file_type == 'video') {
-                            //         var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                            //     } else {
-                            //         var filename = val.fileURL;
-                            //         var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                            //     }
-                            //     var hrefClass = 'attachment';
-                            //     var hrefTarget = '_blank';
-                            //     filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
-
-                            // }
-                                // if (val.user_id == loginid) {
-                                //     //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                                //     $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
-
-                                //     if (val.content == '' || val.content == null) {
-                                //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                                //     } else {
-                                //         //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                                //         //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                                //     }
-                                //     if (msgReadArrFilter.length > 0) {
-                                //         $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                                //     }
-                                // } else {
-                                //     //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                                //     //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                                //     if (val.content == "" || val.content == null) {
-                                //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                                //     }
-                                // }
-                                // if (file_type == 'image' || file_type == 'video') {
-                                //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
-                                // }
-                                
-                                // if (val.content) {
-                                //     $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                                // }
-                                // //$compile(val.content)($scope);
-                                // // ------------ Script for date seperating in chat box --------------//
-                                // var ndt = new Date(data[i].created);
-                                // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                                // var dd = ("0" + ndt.getDate()).slice(-2);
-                                // var yy = ndt.getFullYear();
-                                // //var timeText = dd + '-' + mm + '-' + yy;
-                                // //var dateSeprt = dd + '-' + mm + '-' + yy;
-                                // var dateSeprt = commentDateToformat(data[i].created);
-
-                                // // const todayDate = new Date();
-                                // // if (ndt.getDate() == todayDate.getDate() &&
-                                // //     ndt.getMonth() == todayDate.getMonth() &&
-                                // //     ndt.getFullYear() == todayDate.getFullYear()) {
-                                // //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                                // //     var timeText = 'Today';
-                                // // }
-                                // var timeText = commentDatetimeToText(data[i].created);
-                                // if (timeText == "Today") {
-                                //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                                // }
-                                // // ------count total attachment------//
-                                // let totalAttachment = 0;
-                                // totalAttachment = $('#attachment-list').find('li .attachment').length;
-                                // //$('.att_count').text(totalAttachment);
-
-
-                                // if (i > 0) {
-                                //     var ndt1 = new Date(data[i - 1].created);
-                                //     // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                                //     // var dd = ("0" + ndt.getDate()).slice(-2);
-                                //     // var yy = ndt.getFullYear();
-                                //     //var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                                //     var dateSeprt2 = commentDateToformat(data[i - 1].created);
-
-                                //     if (dateSeprt != dateSeprt2) {
-                                //         if ($('li[new-id=' + dataId + ']').length === 0)
-                                //             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                //         //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                //     }
-                                // } else {
-                                //     if ($('li[new-id=' + dataId + ']').length === 0)
-                                //         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                //     //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                                // }
 
 
                                 var msgRead_id = val.read_id;
@@ -30439,19 +30310,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //}    
                     });
 
-                        //$(".comment-wrapper").each(function (i, v) {
-                            /*var dateTime = $(this).find('time')[0].innerText;
-                            
-                            //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
-                            dateTime = moment(dateTime).format('DD-MM-YYYY');
-                            $(this).find('time')[0].innerText = dateTime;*/
-
-                            //$(this).find('time')[0].append("testing");
-                        //});
-
-                        // if (data.length == promises.length) {
-                        //     //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                        // }
 
                     // update read id
                     if ($scope.selectedTab === 1 && $scope.scoopItemId > 0) {
@@ -30464,21 +30322,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
 
                 }, 1500);
-                
-                // if($scope.scoopItemId && $scope.scoopItemId>0){
-                //     commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat && itm.scoop_id == $scope.scoopItemId  } );
-                // }else{
-                //     commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
-                // }
 
-                //$scope.testcommentsArray = commentsArray
-                //console.log('commentsArray==', commentsArray)
-                //commentsArray = data;
-                //var data = data2.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) )
-                //commentsArray = data.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) );
-                //console.log('commentsArray=='+isLinguistChat, commentsArray)
-                
-                //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
                 
             }).error(errorCallback);
 
@@ -30622,111 +30466,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             textareaPlaceholderText: 'Type message here...',
             getComments: function (success, error) {
                 $timeout(function () {
-                    if ($routeParams.id) {
-                        //var interval = setInterval(() => {
-                            //rest.path = "discussionOrder/" + $routeParams.id;
-                            let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
-                            if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
-                                rest.path = "discussionScoop/" + $scope.scoopItemId;
-                            } else if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
-                                rest.path = "discussionByJobid/" + isLinguistJobChat;
-                            } else {
-                                return; // Exit early if no valid path is set
-                            }
-                            rest.get().success(function (data) {
-                                
-                                //let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
-                                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                                //console.log('isLinguistChat=>', isLinguistChat)
-                                //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
-                                if($scope.scoopItemId && $scope.scoopItemId>0){
-                                    var newcommentsArray = data.filter( (itm) =>  { return  itm.scoop_id == $scope.scoopItemId } );
-                                }else{
-                                    var newcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
-                                }
-
-                                var newUserCommentsArr = newcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
-                                //var newUserCommentsArr = newcommentsArray.filter(function (newcommentsArray) { return newcommentsArray.user_id != loginid });
-                                var cmtArr = [];
-                                var cmtArr = newcommentsArray.filter(function (ncommentsArray) { var isReadtrue = ncommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-                                var newcmtArr = commentsArray.filter(function (cmtsArray) { var isReadtrue = cmtsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-                                //console.log('commentsArray==19==>', commentsArray)
-                                
-                                // --- update read id //
-                                $scope.newCommentReadArray = [];
-                                if (cmtArr) {
-                                    angular.forEach(cmtArr, function (cmtval, cmti) {
-                                        var newCmtObj = {
-                                            id: cmtval.id,
-                                            read_id: loginid
-                                        }
-                                        $scope.newCommentReadArray.push(newCmtObj);
-                                        if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                            // rest.path = "discussionCommentread";
-                                            // rest.put($scope.newCommentReadArray).success(function (res) {
-                                                
-                                            //     if (res.status == 1) {
-                                            //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                            //     }
-                                            // });
-                                        }
-                                    });
-                                }
-                                
-                                //success(newcommentsArray);
-                                //if( (newcommentsArray.length > commentsArray.length && ) )
-                                
-                                var arrayNotload = $('#comment-list').find(' > li').length;
-                                
-                                if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                    //$('#comment-list').find(' > li[data-id^=c]').hide();
-                                    // rest.path = "discussionCommentread";
-                                    // rest.put($scope.commentReadArray).success(function (res) {
-                                    //     if (res.status == 1) {
-                                    //         jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                    //     }
-                                    // });
-                                    //$scope.commentsArrayAll();
-                                    // issue while changes job (last active)
-                                    //success(newcommentsArray);
-                                    
-                                    
-                                    //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                    $timeout(function() {
-                                        var ulNavigation = $('ul.navigation').find('li[data-sort-key="oldest"]');
-                                        if (ulNavigation.length) {
-                                            ulNavigation.trigger('click');
-                                        }
-                                    }, 0);
-
-                                    if ($('.cmtleft').length > 0 || $('.cmtright').length > 0)
-                                        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                    $('#comment-list').find(' > li[data-id^=c]').hide();
-                                    // to remove same li date div
-                                    // var seen = {};
-                                    // $('.seperatordate').each(function() {
-                                    //     var txt = $(this).text();
-                                    //     if (seen[txt])
-                                    //         $(this).remove();
-                                    //     else
-                                    //         seen[txt] = true;
-                                    // });
-                                    // end script
-                                    usercommentsArr = [];
-                                }
-                            });
-                            
-                            //interval
-                        //     var urlExist = window.location.href;
-                        //     if (!(urlExist.includes('#/discussion/'))) {
-                        //         clearInterval(interval);
-                        //         //return;
-                        //     }
-
-                        // }, 5000);
-                    }
-
-                            
+                    
                     success(commentsArray);
                     console.log('againnn=>commentsArray', commentsArray)
 
@@ -30780,24 +30520,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             },
             postComment: function (data, success, error) {
                 console.log('data========>postdata', data)
-                
-                // data.order_id = $routeParams.id;
-                // data.user_id = $window.localStorage.getItem("session_iUserId");
-                // data.fullname = $window.localStorage.getItem("session_vUserName");
-                // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                // data.pings = '';
-                // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-                // rest.path = "discussionOrder";
-                // rest.post(data).success(function (info) {
-
-                // }).error(errorCallback);
-                // $timeout(function () {
-                //     success(data);
-                // }, 500);
 
                 console.log('$window.localStorage.getItem("isLinguistChat")=>post', $window.localStorage.getItem("isLinguistChat"))
                 data.order_id = $routeParams.id;
-                data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
+                //data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
+                data.scoop_id = $scope.scoopItemId ? $scope.scoopItemId : 0;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
@@ -38926,6 +38653,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //     });
         // }
 
+        $scope.scoopId = 0;
         rest.path = 'discussionJobDetails/' + chatJobId;
         console.log('chatJobId======>', chatJobId)
         rest.get().success(function (data) {
@@ -38933,6 +38661,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('$scope.scoopSidebarDetail==========>', $scope.scoopSidebarDetail)
             $scope.projectScoopStatus = data?.item_status_name || '';
             $scope.projectPriceChat = data?.total_price || 0;
+
+            $scope.scoopId = data?.itemId || 0;
         })
 
         if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
@@ -39401,6 +39131,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     },
                     postComment: function (data, success, error) {
                         data.job_id = defaultParamsJobid;
+                        data.scoop_id = $scope.scoopId;
                         data.order_id = $scope.jobDiscussionRedirect;
                         data.user_id = $window.localStorage.getItem("session_iUserId");
                         data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -45284,7 +45015,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $scope.isLinguist = false
     $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
-
+    
     $scope.scoopItemId = 0;
     if (items && items.orderId) {
         console.log('items', items)
@@ -45328,6 +45059,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
     };
 
+    $scope.isJobExist = true;
+
     $scope.selectScoop = 'select';
     rest.path = 'itemsScoopsDropdown/' + items?.orderId;
     rest.get().success(function (data) {
@@ -45341,12 +45074,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('#selectScoop').val(items.scoopId)
             }, 500);
             
-            rest.path = 'discussionScoopDetails/' + data[0].itemId;
+            const tempScoopId = items?.scoopId ? items.scoopId : data[0].itemId;
+            rest.path = 'discussionScoopDetails/' + tempScoopId ;
             rest.get().success(function (data) {
                 $scope.scoopSidebarDetail = data;
                 console.log('scoopDetail', data)
                 $scope.projectScoopStatus = data?.item_status_name || '';
                 $scope.projectPriceChat = data?.total_price || 0;
+            
+                $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })
         }
     })
@@ -45376,6 +45112,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('scoopDetail', data)
                 $scope.projectScoopStatus = data?.item_status_name || '';
                 $scope.projectPriceChat = data?.total_price || 0;
+
+                $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })
         $scope.commentsArrayAll();
         //$scope.commentsFn()
@@ -45611,8 +45349,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
 
-
-
     if ($routeParams.id) {
         $scope.usersArray = [];
         rest.path = "users";
@@ -45793,7 +45529,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     data.order_id = $routeParams.id;
                     //data.scoop_id = $scope.scoopItemId;
-                    data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
+                    //data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
+                    data.scoop_id = $scope.scoopItemId && $scope.scoopItemId > 0  ? $scope.scoopItemId : 0;
                     data.job_id = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0; // insert job id for specific job
                     data.isCommentEmailsend = localStorage.getItem("jobIdLinguistChat") > 0 ? true : false; 
                     
