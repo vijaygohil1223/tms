@@ -27196,15 +27196,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Check if the data is already in the cache
                 if ($scope.discussionScoopRead[val.itemId]) {
                     // If data exists in cache, just use it
-                    console.log('$scope.discussionScoopRead (from cache)', $scope.discussionScoopRead[val.itemId] );
+                    //console.log('$scope.discussionScoopRead (from cache)', $scope.discussionScoopRead[val.itemId] );
                 } else {
                     // If data is not in cache, call the API
                     rest.path = 'getDiscussionMessageRead/' + val.itemId;
                     rest.get().success(function (data) {
-                        console.log('datagetDiscussionMessageRead==>', data)
+                        //console.log('datagetDiscussionMessageRead==>', data)
                         // Store the response in the cache
                         $scope.discussionScoopRead[val.itemId] = data;
-                        console.log('$scope.discussionScoopRead (from API)', $scope.discussionScoopRead);
+                        //console.log('$scope.discussionScoopRead (from API)', $scope.discussionScoopRead);
                     });
                 }
 
@@ -45066,6 +45066,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isJobExist = true;
 
     $scope.selectScoop = 'select';
+    console.log('$scope.selectScoop====>', $scope.selectScoop)
+
     rest.path = 'itemsScoopsDropdown/' + items?.orderId;
     rest.get().success(function (data) {
         console.log('data', data)
@@ -45110,7 +45112,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })
         //$scope.commentsArrayAll();
-        $scope.commentsFn()
+        //$scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
                 autoHideFilters: true,
@@ -45120,13 +45122,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }
     }
-    // $scope.$watch('selectScoop', function(newVal) {
-    //     console.log('newVal', newVal)
-    //     if (newVal && newVal != 'select') {
 
-    //         $scope.commentsFn()
-    //     }
-    // });
+    let isCommentsFnCalledScoop = false;
+    $scope.$watch('selectScoop', function (newVal, oldVal) {
+        if (newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalledScoop) {
+            isCommentsFnCalledScoop = true;
+            $scope.commentsFn();
+            setTimeout(() => {
+                isCommentsFnCalledScoop = false;
+            }, 100); // Adjust debounce timing as needed
+        }
+    });
 
     $scope.reloadScoop = function(){
         //$route.reload();
@@ -45280,6 +45286,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                 var data = data2;
                 commentsArray = data;
+                console.log('commentsArray===>', commentsArray)
                 //$scope.commentsFn();
                 
                 setTimeout(function () {
@@ -45725,8 +45732,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.changeLinguistJob = function(jobId){
+        
         //const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
         const linstJobid = jobId ? jobId : $('#linguistJob').val();
+        $scope.linguistJob = linstJobid;
         console.log('linstJobid', linstJobid)
         if(linstJobid && linstJobid>0){
             $window.localStorage.setItem("isLinguistChat", true);
@@ -45749,7 +45758,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         setTimeout( ()=>{
             console.log('linstJobid',linstJobid )
             //$scope.commentsArrayAll();
-            $scope.commentsFn()
+            if($scope.selectedTab ==2){
+                //$scope.commentsFn()
+            }
             setTimeout(() => {
                 jQuery("#addemoji").emojioneArea({
                     autoHideFilters: true,
@@ -45760,12 +45771,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         },100)
     }
 
-    if(items && items.jobId){
-        //$scope.changeLinguistJob(items.jobId);
-        // setTimeout(() => {
-        //     //$('#linguistJob').val(items.jobId)
-        // }, 500);
-    }
+    let isCommentsFnCalled = false;
+
+    $scope.$watch('linguistJob', function (newVal, oldVal) {
+        if (newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalled) {
+            isCommentsFnCalled = true;
+            $scope.commentsFn();
+            setTimeout(() => {
+                isCommentsFnCalled = false;
+            }, 100); // Adjust debounce timing as needed
+        }
+    });
+
+    
+    
     
 
 }).controller('workInstructionsController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
