@@ -880,7 +880,7 @@
         },
 
         sortComments: function(comments, sortKey) {
-            console.log('sortKey====>', sortKey)
+            //console.log('sortKey====>', sortKey)
             
             let isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0
             
@@ -2171,9 +2171,11 @@
 
             // Oldest
             var commenticn = $('<i/>', {
+                'class': ' cmtclr2'
+            });
+            var commenticn___ = $('<i/>', {
                 'class': 'fa fa-commenting-o fa-2x cmtclr2'
             });
-
             var commenticn_ = $('<i/>', {
                 'class': 'fa fa-commenting-o fa-2x cmtclr2'
             });

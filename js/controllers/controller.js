@@ -27196,7 +27196,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Check if the data is already in the cache
                 if ($scope.discussionScoopRead[val.itemId]) {
                     // If data exists in cache, just use it
-                    console.log('$scope.discussionScoopRead (from cache)', $scope.discussionScoopRead[val.itemId]);
+                    console.log('$scope.discussionScoopRead (from cache)', $scope.discussionScoopRead[val.itemId] );
                 } else {
                     // If data is not in cache, call the API
                     rest.path = 'getDiscussionMessageRead/' + val.itemId;
@@ -45031,7 +45031,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     
     }
-    
+
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
 
     $scope.externalChatJobId = (items && items.jobId > 0) ? items.jobId : 0;
@@ -45056,7 +45056,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(tabId ==2){
             $scope.selectScoop = 'select'
         }
-        
+        //$('#comment-list').hide()
+        //$('ul#comment-list').append(createSpinner());
+        $('#comments-container').comments( { getComments: function (success, error) {} } );
+
     };
 
     $scope.isJobExist = true;
@@ -45086,18 +45089,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
         }
     })
-    
-    // $scope.$watch('itemsDropdown', function(newVal) {
-    //     console.log('newVal', newVal)
-    //     if (newVal && newVal.length > 0) {
-    //         //$scope.selectScoop = newVal[1].itemId;
-    //         $scope.scoopChange(newVal[0].itemId);
-    //         setTimeout(() => {
-    //             $('#selectScoop').val(newVal[0].itemId)
-    //         }, 500);
-    //     }
-    // });
-    
 
     $scope.scoopChange = function(id){
         $('#comment-list').hide()
@@ -45118,7 +45109,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })
         //$scope.commentsArrayAll();
-        //$scope.commentsFn()
+        $scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
                 autoHideFilters: true,
@@ -45128,18 +45119,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }
     }
-    $scope.$watch('selectScoop', function(newVal) {
-        console.log('newVal', newVal)
-        if (newVal && newVal != 'select') {
-        //if (newVal && newVal.length > 0) {
-                //$scope.selectScoop = newVal[1].itemId;
-            // $scope.scoopChange(newVal[0].itemId);
-            // setTimeout(() => {
-            //     $('#selectScoop').val(newVal[0].itemId)
-            // }, 500);
-            $scope.commentsFn()
-        }
-    });
+    // $scope.$watch('selectScoop', function(newVal) {
+    //     console.log('newVal', newVal)
+    //     if (newVal && newVal != 'select') {
+
+    //         $scope.commentsFn()
+    //     }
+    // });
 
     $scope.reloadScoop = function(){
         //$route.reload();
@@ -45716,6 +45702,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.commentsFn()
 
     $scope.chatLinguist = function(){
+        //$('#comment-list').hide()
         $scope.isLinguist = !$scope.isLinguist;
         console.log('$scope.isLinguist', $scope.isLinguist)
         $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
