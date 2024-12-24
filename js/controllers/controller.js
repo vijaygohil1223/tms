@@ -45475,6 +45475,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 enableHashtags: true,
                 tabTypeIntExt: $scope.selectedTab ? $scope.selectedTab : 2,
                 textareaPlaceholderText: 'Type message here...',
+                
                 getComments: function (success, error) {
                     $timeout(function () {
                         
