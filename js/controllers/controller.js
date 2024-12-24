@@ -45125,13 +45125,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     let isCommentsFnCalledScoop = false;
     $scope.$watch('selectScoop', function (newVal, oldVal) {
-        if (newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalledScoop) {
+        console.log('oldVal', oldVal)
+        console.log('newVal', newVal)
+        console.log('$scope.selectScoop', $scope.selectScoop)
+
+        if ($scope.selectScoop !== 'select' && newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalledScoop) {
+            console.log('newValwatch called scoop tab', newVal)
             isCommentsFnCalledScoop = true;
             $scope.commentsFn();
             setTimeout(() => {
                 isCommentsFnCalledScoop = false;
-            }, 100); // Adjust debounce timing as needed
+            }, 0); // Adjust debounce timing as needed
         }
+
     });
 
     $scope.reloadScoop = function(){
@@ -45775,16 +45781,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.$watch('linguistJob', function (newVal, oldVal) {
         if (newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalled) {
-            isCommentsFnCalled = true;
-            $scope.commentsFn();
-            setTimeout(() => {
-                isCommentsFnCalled = false;
-            }, 100); // Adjust debounce timing as needed
+            console.log('watchcalled===job', newVal)
+            if($scope.selectedTab ==2 ){
+                isCommentsFnCalled = true;
+                $scope.commentsFn();
+                setTimeout(() => {
+                    isCommentsFnCalled = false;
+                }, 100); // Adjust debounce timing as needed
+            }
         }
     });
-
-    
-    
     
 
 }).controller('workInstructionsController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
