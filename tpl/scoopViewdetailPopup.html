@@ -73,7 +73,7 @@
                                           </div>
                                           <a href="javascript:void(0)"
                                              ng-click="goTocommentChat(it.order_id, it.itemId, 0, discussionScoopRead.discussion_scoop_id, 0 )"
-                                             style="color: {{ discussionScoopRead.discussion_scoop_id == null ? 'grey' : ( (discussionScoopRead.discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}">
+                                             style="color: {{ discussionScoopRead.discussion_scoop_id == null ? 'grey' : ( ((discussionScoopRead.discussionReadId).split(',')).includes(login_userid) ? '#67bb0a' : 'red') }}">
                                              <i class="fa fa-commenting-o fa-2x cmtclr{{it.itemId}}"> </i>
                                           </a>
                                           <a href="javascript:void(0)"
@@ -835,7 +835,7 @@
                                           <td>
                                              <a href="javascript:void(0)"
                                                 ng-click="goTocommentChat(it.order_id, it.scoopID, it.job_summmeryId, it.discussion_job_id, 1 )"
-                                                style="color: {{ it.discussion_job_id == null ? 'grey' : ( (it.discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}">
+                                                style="color: {{ it.discussion_job_id == null ? 'grey' : ( ((it.discussionReadId).split(',')).includes(login_userid) ? '#67bb0a' : 'red') }}">
                                                 <i class="fa fa-commenting-o fa-2x cmtclr{{it.job_summmeryId}}"> </i>
                                              </a>
                                           </td>
