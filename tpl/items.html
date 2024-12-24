@@ -185,7 +185,7 @@
                                           </a>
                                           <a href="javascript:void(0)"
                                              ng-click="goTocommentChat(it.order_id, it.itemId, 0, discussionScoopRead[it.itemId].discussion_scoop_id )"
-                                             style="color: {{ discussionScoopRead[it.itemId].discussion_scoop_id == null ? 'grey' : ( (discussionScoopRead[it.itemId].discussionReadId).includes(login_userid) ? '#67bb0a' : 'red') }}">
+                                             style="color: {{ discussionScoopRead[it.itemId].discussion_scoop_id == null ? 'grey' : ( ( (discussionScoopRead[it.itemId].discussionReadId).split(',') ).includes(login_userid) ? '#67bb0a' : 'red') }}">
                                              <i class="fa fa-commenting-o fa-2x cmtclr{{it.itemId}}"> </i>
                                           </a>
                                           <a href="javascript:void(0)"

@@ -27201,6 +27201,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // If data is not in cache, call the API
                     rest.path = 'getDiscussionMessageRead/' + val.itemId;
                     rest.get().success(function (data) {
+                        console.log('datagetDiscussionMessageRead==>', data)
                         // Store the response in the cache
                         $scope.discussionScoopRead[val.itemId] = data;
                         console.log('$scope.discussionScoopRead (from API)', $scope.discussionScoopRead);
