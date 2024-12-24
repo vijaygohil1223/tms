@@ -45068,7 +45068,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.itemsDropdown = data;
 
         if(data.length){
-            $scope.scoopChange(items.scoopId);
+            //$scope.scoopChange(items.scoopId);
             
             setTimeout(() => {
                 $('#selectScoop').val(items.scoopId)
@@ -45100,7 +45100,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
 
     $scope.scoopChange = function(id){
+        $('#comment-list').hide()
         if(id && id!='select'){
+            $scope.selectScoop = id
             $scope.scoopItemId = id;
             console.log('$scope.scoopItemId========', $scope.scoopItemId)
             $scope.scoopSidebarDetail = []
@@ -45115,7 +45117,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })
-        $scope.commentsArrayAll();
+        //$scope.commentsArrayAll();
         //$scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
@@ -45126,11 +45128,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }
     }
+    $scope.$watch('selectScoop', function(newVal) {
+        console.log('newVal', newVal)
+        if (newVal && newVal != 'select') {
+        //if (newVal && newVal.length > 0) {
+                //$scope.selectScoop = newVal[1].itemId;
+            // $scope.scoopChange(newVal[0].itemId);
+            // setTimeout(() => {
+            //     $('#selectScoop').val(newVal[0].itemId)
+            // }, 500);
+            $scope.commentsFn()
+        }
+    });
 
     $scope.reloadScoop = function(){
         //$route.reload();
-        $scope.commentsArrayAll();
-        //$scope.commentsFn()
+        //$scope.commentsArrayAll();
+        $scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
                 autoHideFilters: true,
@@ -45265,7 +45279,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = async function () {
             commentsArray = [];
-            var deferred = $q.defer();
+            //var deferred = $q.defer();
             //rest.path = "discussionOrder/" + $routeParams.id;
             let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
             if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
@@ -45273,13 +45287,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
                 rest.path = "discussionByJobid/" + isLinguistJobChat;
             } else {
-                return; // Exit early if no valid path is set
+                return []; // Exit early if no valid path is set
             }
-            rest.get().success(function (data2) {
+            const responseFn = await rest.get().success(function (data2) {
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                 var data = data2;
                 commentsArray = data;
-                $scope.commentsFn();
+                //$scope.commentsFn();
                 
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
@@ -45322,7 +45336,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     });
 
-                    deferred.resolve(promises);
+                    //deferred.resolve(promises);
                     
                     if (data.length == promises.length) {
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
@@ -45339,32 +45353,51 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
-                
+                return commentsArray;
             }).error(errorCallback);
 
+            return responseFn.data || [];
             //return deferred.promise;
 
         }
-        $scope.commentsArrayAll();
+        //$scope.commentsArrayAll();
     }
 
 
+    $scope.usersArray = [];
     if ($routeParams.id) {
-        $scope.usersArray = [];
         rest.path = "users";
-        //$timeout(function () {
-        rest.get().success(function (data) {
-            angular.forEach(data.data, function (val, i) {
-                var uObj = {
-                    id: val.iUserId,
-                    fullname: val?.vFirstName + ' '+ val?.vLastName,
-                    email: val.vEmailAddress,
-                    profile_picture_url: val.vProfilePic ? 'uploads/profilePic/'+val.vProfilePic : "uploads/profilePic/user-icon.png"
-                }
-                $scope.usersArray.push(uObj);
-            });
+        const fetchUsers = async () => {
+            try {
+                const response = await rest.get();
+                angular.forEach(response.data.data, function (val, i) {
+                    var uObj = {
+                        id: val.iUserId,
+                        fullname: val?.vFirstName + ' ' + val?.vLastName,
+                        email: val.vEmailAddress,
+                        profile_picture_url: val.vProfilePic ? 'uploads/profilePic/' + val.vProfilePic : "uploads/profilePic/user-icon.png"
+                    };
+                    $scope.usersArray.push(uObj);
+                });
+            } catch (error) {
+                console.log('error', error)
+                
+            }
+        }
+        fetchUsers();
+        // rest.path = "users";
+        // rest.get().success(function (data) {
+        //     angular.forEach(data.data, function (val, i) {
+        //         var uObj = {
+        //             id: val.iUserId,
+        //             fullname: val?.vFirstName + ' '+ val?.vLastName,
+        //             email: val.vEmailAddress,
+        //             profile_picture_url: val.vProfilePic ? 'uploads/profilePic/'+val.vProfilePic : "uploads/profilePic/user-icon.png"
+        //         }
+        //         $scope.usersArray.push(uObj);
+        //     });
 
-        }).error(errorCallback);
+        // }).error(errorCallback);
 
         //}, 100);
         // emoji text
@@ -45447,24 +45480,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 2800);
 
 
+    $scope.commentsFn = async function(){
+        const commentArrData = await $scope.commentsArrayAll();
 
-    $timeout(function () {
-        // var el = $("#addemoji").emojioneArea();
-        // el[0].emojioneArea.on("emojibtn.click", function () {
-        //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-        //     //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-        //     const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
-        //     $('.textarea').append(emoji).trigger("change");
-
-        //     //$('.textarea').val($('.textarea').val()+emoji);
-        // });
-
-        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-
-    }, 3000);
-
-    $scope.commentsFn = function(){
         $timeout(function () {
             var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
                 roundProfilePictures: true,
@@ -45475,11 +45493,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 enableHashtags: true,
                 tabTypeIntExt: $scope.selectedTab ? $scope.selectedTab : 2,
                 textareaPlaceholderText: 'Type message here...',
-                
                 getComments: function (success, error) {
                     $timeout(function () {
                         
-                        success(commentsArray);
+                        success(commentArrData);
+                        //success(commentsArray);
                         $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
@@ -45695,15 +45713,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }, 0);
     }
-    //$scope.commentsFn()
+    $scope.commentsFn()
 
     $scope.chatLinguist = function(){
         $scope.isLinguist = !$scope.isLinguist;
         console.log('$scope.isLinguist', $scope.isLinguist)
         $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
-        $scope.commentsArrayAll();
+        //$scope.commentsArrayAll();
         //$scope.isLinguistCall = true
-        //$scope.commentsFn()
+        $scope.commentsFn()
 
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
@@ -45742,8 +45760,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         setTimeout( ()=>{
             console.log('linstJobid',linstJobid )
-            $scope.commentsArrayAll();
-            //$scope.commentsFn()
+            //$scope.commentsArrayAll();
+            $scope.commentsFn()
             setTimeout(() => {
                 jQuery("#addemoji").emojioneArea({
                     autoHideFilters: true,

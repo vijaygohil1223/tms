@@ -514,7 +514,8 @@
 
             var attachments = this.getAttachments();
             //this.sortComments(attachments, 'oldest');
-            this.sortComments(attachments, 'newest');
+            //this.sortComments(attachments, 'newest');
+            this.sortComments(attachments, 'oldest');
             attachments.reverse(); // Reverse the order as they are prepended to DOM
             $(attachments).each(function(index, commentModel) {
                 self.addAttachment(commentModel, attachmentList);
@@ -879,6 +880,7 @@
         },
 
         sortComments: function(comments, sortKey) {
+            console.log('sortKey====>', sortKey)
             
             let isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0
             
@@ -1213,6 +1215,7 @@
             }
 
             // Check whether save button needs to be enabled
+            
             if (content.length && contentOrParentChangedIfEditing) {
                 saveButton.addClass('enabled');
             } else {
@@ -1311,7 +1314,10 @@
                         commentItem.prepend('<div id="dtseperator"></div>');
                         commentItem.find('.usrnamespan').addClass('hideusername');
                         commentItem.find('.content').html(commentJSON.content);
-                        $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                        //$('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                        setTimeout(() => {
+                            $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                        }, 100);
                     }, 100);
 
                 }
@@ -1325,6 +1331,7 @@
                 attachmentsContainer.innerHTML = '';
 
                 $(".commenting-field").find('.send.save').removeClass('enabled')
+                $(".commenting-field").find('.upload').addClass('enabled')
 
             };
             
