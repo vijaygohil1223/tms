@@ -45064,10 +45064,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         if(tabId ==2){
             $scope.selectScoop = 'select'
+            $('#comments-container').comments( { getComments: function (success, error) {} } );
         }
         //$('#comment-list').hide()
         //$('ul#comment-list').append(createSpinner());
-        $('#comments-container').comments( { getComments: function (success, error) {} } );
+        
 
     };
 
@@ -45140,6 +45141,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.selectScoop', $scope.selectScoop)
 
         if ($scope.selectScoop !== 'select' && newVal && newVal !== 0 && newVal !== oldVal && !isCommentsFnCalledScoop) {
+            $('#comments-container').comments( { getComments: function (success, error) {} } );
             console.log('newValwatch called scoop tab', newVal)
             isCommentsFnCalledScoop = true;
             $scope.commentsFn();
@@ -45262,10 +45264,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
-        $location.path('/dashboard1');
-        notification('Please create project.', 'warning');
-    }
+    // if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
+    //     $location.path('/dashboard1');
+    //     notification('Please create project.', 'warning');
+    // }
     $window.localStorage.getItem("session_iUserId");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");

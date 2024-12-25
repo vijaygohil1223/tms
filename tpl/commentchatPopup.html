@@ -295,11 +295,11 @@
           <div class="nav-tabs-alt">
             <ul class="nav nav-tabs intexttab">
               <li ng-class="{active: selectedTab === 1}">
-                <a href="" ng-click="selectTab(1)">Internal </a>
+                <a href="" ng-click="selectedTab !== 1 && selectTab(1)">Internal </a>
               </li>
               <li ng-class="{active: selectedTab === 2}">
-                <a href="" ng-click="selectTab(2)" ng-if="isJobExist" >External </a>
-                <a href="#" ng-if="!isJobExist" title="No jobs available in current scoop" >External (No jobs) </a>
+                <a href="" ng-click="selectedTab !== 2 && selectTab(2)" ng-if="isJobExist" >External </a>
+                <a href="javascript:void(0)" ng-if="!isJobExist" title="No jobs available in current scoop" >External (No jobs) </a>
               </li>
             </ul>
           </div>
