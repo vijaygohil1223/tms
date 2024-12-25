@@ -4991,24 +4991,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.resourceCity = $scope.resourceCountry = $scope.resourceZipcode = $scope.resourceState = $scope.resourceVatinfo = '';
     $scope.resourceDetail = [];
     $scope.resourceDetailFn = function(resID){
+        console.log('resID', resID)
         $scope.purchaseDetail.purchaseOrderNo = 'S-' + pad($scope.jobdetail.job_summmeryId, 7);
         if(resID){
             rest.path = 'viewExternalget/' + resID;
             rest.get().success(function (data) {
                 $scope.resourceDetail = data;
-            if ($scope.resourceDetail.address1Detail) {
-                let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
-                console.log('resourceAddDetail', resourceAddDetail)
-                angular.forEach(resourceAddDetail, function (resourceAddress, i) {
-                    if (resourceAddress.id == 'address1_locality')
-                        $scope.resourceCity = resourceAddress.value;
-                    if (resourceAddress.id == 'address1_country')
-                        $scope.resourceCountry = resourceAddress.value;
-                    if (resourceAddress.id == 'address1_postal_code')
-                        $scope.resourceZipcode = resourceAddress.value;
-                    console.log('$scope.resourceZipcode', $scope.resourceZipcode)
-                })
-            }
+                if ($scope.resourceDetail.address1Detail) {
+                    let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
+                    console.log('resourceAddDetail', resourceAddDetail)
+                    angular.forEach(resourceAddDetail, function (resourceAddress, i) {
+                        if (resourceAddress.id == 'address1_locality')
+                            $scope.resourceCity = resourceAddress.value;
+                        if (resourceAddress.id == 'address1_country')
+                            $scope.resourceCountry = resourceAddress.value;
+                        if (resourceAddress.id == 'address1_postal_code')
+                            $scope.resourceZipcode = resourceAddress.value;
+                        console.log('$scope.resourceZipcode', $scope.resourceZipcode)
+                    })
+                }
+
+                $scope.clientCurrency = $scope.resourceDetail.freelance_currency ? $scope.resourceDetail.freelance_currency.split(',')[0] : 'EUR';
+
             }).error(errorCallback);
 
             rest.path = "getUserDataById/" + resID;
@@ -27561,7 +27565,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
 
         }else{
-            notification('Please select the scoop.', 'warning');
+            notification('Scoop/job data not available.', 'warning');
         }
     }
 
@@ -29978,6 +29982,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Modal dismissed - handle if needed
             });
 
+        }else{
+            notification('Scoop/job data not available', 'warning')
         }
     }
 

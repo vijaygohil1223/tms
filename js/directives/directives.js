@@ -6743,7 +6743,8 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                     scope.itemPriceUni[scope.jobdetail.job_summmeryId] = [];
                 }
 
-                if(exists){
+                // exist condition remove because of same price unit allowed
+                //if(exists){ 
                     var amount = temp[1];
                     var total = amount * quantity;
                     var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
@@ -6785,9 +6786,10 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                     } else {
                         notification('Please select item', 'warning');
                     }
-                }else{
-                    notification('Price list already exists.', 'warning');
-                }
+                // }else{
+                //     notification('Price list already exists.', 'warning');
+                // }
+
             });
         }
     }
