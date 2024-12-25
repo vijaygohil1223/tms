@@ -2764,7 +2764,11 @@ $app->get('/jobsummeryGetByItemidNumber/:itemId/:itemnumber', 'authenticate',fun
     $result = $itemsJob->jobsummeryGetByItemidNumber($orderId, $itemNumber);
     echoResponse(200, $result);
 });
-
+$app->get('/select2JobdataByOrderid/:id','authenticate', function ($id) {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->select2JobdataByOrderid($id);
+    echoResponse(200, $result);
+});
 /// client 
 
 $app->get('/clientDirectMessageEmailIdGet','authenticate', function () {
@@ -4402,7 +4406,7 @@ $app->get('/tempAwsFilelist',function () use($app) {
     echoResponse(200, $result);
 });
 // temp api to insert job id in invoice_job table
-$app->get('/invoicejobsSaveTemprory',function () use($app) {
+$app->get('/invoicejobsSaveTemprory__',function () use($app) {
     $invoice = new Freelance_invoice ();
     $result = $invoice->invoicejobsSaveTemporary();
     echoResponse(200, $result);
@@ -4412,6 +4416,13 @@ $app->get('/invoicejobsSaveTemprory',function () use($app) {
 $app->get('/jobStatusUpdateArchivedCron',function () use($app) {
     $jobDetail = new jobs_detail();
     $result = $jobDetail->jobStatusUpdateArchivedCron();
+    echoResponse(200, $result);
+});
+
+$app->post('/fetchFileFromFolder', function () use($app) {
+    $test = new test ();
+    $post = json_decode($app->request->getBody(), TRUE);
+    $result = $test->fetchFileFromFolder($post);
     echoResponse(200, $result);
 });
 

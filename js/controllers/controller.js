@@ -27560,6 +27560,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Modal dismissed - handle if needed
             });
 
+        }else{
+            notification('Please select the scoop.', 'warning');
         }
     }
 
@@ -27580,7 +27582,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log("The dates are different.");
         }
     }
-
 
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -45046,11 +45047,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(tabId ==1){
             $scope.linguistJob = ''
             $('#linguistJob').val(0).trigger('change');
-
-            $scope.scoopChange(items.scoopId);
+            const tempSelectedScoopId = $scope.scoopItemId && $scope.scoopItemId > 0 ? $scope.scoopItemId : items.scoopId; 
+            $scope.scoopChange(tempSelectedScoopId);
             
             setTimeout(() => {
-                $('#selectScoop').val(items.scoopId)
+                $('#selectScoop').val(tempSelectedScoopId)
+                //$('#selectScoop').val(items.scoopId)
             }, 500);
             
         }
@@ -45094,6 +45096,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
 
     $scope.scoopChange = function(id){
+        console.log('id', id)
         $('#comment-list').hide()
         if(id && id!='select'){
             $scope.selectScoop = id
@@ -45108,6 +45111,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('scoopDetail', data)
                 $scope.projectScoopStatus = data?.item_status_name || '';
                 $scope.projectPriceChat = data?.total_price || 0;
+                $scope.scoopItemnumber = data?.item_number || 0;
 
                 $scope.isJobExist = data?.linguistList.length > 0 ? true : false;
             })

@@ -2662,5 +2662,12 @@ class jobs_detail
     }
     //  END  Cron job to update job status to archived ********-------- //
 
+    public function select2JobdataByOrderid($id)
+    {
+        $qry = "SELECT * FROM tms_summmery_view WHERE po_number != '' && order_id = $id ";
+        $data = $this->_db->rawQuery($qry);
+        return $data;
+    }
+
 
 }

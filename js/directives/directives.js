@@ -1362,7 +1362,11 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'select2Jobdata';
+            console.log('attrs', attrs)
+            
+            const jobDataPath = attrs && attrs.typeid && attrs.typeid > 0 ? 'select2JobdataByOrderid/'+attrs.typeid : 'select2Jobdata';
+            rest.path = jobDataPath;
+            //rest.path = 'select2Jobdata';
             rest.get().success(function(data) {
                 
                 if(attrs.scoopitemnumber){
