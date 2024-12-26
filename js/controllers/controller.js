@@ -5630,117 +5630,122 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.savejobDetail = function (formId) {
         if ($routeParams.id) {
-            $scope.jobdetail.due_date = angular.element('#duedate').val();
-            
-            $scope.jobdetail.description = $scope.jobdetail.jobDesc || '';
-            delete $scope.jobdetail['jobDesc'];
-
-            //Error message if job due date is greater then project due date.
-            /*if (originalDateFormat($scope.jobdetail.due_date).split(' ')[0] > originalDateFormat($scope.jobdetail.ProjectDueDate).split(' ')[0]) {
-                notification('Due date should be less then project due date.', 'warning');
-                return false;
-            }*/
-            var obj = [];
-            $('[id^=work_name]').each(function (i, v) {
-                //var dateTime = $(this).find('time')[0].innerText;
-                obj.push({
-                    work_id: i,
-                    work_name: v.innerText
+            try {
+                $scope.jobdetail.due_date = angular.element('#duedate').val();
+                
+                $scope.jobdetail.description = $scope.jobdetail.jobDesc || '';
+                delete $scope.jobdetail['jobDesc'];
+    
+                //Error message if job due date is greater then project due date.
+                /*if (originalDateFormat($scope.jobdetail.due_date).split(' ')[0] > originalDateFormat($scope.jobdetail.ProjectDueDate).split(' ')[0]) {
+                    notification('Due date should be less then project due date.', 'warning');
+                    return false;
+                }*/
+                var obj = [];
+                $('[id^=work_name]').each(function (i, v) {
+                    //var dateTime = $(this).find('time')[0].innerText;
+                    obj.push({
+                        work_id: i,
+                        work_name: v.innerText
+                    });
                 });
-            });
-            /*var obj1 = [];
-            for (var i = 0; i < angular.element('[id^=work1_]').length; i++) {
-                var workId = angular.element('#work_id' + i).text();
-                var workName = angular.element('#work_name' + i).text();
-                    obj1.push({
-                        work_id: workId,
-                        work_name: workName
-                    });
-            }*/
-            $scope.jobdetail.item_status = $scope.jobdetail?.item_status?.split(',').pop()
-
-            $scope.work_instruction = JSON.stringify(obj);
-            $scope.jobdetail.work_instruction = $scope.work_instruction;
-
-            var itemPriceUnit = [];
-            itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
-
-            if (itemPriceUnit) {
-                for (var j = 0; j < itemPriceUnit.length; j++) {
-                    //itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) : 0;
-                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? CommaToPoint4Digit(itemPriceUnit[j].itemTotal) : 0;
+                /*var obj1 = [];
+                for (var i = 0; i < angular.element('[id^=work1_]').length; i++) {
+                    var workId = angular.element('#work_id' + i).text();
+                    var workName = angular.element('#work_name' + i).text();
+                        obj1.push({
+                            work_id: workId,
+                            work_name: workName
+                        });
+                }*/
+                $scope.jobdetail.item_status = $scope.jobdetail?.item_status?.split(',').pop()
+    
+                $scope.work_instruction = JSON.stringify(obj);
+                $scope.jobdetail.work_instruction = $scope.work_instruction;
+    
+                var itemPriceUnit = [];
+                itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
+                
+                delete $scope.jobdetail['itemPrice'];
+                delete $scope.jobdetail['quantity'];
+    
+                // end - jobprices 
+                if ($scope.jobdetail.contact_person == '') {
+                    notification('Please select project manager', 'warning');
+                    return false;
                 }
-            }
-            $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
-            delete $scope.jobdetail['itemPrice'];
-            delete $scope.jobdetail['quantity'];
-
-            // end - jobprices 
-            if ($scope.jobdetail.contact_person == '') {
-                notification('Please select project manager', 'warning');
-                return false;
-            }
-
-            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00' ||  $scope.jobdetail.due_date == '') {
-                notification('Please select due date', 'warning');
-                return false;
-            }
-
-            //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
-            //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
-            $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
-            $scope.jobdetail.due_date = $scope.jobdetail.due_date;
-            var due_timevl1 = angular.element('#due_time').val();
-            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
-            
-            // this field used in tabel join for csv pay calculation
-            if ($scope.jobdetail.project_type_name)
-                delete $scope.jobdetail.project_type_name;
-            if ($scope.jobdetail.project_type)
-                delete $scope.jobdetail.project_type;
-            if ($scope.jobdetail.proj_specialization)
-                delete $scope.jobdetail.proj_specialization;
-            /* if($scope.jobdetail.job_type_name)
-            delete $scope.jobdetail.job_type_name; */
-
-            //job start recent activity store in cookie
-            var arr1 = $.map($scope.jobdetail, function (el) {
-                return el;
-            });
-
-            if ($cookieStore.get) {
-                var arr2 = $cookieStore.get('editJobact');
-                if (arr2) {
-                    arr2 = $.map(arr2, function(el) {
-                        return el;
-                    });
-                    if (arr1 && array_diff(arr1, arr2) != "") {
-                        var obj = [];
-                        if ($cookieStore.get('jobRecentEdit') != undefined) {
-                            angular.forEach($cookieStore.get('jobRecentEdit'), function(val, i) {
-                                obj.push(val);
-                            });
+    
+                if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00' ||  $scope.jobdetail.due_date == '') {
+                    notification('Please select due date', 'warning');
+                    return false;
+                }
+    
+                //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
+                //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
+                $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.jobdetail.due_date = $scope.jobdetail.due_date;
+                var due_timevl1 = angular.element('#due_time').val();
+                $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                
+                // this field used in tabel join for csv pay calculation
+                if ($scope.jobdetail.project_type_name)
+                    delete $scope.jobdetail.project_type_name;
+                if ($scope.jobdetail.project_type)
+                    delete $scope.jobdetail.project_type;
+                if ($scope.jobdetail.proj_specialization)
+                    delete $scope.jobdetail.proj_specialization;
+                /* if($scope.jobdetail.job_type_name)
+                delete $scope.jobdetail.job_type_name; */
+    
+                //job start recent activity store in cookie
+                var arr1 = $.map($scope.jobdetail, function (el) {
+                    return el;
+                });
+    
+                if ($cookieStore.get) {
+                    var arr2 = $cookieStore.get('editJobact');
+                    if (arr2) {
+                        arr2 = $.map(arr2, function(el) {
+                            return el;
+                        });
+                        if (arr1 && array_diff(arr1, arr2) != "") {
+                            var obj = [];
+                            if ($cookieStore.get('jobRecentEdit') != undefined) {
+                                angular.forEach($cookieStore.get('jobRecentEdit'), function(val, i) {
+                                    obj.push(val);
+                                });
+                            }
+                            obj.push($routeParams.id);
+                            $cookieStore.put('jobRecentEdit', obj);
+                            $cookieStore.remove('editJobact');
                         }
-                        obj.push($routeParams.id);
-                        $cookieStore.put('jobRecentEdit', obj);
-                        $cookieStore.remove('editJobact');
                     }
                 }
+                
+    
+                if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'In preparation') {
+                    //$scope.jobdetail.item_status = 'In-progress';
+                }
+                delete $scope.jobdetail['ProjectDueDate'];
+                delete $scope.jobdetail['freelance_currency'];
+                if ($scope.jobdetail.hasOwnProperty('clientName'))
+                    delete $scope.jobdetail['clientName'];
+                if($scope.jobdetail.hasOwnProperty('vCenterid'))
+                    delete $scope.jobdetail['vCenterid'];    
+    
+                if (itemPriceUnit) {
+                    for (var j = 0; j < itemPriceUnit.length; j++) {
+                        //itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) : 0;
+                        itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? CommaToPoint4Digit(itemPriceUnit[j].itemTotal) : 0;
+                    }
+                }
+                $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
+            } catch (error) {
+                console.log('error', error)
+                notification('Please fill all required fields or refresh the page. ', 'warning');
+                return false;
             }
-            
-
-            if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'In preparation') {
-                //$scope.jobdetail.item_status = 'In-progress';
-            }
-            delete $scope.jobdetail['ProjectDueDate'];
-            delete $scope.jobdetail['freelance_currency'];
-            if ($scope.jobdetail.hasOwnProperty('clientName'))
-                delete $scope.jobdetail['clientName'];
-            if($scope.jobdetail.hasOwnProperty('vCenterid'))
-                delete $scope.jobdetail['vCenterid'];    
-            
-
-                console.log('$scope.jobdetail',$scope.jobdetail )
+            console.log('$scope.jobdetail',$scope.jobdetail )
 
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
