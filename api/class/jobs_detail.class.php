@@ -1362,15 +1362,15 @@ class jobs_detail
 
     public function jobSummeryJobDetailsUpdate($id, $data)
     {
-        unset($data['auto_job'], $data['fmanager_id'], $data['userName'], $data['contactPerson'], $data['projectName'], $data['projectManager'], $data['project_type_name'], $data['clientAccountName']);
+        unset($data['auto_job'], $data['fmanager_id'], $data['userName'], $data['contactPerson'], $data['projectName'], $data['projectManager'], $data['project_type_name'], $data['clientAccountName'], $data['project_type'], $data['proj_specialization'], $data['scoop_source_lang'], $data['scoop_target_lang'] );
         //unset($data['quantity'],$data['itemPrice']);
-        if (isset($data['proj_specialization'])) {
-            unset($data['proj_specialization']);
-        }
-        if (isset($data['scoop_source_lang']))
-            unset($data['scoop_source_lang']);
-        if (isset($data['scoop_target_lang']))
-            unset($data['scoop_target_lang']);
+        // if (isset($data['proj_specialization'])) {
+        //     unset($data['proj_specialization']);
+        // }
+        // if (isset($data['scoop_source_lang']))
+        //     unset($data['scoop_source_lang']);
+        // if (isset($data['scoop_target_lang']))
+        //     unset($data['scoop_target_lang']);
 
         if (isset($data['due_date'])) {
             $data['due_date'] = date('Y-m-d H:i:s', strtoTime($data['due_date']));
