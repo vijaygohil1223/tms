@@ -2137,6 +2137,11 @@ $app->put('/itemStatusUpdate/:id', 'authenticate',function ($id) use($app) {
     $result = $item->itemStatusUpdate($id, $data);
     echoResponse($result ['status'], $result);
 });
+$app->get('/scoopsummaryGet/:id','authenticate', function ($id) {
+    $item = new item ();
+    $result = $item->scoopsummaryGet($id);
+    echoResponse(200, $result);
+});
 
 // ---------All Languages List ----------//
 $app->get('/allLanguages', 'authenticate',function () {

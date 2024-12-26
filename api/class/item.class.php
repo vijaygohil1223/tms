@@ -742,6 +742,99 @@ class item {
     //     // Return null if the date is invalid or empty.
     //     return null;
     // }
+
+    public function scoopsummaryGet($id) {
+        try {
+            $qry = "SELECT ti.`itemId`, ti.`order_id`, ti.`item_number`, ti.`total_price`, ti.`total_amount`, ti.base_currency_rate, ti.due_date, ti.item_status, tis.item_status_name 
+            FROM `tms_items` AS ti INNER JOIN tms_general AS tg ON ti.order_id = tg.order_id 
+            LEFT JOIN tms_item_status AS tis ON ti.item_status = tis.item_status_id 
+            LEFT JOIN tms_summmery_view AS tsv ON ti.order_id = tsv.order_id AND ti.item_number = tsv.item_id
+            WHERE ti.order_id = $id GROUP BY ti.itemId, ti.order_id, ti.total_amount, tis.item_status_name";
+    
+            $itemData = $this->_db->rawQuery($qry);
+
+            $jobStatusList = ['Approved', 'Invoiced', 'Invoice Ready', 'Paid', 'Completed'];
+            $scoopTotalPrice = 0;
+            $totalProfitMarginPercentage = 0;
+            $totalItems = count($itemData);
+    
+            foreach ($itemData as $key => $item) {
+                $scoopTotalPrice += $item['total_amount'];
+                $scopePriceRate = $item['total_amount'] / $item['base_currency_rate'];
+                $scopopeStatusId = $item['item_status'];
+    
+                $jobInfo = $this->_db->where('item_id', $item['item_number'])
+                                     ->where('order_id', $id)
+                                     ->get('tms_summmery_view');
+                
+                $totalJobPrice = 0;
+                if ($jobInfo) {
+                    foreach ($jobInfo as $job) {
+                        $totalJobPrice += $job['total_price'] / $job['user_base_currency_rate'];
+                    }
+                }
+    
+                $profitMargin = $scopePriceRate - $totalJobPrice;
+                $profitMarginPercentage = ($scopePriceRate != 0) 
+                    ? round(($profitMargin / $scopePriceRate) * 100, 2) 
+                    : 0;
+    
+                $totalProfitMarginPercentage += $profitMarginPercentage;
+    
+                // Replace match with if-else
+                if ($scopopeStatusId == 2) {
+                    $percent = 20;
+                } elseif (in_array($scopopeStatusId, [3, 5, 6, 10, 11, 12, 13])) {
+                    $percent = 50;
+                } elseif (in_array($scopopeStatusId, [7])) {
+                    $percent = 100;
+                } else {
+                    $percent = 0;
+                }
+    
+                $statusMap = [
+                    100 => ['image' => 'assets/img/wf_4.png', 'text' => 'Completed'],
+                    50  => ['image' => 'assets/img/wf_3.png', 'text' => 'Started'],
+                    20  => ['image' => 'assets/img/wf_3.png', 'text' => 'Started'],
+                    0   => ['image' => 'assets/img/wf_1.png', 'text' => 'Not started'],
+                ];
+    
+                $status = $statusMap[$percent] ?? ['image' => '', 'text' => '' ];
+    
+                $itemData[$key] = array_merge($item, [
+                    'total_job_price' => $totalJobPrice,
+                    'profit_margin' => $profitMargin,
+                    'profit_margin_percentage' => $profitMarginPercentage,
+                    'percent' => $percent,
+                    'job_status_image' => $status['image'],
+                    'status_image' => '<img src="' . $status['image'] . '" alt=""/> ' . $status['text'] . ' /',
+                    'status_text' => $status['text'],
+                ]);
+            }
+    
+            $averageProfitMarginPercentage = ($totalItems > 0) 
+                ? round($totalProfitMarginPercentage / $totalItems, 2) 
+                : 0;
+    
+            return [
+                'status' => 200,
+                'data' => $itemData,
+                'scoopTotalPrice' => $scoopTotalPrice,
+                'average_profit_margin_percentage' => $averageProfitMarginPercentage,
+                'msg' => 'Successfully fetched.',
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 500,
+                'data' => [],
+                'scoopTotalPrice' => 0,
+                'average_profit_margin_percentage' => 0,
+                'message_error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    
     
 
 }

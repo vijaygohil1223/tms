@@ -771,6 +771,7 @@
                               <th>Scoop Status</th>
                               <th>Job Status</th>
                               <th>Price</th>
+                              <th>Profit Margin</th>
                               <th>Action</th>
                            </thead>
                            <tbody>
@@ -780,22 +781,27 @@
                                  <!-- <td>{{it2.project_name}}</td> -->
                                  <td>
                                     <span ng-if="it2.due_date"
-                                       id="dynamicFilrtDueSet{{it2.itemId}}">{{it2.due_date}}</span>
+                                       id="dynamicFilrtDueSet{{it2.itemId}}">{{it2.due_date | dateFormatDisplayFront }}</span>
                                     <span ng-if="!it2.due_date">Not set yet</span>
                                  </td>
                                  <td ng-bind="it2.item_status_name"></td>
                                  <td>
                                     <div>
                                        <a href="javascript:void(0)" ng-click="jobitemsIdStatus(it2.itemId)">
-                                          <span class="summeryColor" id="sumimg{{$index}}"></span>
-                                          <span class="summeryColor" id="itemPer{{$index}}"></span><span
-                                             class="summeryColor" id="progress{{$index}}">% Progress</span>
+                                          <!-- <span class="summeryColor" id="sumimg{{$index}}"></span>
+                                          <span class="summeryColor" id="itemPer{{$index}}"></span>
+                                          <span class="summeryColor" id="progress{{$index}}">% Progress</span> -->
+                                          <span><img src="{{it2.job_status_image}}" alt=""/> {{it2.status_text}}</span>
+                                          <span class="summeryColor" id="itemPer{{$index}}" ng-if="it2.percent>0"> {{it2.percent}}</span>
+                                          <span class="summeryColor" id="progress{{$index}}" ng-if="it2.percent>0" >% Progress</span>
+                                          
                                        </a>
                                        <span id="noJob{{$index}}" class="jbClassDel{{it2.itemId}}"></span>
                                     </div>
                                  </td>
-                                 <td ng-if="!it2.total_price">{{0 |customNumber}}</td>
-                                 <td ng-if="it2.total_price">{{it2.total_price |customNumber}}</td>
+                                 <td >{{ (it2.total_price ? it2.total_price : 0) | customNumber}}</td>
+                                 <td> {{ (it2.profit_margin_percentage ? it2.profit_margin_percentage : 0) | customNumber }}% </td>
+                                 
                                  <!-- <td ng-if="it2.total_amount">{{it2.total_amount |customNumber}}</td> -->
 
                                  <td>
@@ -812,13 +818,16 @@
                               </tr>
                               <tr ng-show="!projectItemEmpty">
 
+                                 <!-- <td></td>
                                  <td></td>
                                  <td></td>
                                  <td></td>
+                                 <td></td> -->
+                                 <td colspan="5"></td>
+                                 <!-- <td><strong><span id="crnt1Cur"></span> {{totalPrice | customNumber}}</strong></td> -->
+                                 <td><strong><span id="crnt1Cur"></span> {{scoopTotalPrice | customNumber}}</strong></td>
+                                 <td><strong><span></span> {{scoopAvgProfitMargin | customNumber}} %</strong></td>
                                  <td></td>
-                                 <td></td>
-                                 <td><strong><span id="crnt1Cur"></span> {{totalPrice | customNumber}}</strong></td>
-                                 <td colspan="2"></td>
                               </tr>
                            </tbody>
                         </table>

@@ -26849,7 +26849,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.itemList = data;
             console.log('$scope.itemList=====>', $scope.itemList)
-            $scope.TblItemList = data;
+            //$scope.TblItemList = data;
             
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
@@ -27112,38 +27112,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.divis = 100 / $scope.total;
                         //$scope.percent = Math.ceil($scope.divis * appr.length);
                         //$scope.percent = Math.ceil(averagePercentage);
-                        if([2].includes(val.item_status)) {
-                            $scope.percent = 20;
-                        }else if([3,5,6,10,11,12,13].includes(val.item_status)){
-                            $scope.percent = 50;
-                        }else if([4,7].includes(val.item_status)){
-                            $scope.percent = 100;
-                        }else{
-                            $scope.percent = 0;
-                        }
-                        angular.element('#itemPer' + i).html($scope.percent);
-                        angular.element('.itemPer' + i).val($scope.percent);
-                        if ($scope.percent == 100) {
-                            if(! $('#sumimg'+i+' img').length)
-                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
-                        } else if ($scope.percent < 100 && $scope.percent != 0 ) {
-                            if(! $('#sumimg'+i+' img').length)
-                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
-                        } else if ($scope.percent == 0 && $scope.jobitemStatus.length > 0) {
-                            if(! $('#sumimg'+i+' img').length){
-                                //if($('#sumimg'+i+' img').attr('src') != 'assets/img/wf_1.png')
-                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
-                            }
-                        } else {
-                            if(! $('.jbClassDel' + val.itemId).text() ){
-                                //$('#noJob' + i).append('No jobs');
-                                $('#noJob' + i).append('-');
-                            }
-                            angular.element('#progress' + i).remove();
-                            angular.element('#sumimg' + i).remove();
-                            angular.element('#itemPer' + i).text('');
+
+                        // ** Remove from here and add new Api fn $scope.getScoopSummury ** //
+                        // if([2].includes(val.item_status)) {
+                        //     $scope.percent = 20;
+                        // }else if([3,5,6,10,11,12,13].includes(val.item_status)){
+                        //     $scope.percent = 50;
+                        // }else if([4,7].includes(val.item_status)){
+                        //     $scope.percent = 100;
+                        // }else{
+                        //     $scope.percent = 0;
+                        // }
+                        // angular.element('#itemPer' + i).html($scope.percent);
+                        // angular.element('.itemPer' + i).val($scope.percent);
+                        // if ($scope.percent == 100) {
+                        //     if(! $('#sumimg'+i+' img').length)
+                        //         angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
+                        // } else if ($scope.percent < 100 && $scope.percent != 0 ) {
+                        //     if(! $('#sumimg'+i+' img').length)
+                        //         angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
+                        // } else if ($scope.percent == 0 && $scope.jobitemStatus.length > 0) {
+                        //     if(! $('#sumimg'+i+' img').length){
+                        //         if($('#sumimg'+i+' img').attr('src') != 'assets/img/wf_1.png')
+                        //         angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
+                        //     }
+                        // } else {
+                        //     if(! $('.jbClassDel' + val.itemId).text() ){
+                        //         //$('#noJob' + i).append('No jobs');
+                        //         $('#noJob' + i).append('-');
+                        //     }
+                        //     angular.element('#progress' + i).remove();
+                        //     angular.element('#sumimg' + i).remove();
+                        //     angular.element('#itemPer' + i).text('');
                             
-                        }
+                        // }
+
                     }).error(errorCallback);
 
                     // check invoice exist
@@ -27591,6 +27594,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log("The dates are different.");
         }
     }
+
+    // scoop summury 
+    $scope.getScoopSummury = function () {
+        var popitemList = [];
+        $scope.order_idd = $scope.routeOrderID;
+        rest.path = 'scoopsummaryGet/' + $scope.order_idd;
+        rest.get().success(function (response) {
+            console.log('response=====>', response)
+            $scope.TblItemList = response?.data;
+            $scope.scoopTotalPrice = response?.scoopTotalPrice;
+            $scope.scoopAvgProfitMargin = response?.average_profit_margin_percentage;
+        })
+    }
+    $scope.getScoopSummury();
 
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
