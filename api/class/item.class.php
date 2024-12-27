@@ -755,6 +755,8 @@ class item {
 
             $jobStatusList = ['Approved', 'Invoiced', 'Invoice Ready', 'Paid', 'Completed'];
             $scoopTotalPrice = 0;
+            $scoopTotalPriceAll = 0;
+            $totalJobPriceAll = 0;
             $totalProfitMarginPercentage = 0;
             $totalItems = count($itemData);
     
@@ -784,6 +786,9 @@ class item {
                 }
     
                 $totalProfitMarginPercentage += $profitMarginPercentage;
+                $scoopTotalPriceAll += $scopePriceRate;
+                $totalJobPriceAll += $totalJobPrice;
+            
     
                 // Replace match with if-else
                 if ($scopopeStatusId == 2) {
@@ -816,15 +821,22 @@ class item {
                 ]);
             }
     
-            $averageProfitMarginPercentage = ($totalItems > 0) 
-                ? round($totalProfitMarginPercentage / $totalItems, 2) 
+            $profitMarginTotal = $scoopTotalPriceAll - $totalJobPriceAll;
+            $totalProfitMarginPercentage = ($profitMarginTotal != 0) 
+                ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2) 
                 : 0;
+                print_r($profitMarginTotal);
+            
+
+            if ($totalJobPriceAll > 0 && $scoopTotalPriceAll < $totalJobPriceAll) {
+                $totalProfitMarginPercentage = -100;
+            }
     
             return [
                 'status' => 200,
                 'data' => $itemData,
                 'scoopTotalPrice' => $scoopTotalPrice,
-                'average_profit_margin_percentage' => $averageProfitMarginPercentage,
+                'average_profit_margin_percentage' => $totalProfitMarginPercentage,
                 'msg' => 'Successfully fetched.',
             ];
         } catch (Exception $e) {
