@@ -1151,3 +1151,9 @@ Scroll Tabs css */
 .comment-wrapper .attachments .attachment {
   color: #333 !important;
 }
+.onhold{
+  float: right;
+  margin-bottom: -10px;
+  padding: 5px 5px;
+  border-radius: 6px;
+}
