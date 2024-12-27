@@ -781,7 +781,7 @@ class item {
                     ? round(($profitMargin / $scopePriceRate) * 100, 2) 
                     : 0;
 
-                if ($totalJobPrice > 0 && $scopePriceRate < $totalJobPrice) {
+                if ($totalJobPrice > 0 && $scopePriceRate == $totalJobPrice) {
                     $profitMarginPercentage = -100;
                 }
     
@@ -826,7 +826,7 @@ class item {
                 ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2) 
                 : 0;
 
-            if ($totalJobPriceAll > 0 && $scoopTotalPriceAll < $totalJobPriceAll) {
+            if ($totalJobPriceAll > 0 && $scoopTotalPriceAll == 0 ) {
                 $totalProfitMarginPercentage = -100;
             }
     
