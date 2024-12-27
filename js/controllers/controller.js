@@ -25398,6 +25398,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.btnDisabled = false;
     $scope.discussionScoopRead = [];
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+    $scope.cacheSelect2 = true;
 
     if($routeParams.id){
         $window.localStorage.orderID = $routeParams.id;

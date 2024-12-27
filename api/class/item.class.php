@@ -778,6 +778,10 @@ class item {
                 $profitMarginPercentage = ($scopePriceRate != 0) 
                     ? round(($profitMargin / $scopePriceRate) * 100, 2) 
                     : 0;
+
+                if ($totalJobPrice > 0 && $scopePriceRate < $totalJobPrice) {
+                    $profitMarginPercentage = -100;
+                }
     
                 $totalProfitMarginPercentage += $profitMarginPercentage;
     

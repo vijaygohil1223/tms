@@ -1143,8 +1143,13 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element) {
-            rest.path = 'prtypeactive';
-            rest.get().success(function(data) {
+            const isCacheTrue = scope?.cacheSelect2 || false
+            const apiPath = `${rest.baseUrl}prtypeactive`; 
+            // rest.path = 'prtypeactive';
+            // rest.get().success(function(data) {
+            $http.get(apiPath, { cache: isCacheTrue })
+                .then(function(response) {
+                const data = response?.data || [];
                 let prType = []; 
                 $.each(data, function(key, value) {
                     var obj = {
@@ -1182,7 +1187,10 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
 
                 }, 200);
 
-            }).error(function(data, error, status) {});
+            })
+            .catch(function(error) {
+            })
+
         }
     }
 });
@@ -5875,8 +5883,13 @@ app.directive('select2ContactPerson', function($http, rest, $timeout, $log,$wind
         link: function(scope, element) {
             $routeParams.id = scope.$parent.routeOrderID ? scope.$parent.routeOrderID : $window.localStorage.orderID; //getting clientContact from order id
             //$routeParams.id = $window.localStorage.orderID; //getting clientContact from order id
-            rest.path = 'checkContactClientId';
-            rest.model().success(function(data) {
+            const isCacheTrue = scope?.cacheSelect2 || false
+            const apiPath = `${rest.baseUrl}checkContactClientId/${$routeParams.id}`; 
+            // rest.path = 'checkContactClientId';
+            // rest.model().success(function(data) {
+            $http.get(apiPath, { cache: isCacheTrue })
+                .then(function(response) {
+                    const data = response?.data || [];
                 var status = [];
                 angular.forEach(data, function(value, key) {
                     var obj = {
@@ -5908,6 +5921,9 @@ app.directive('select2ContactPerson', function($http, rest, $timeout, $log,$wind
                     });
                 }, 1500);
             })
+            .catch(function(error) {
+            })
+
         }
     }
 });
