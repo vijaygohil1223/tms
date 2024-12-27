@@ -825,8 +825,6 @@ class item {
             $totalProfitMarginPercentage = ($profitMarginTotal != 0) 
                 ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2) 
                 : 0;
-                print_r($profitMarginTotal);
-            
 
             if ($totalJobPriceAll > 0 && $scoopTotalPriceAll < $totalJobPriceAll) {
                 $totalProfitMarginPercentage = -100;
