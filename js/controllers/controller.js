@@ -25390,7 +25390,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, select2userListService, select2scoopStatusService) {
+}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, select2userListService, select2scoopStatusService, $http) {
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
@@ -25399,6 +25399,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.discussionScoopRead = [];
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     $scope.cacheSelect2 = true;
+
+    $scope.apiBaseUrl = rest.baseUrl;
 
     if($routeParams.id){
         $window.localStorage.orderID = $routeParams.id;
@@ -25700,16 +25702,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         //currency update
-        rest.path = 'orderCurrencyMatch/' + $scope.routeOrderID;
-        rest.get().success(function (data) {
-            if (data.currency) {
-                var cur = JSON.parse(data.currency);
-                angular.element('#currencyCh').select2('val', cur[0].currency);
-                angular.element('#crntCur').text(cur[0].currency);
-                angular.element('#defCur').text(data.defCurrency);
-                angular.element('#curRate').text(cur[0].curRate);
-            }
-        }).error(errorCallback);
+        // rest.path = 'orderCurrencyMatch/' + $scope.routeOrderID;
+        // rest.get().success(function (data) {
+        //     console.log('data===>orderCurrencyMatch', data)
+        //     if (data.currency) {
+        //         var cur = JSON.parse(data.currency);
+        //         angular.element('#currencyCh').select2('val', cur[0].currency);
+        //         angular.element('#crntCur').text(cur[0].currency);
+        //         angular.element('#defCur').text(data.defCurrency);
+        //         angular.element('#curRate').text(cur[0].curRate);
+        //     }
+        // }).error(errorCallback);
 
         //check itemfile manager and delete
         rest.path = "itemFilemanager/" + $scope.routeOrderID;
@@ -26898,8 +26901,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach(data, function (val, i) {
 
                 //getClient By OrderId while edit item
-                rest.path = 'customer/' + $scope.routeOrderID;
-                rest.get().success(function (data) {
+                const apiPath = `${rest.baseUrl}customer/${$scope.routeOrderID}`; 
+                $http.get(apiPath, { cache: true })
+                    .then(function(response) {
+                        var data = response?.data;
+                // rest.path = 'customer/' + $scope.routeOrderID;
+                // rest.get().success(function (data) {
                     console.log('data-itemsss', data)
                     
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
@@ -27062,7 +27069,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var targetImg = targetField.children('img').after(targetData.sourceLang);
                         var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
                     }
-                }).error(errorCallback);
+                // }).error(errorCallback);
+                    })
+                    .catch(function(error) {
+                    })
 
                 /*if($scope.TblItemList[i].due_date){
                     $timeout(function() {
