@@ -2312,13 +2312,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":11 }, 
             { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":12  }, 
             { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":13  }, 
-            { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId": 14 } 
+            { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId": 14 }, 
+            { "tabName":"Last Seen", "tabClassName":"tab-lastSeen", "tabPermissionValue":"lastSeen", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":15  }, 
         ];
     }  
     //$scope.dashboardTabList = $scope.getDefaultDashboardTabList()  
     if ($window.localStorage.getItem('dashboardTabListSorted')) {
        try {
         $scope.dashboardTabList = JSON.parse($window.localStorage.getItem('dashboardTabListSorted'));
+        
+        const tabExists = $scope.dashboardTabList.some(tab => tab.tabPermissionValue === 'lastSeen');
+
+        if (!tabExists) {
+            const tempTabObj = { "tabName":"Last Seen", "tabClassName":"tab-lastSeen", "tabPermissionValue":"lastSeen", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":15  } ;
+            $scope.dashboardTabList.push(tempTabObj);
+        }
+        console.log('$scope.dashboardTabList===>', $scope.dashboardTabList)
        } catch (error) {
          $scope.dashboardTabList = $scope.getDefaultDashboardTabList();
        }
@@ -2472,6 +2481,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if(itm.tabClassName == 'tab-poMissing'){
                         itm.projectScoopCount = response?.poMissing || 0
+                        //console.log('response===================>', response)
+                    }
+                    if(itm.tabClassName == 'tab-lastSeen'){
+                        itm.projectScoopCount = response?.lastSeen || 0
                         //console.log('response===================>', response)
                     }
                     // if(itm.tabClassName == 'tab-approved'){
@@ -25390,7 +25403,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, select2userListService, select2scoopStatusService, $http) {
+}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, select2userListService, select2scoopStatusService, $http, saveProjectScoopLastSeenService) {
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
@@ -27619,6 +27632,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
     }
     $scope.getScoopSummury();
+
+    // last seen project scoops by user
+    try {
+        $scope.projectLastSeenObj = {
+            order_id: $routeParams.id,
+            scoop_id: 1, 
+            seen_by: $scope.login_userid,
+        }
+        saveProjectScoopLastSeenService.saveLastSeen($scope.projectLastSeenObj)
+        .then(function(response) {
+            console.log("Last seen info saved successfully", response.data);
+        })
+        .catch(function(error) {
+            console.error("Error saving last seen info", error);
+        });
+    } catch (error) {
+        console.log('error', error)
+    }
 
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -40944,7 +40975,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
-}).controller('viewScoopPopupController', function (allLanguages, LanguageService, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q) {
+}).controller('viewScoopPopupController', function (allLanguages, LanguageService, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q, saveProjectScoopLastSeenService) {
     //debugger
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $routeParams.id = items ? items.order_id : 0;
@@ -42211,8 +42242,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('$scope.discussionScoopRead', $scope.discussionScoopRead)
                 })
 
-
             })
+
+            
+
         });
     }
     $scope.getItems();
@@ -43058,6 +43091,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log("The dates are different.");
         }
     }
+
+    // last seen project scoops by user
+    $scope.projectLastSeenObj = {
+        scoop_id: $scope.scoop_id,
+        seen_by: $scope.login_userid,
+    }
+    saveProjectScoopLastSeenService.saveLastSeen($scope.projectLastSeenObj)
+    .then(function(response) {
+        console.log("Last seen info saved successfully", response.data);
+    })
+    .catch(function(error) {
+        console.error("Error saving last seen info", error);
+    });
 
 
 }).controller('resourceAdvanceSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {

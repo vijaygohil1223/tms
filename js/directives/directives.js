@@ -7118,7 +7118,7 @@ app.directive('select2Tabpermission', function($http, rest, $timeout) {
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
             //var tabs = {"due_today":'Due Today',"to_be_assigned":'To Be Assigned',"in_progress":'In Progress',"qa_ready":'QA Ready',"to_be_delivered":'To be Delivered', "due_tomorrow":'Due Tomorrow',"delivered":'Delivered',"my_projects":'My Projects'};
-            var tabs = { "due_today": 'Due Today', "assigned": 'Assign', "ongoing": 'Ongoing', "qa_ready": 'QA Ready', "qa_issue": 'QA Issue', "pm_ready": 'PM Ready', "delivery": 'Delivery', "completed": 'Completed', "overdue": 'Overdue', "due_tomorrow": 'Due Tomorrow', "my_project": 'My Project', "upcoming": 'Upcoming', "approved": 'Approved', "poMissing": 'Missing po', "all": 'All' };
+            var tabs = { "due_today": 'Due Today', "assigned": 'Assign', "ongoing": 'Ongoing', "qa_ready": 'QA Ready', "qa_issue": 'QA Issue', "pm_ready": 'PM Ready', "delivery": 'Delivery', "completed": 'Completed', "overdue": 'Overdue', "due_tomorrow": 'Due Tomorrow', "my_project": 'My Project', "upcoming": 'Upcoming', "approved": 'Approved', "poMissing": 'Missing po', "all": 'All', "lastSeen": 'Last Seen' };
             var arr = [];
             $.each(tabs, function(key, value) {
                 var obj = {

@@ -155,6 +155,26 @@ class dashboard {
         if($dataAll){
             $data['tabAll'] = $dataAll[0]['totalItems'];
         }
+
+        $subQryLatSeen = " LEFT JOIN (
+            SELECT 
+                scoop_id,
+                seen_by
+            FROM 
+                tms_project_seen 
+            WHERE 
+                seen_by = $id  
+            ORDER BY 
+                created_at DESC  
+            LIMIT 20
+        ) AS ps ON its.itemId = ps.scoop_id ";
+        
+        $qry = " SELECT COUNT(*) AS totalItems FROM ( SELECT its.order_id, its.item_number FROM `tms_items` its $subQryLatSeen WHERE its.order_id != 0 AND ps.seen_by = $id GROUP BY its.order_id, its.item_number ) AS groupedItems ";
+        $dataLatseen = $this->_db->rawQuery($qry);
+        if($dataLatseen){
+            $data['lastSeen'] = $dataLatseen[0]['totalItems'];
+        }
+
         return $data;
     }
 
@@ -223,6 +243,11 @@ class dashboard {
             if($tabName == 'tab-poMissing'){
                 $whereCond = " AND po_number != '' AND PO_missing = '1'  ";
             }
+            if($tabName == 'tab-lastSeen'){
+                $whereCond = " AND ps.seen_by=$id  ";
+                //$sortBy = " ORDER BY ps.created_at DESC  ";
+            }
+            
             //$currentPage = 0;
         }
 
@@ -330,9 +355,52 @@ class dashboard {
             $sortBy = " $sortBy $sortOrder  ";
         }
 
+        $subQryLatSeen = '';
+        if($tabName == 'tab-lastSeen'){
+            $subQryLatSeen = " LEFT JOIN (
+                SELECT 
+                    scoop_id,
+                    seen_by
+                FROM 
+                    tms_project_seen 
+                WHERE 
+                    seen_by = $id  
+                ORDER BY 
+                    created_at DESC  
+                LIMIT 20
+            ) AS ps ON its.itemId = ps.scoop_id ";
+        }
+
         //$qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
         //$qry = "SELECT COUNT(*) AS totalCount FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS scoop_manager_tu ON scoop_manager_tu.iUserId = its.manager LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS P_cordintr ON P_cordintr.iUserId = cust.project_coordinator LEFT JOIN tms_users AS P_cordintr_sub ON P_cordintr_sub.iUserId = cust.sub_pc LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_users AS scoop_cordintr ON scoop_cordintr.iUserId = its.coordinator LEFT JOIN tms_users AS scoop_cordintr_sub ON scoop_cordintr_sub.iUserId = its.subPc LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) LEFT JOIN tms_discussion AS td ON ( td.order_id = its.order_id AND(NOT FIND_IN_SET('1', td.read_id)) ) WHERE its.order_id != 0 $whereCond GROUP BY its.itemId ) AS subquery";
-        $qry = "SELECT COUNT(*) AS totalCount FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS scoop_manager_tu ON scoop_manager_tu.iUserId = its.manager LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS P_cordintr ON P_cordintr.iUserId = cust.project_coordinator LEFT JOIN tms_users AS P_cordintr_sub ON P_cordintr_sub.iUserId = cust.sub_pc LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_users AS scoop_cordintr ON scoop_cordintr.iUserId = its.coordinator LEFT JOIN tms_users AS scoop_cordintr_sub ON scoop_cordintr_sub.iUserId = its.subPc LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) LEFT JOIN tms_discussion AS td ON ( td.order_id = its.order_id AND(NOT FIND_IN_SET('1', td.read_id)) ) WHERE its.order_id != 0 $whereCond GROUP BY its.order_id, its.item_number ) AS subquery";
+        $qry = "SELECT COUNT(*) AS totalCount 
+            FROM ( SELECT its.itemId FROM tms_items AS its 
+            LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id 
+            LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id 
+            LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id 
+            LEFT JOIN tms_client AS c ON cust.client = c.iClientId 
+            LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id 
+            LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer 
+            LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager 
+            LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm 
+            LEFT JOIN tms_users AS scoop_manager_tu ON scoop_manager_tu.iUserId = its.manager 
+            LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm 
+            LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist 
+            LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa 
+            LEFT JOIN tms_users AS P_cordintr ON P_cordintr.iUserId = cust.project_coordinator 
+            LEFT JOIN tms_users AS P_cordintr_sub ON P_cordintr_sub.iUserId = cust.sub_pc 
+            LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist 
+            LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa 
+            LEFT JOIN tms_users AS scoop_cordintr ON scoop_cordintr.iUserId = its.coordinator 
+            LEFT JOIN tms_users AS scoop_cordintr_sub ON scoop_cordintr_sub.iUserId = its.subPc 
+            LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status 
+            LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id 
+            LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id 
+            LEFT JOIN ( SELECT resource_id, price_currency FROM tms_customer_price_list  WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client 
+            LEFT JOIN ( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) LEFT JOIN tms_discussion AS td ON ( td.order_id = its.order_id AND(NOT FIND_IN_SET('1', td.read_id)) ) 
+            $subQryLatSeen 
+            WHERE its.order_id != 0 $whereCond GROUP BY its.order_id, its.item_number ) AS subquery ";
+        
         $tCount = $this->_db->rawQueryNew($qry);
         $totalCount = $tCount && isset($tCount[0]['totalCount']) ? $tCount[0]['totalCount'] : 0 ;
 
@@ -373,7 +441,8 @@ class dashboard {
             LEFT JOIN( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv 
             LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource WHERE tsv.item_status != 'Cancelled' ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) 
             LEFT JOIN tms_discussion AS td ON ( td.scoop_id = its.itemId AND ( NOT FIND_IN_SET($id, td.read_id)) ) 
-            $discssionjoin 
+            $discssionjoin  
+            $subQryLatSeen
             WHERE its.order_id != 0 $whereCond GROUP BY its.itemId ORDER BY $sortBy limit $perPage offset $offset 
             ";
 

@@ -350,3 +350,21 @@ app.factory('select2scoopStatusService', function($http, $q, rest) {
         }
     };
 });
+
+app.factory('saveProjectScoopLastSeenService', function($http, $q, rest) {
+    return {
+        saveLastSeen: function(projectLastSeenObj) {
+            var deferred = $q.defer();
+            rest.path = 'saveProjectScoopLastSeen';
+            rest.post(projectLastSeenObj).success(function (data) {
+                
+                deferred.resolve(data);
+            }).catch(function(error) {
+                deferred.reject('Error fetching data: ' + error);
+            });
+
+            return deferred.promise;
+
+        }
+    };
+});

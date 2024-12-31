@@ -2142,6 +2142,12 @@ $app->get('/scoopsummaryGet/:id','authenticate', function ($id) {
     $result = $item->scoopsummaryGet($id);
     echoResponse(200, $result);
 });
+$app->post('/saveProjectScoopLastSeen','authenticate', function () use($app) {
+    $item = new item ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $item->saveProjectScoopLastSeen($data);
+    echoResponse($result ['status'], $result);
+});
 
 // ---------All Languages List ----------//
 $app->get('/allLanguages', 'authenticate',function () {

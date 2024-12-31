@@ -391,18 +391,23 @@ class users {
             $return['status'] = 422;
             $return['msg'] = 'UserName already exists.';
         }else{
+            $this->_db->where('iUserId',$id);
+            $userData = $this->_db->getOne('tms_users');
+            
+            // $tab_sortedorder = json_decode($userData['tab_sortedorder'] , true);
+
             if (isset($user['image'])) {
                 if(isset($id)){
-                    $this->_db->where('iUserId',$id);
-                    $data = $this->_db->getOne('tms_users');
-                    $image = $data['vProfilePic'];
-                    if(isset($data['vProfilePic']) && $data['vProfilePic'] ){
+                    // $this->_db->where('iUserId',$id);
+                    // $data = $this->_db->getOne('tms_users');
+                    $image = $userData['vProfilePic'];
+                    if(isset($userData['vProfilePic']) && $userData['vProfilePic'] ){
                         $path = "../../uploads/profilePic/";
                         $images = glob($path.$image);
                         if(file_exists($path.$image)){
                             unlink($path.$image);
                         }else{
-                            $image = $data['vProfilePic'];  
+                            $image = $userData['vProfilePic'];  
                         }        
                     }
                 }    
@@ -413,10 +418,10 @@ class users {
             if (isset($user['vSignUpload']) && !empty($user['vSignUpload'])) {
                 if(isset($id)){
                     $path = "../../uploads/signImages/";
-                    $this->_db->where('iUserId',$id);
-                    $data = $this->_db->getOne('tms_users');
-                    $image = $data['vSignUpload'];
-                    if(isset($data['vSignUpload']) && $data['vSignUpload'] ){    
+                    // $this->_db->where('iUserId',$id);
+                    // $data = $this->_db->getOne('tms_users');
+                    $image = $userData['vSignUpload'];
+                    if(isset($userData['vSignUpload']) && $userData['vSignUpload'] ){    
                         if(file_exists($path.$image)){
                             unlink($path.$image);
                         }

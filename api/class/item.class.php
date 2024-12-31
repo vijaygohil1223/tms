@@ -848,6 +848,78 @@ class item {
         }
     }
 
+    public function saveProjectScoopLastSeen($postData) {
+        try {
+            if (empty($postData['scoop_id']) || empty($postData['seen_by'])) {
+                throw new Exception('Invalid input data.');
+            }
+    
+            $seenBy = $postData['seen_by'];
+            $dateTime = date('Y-m-d H:i:s');
+    
+            // If order_id is provided, fetch related items
+            $items = [];
+            if (!empty($postData['order_id'])) {
+                $orderId = $postData['order_id'];
+                $items = $this->_db->rawQuery("SELECT itemId FROM tms_items its WHERE its.order_id = ?", [$orderId]);
+            } else {
+                // Add the single scoop_id to items for consistency in handling
+                $items[] = ['itemId' => $postData['scoop_id']];
+            }
+    
+            $insertedCount = 0;
+            $updatedCount = 0;
+    
+            // Loop through items and insert/update
+            foreach ($items as $item) {
+                $scoopId = $item['itemId'];
+    
+                $this->_db->where("scoop_id", $scoopId);
+                $this->_db->where("seen_by", $seenBy);
+                $isExist = $this->_db->getOne('tms_project_seen');
+    
+                if ($isExist) {
+                    // Update existing record
+                    $updata = ['created_at' => $dateTime];
+                    $this->_db->where("scoop_id", $scoopId);
+                    $this->_db->where("seen_by", $seenBy);
+                    if ($this->_db->update('tms_project_seen', $updata)) {
+                        $updatedCount++;
+                    }
+                } else {
+                    // Insert new record
+                    $insData = [
+                        'scoop_id' => $scoopId,
+                        'seen_by' => $seenBy,
+                        'created_at' => $dateTime
+                    ];
+                    if ($this->_db->insert('tms_project_seen', $insData)) {
+                        $insertedCount++;
+                    }
+                }
+            }
+    
+            // Prepare response
+            if ($insertedCount > 0 || $updatedCount > 0) {
+                return [
+                    'status' => 200,
+                    'msg' => 'Operation successful',
+                    'inserted_count' => $insertedCount,
+                    'updated_count' => $updatedCount
+                ];
+            } else {
+                throw new Exception('No records were inserted or updated.');
+            }
+        } catch (Exception $e) {
+            return [
+                'status' => 422,
+                'error_message' => $e->getMessage()
+            ];
+        }
+    }
+    
+    
+
     
     
 
