@@ -187,6 +187,7 @@ class dashboard {
         
         //$tabName = isset($_GET['tabName']) ? $_GET['tabName'] : '';
         $tabName = $_GET['tabName'] ?? '';
+        $selectFieldLastSeeen = "  ";
         if($tabName != ''){
             //$statusId = 1;
             if($tabName == 'tab-assigned'){
@@ -246,6 +247,7 @@ class dashboard {
             if($tabName == 'tab-lastSeen'){
                 $whereCond = " AND ps.seen_by=$id  ";
                 //$sortBy = " ORDER BY ps.created_at DESC  ";
+                $selectFieldLastSeeen = " ,ps.created_at ";
             }
             
             //$currentPage = 0;
@@ -313,6 +315,10 @@ class dashboard {
         END,
         its.due_date ASC
         ";
+        
+        if($tabName == 'tab-lastSeen'){
+            $sortBy = " ps.created_at DESC  ";
+        }
 
         // alternate 2
         // $sortBy = "
@@ -360,7 +366,8 @@ class dashboard {
             $subQryLatSeen = " LEFT JOIN (
                 SELECT 
                     scoop_id,
-                    seen_by
+                    seen_by,
+                    created_at
                 FROM 
                     tms_project_seen 
                 WHERE 
@@ -415,7 +422,8 @@ class dashboard {
         $qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, ' ', tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, ' ', sub_tu.vLastName ) AS sub_pm_name, CONCAT( scoop_manager_tu.vFirstName, ' ', scoop_manager_tu.vLastName ) AS scoopPm_name, CONCAT( sub_scp_tu.vFirstName, ' ', sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT( gen_Qa.vFirstName, ' ', gen_Qa.vLastName ) AS gen_Qa_fullName, CONCAT( sub_gen_Qa.vFirstName, ' ', sub_gen_Qa.vLastName ) AS gen_sub_Qa_fullName, CONCAT( scp_Qa.vFirstName, ' ', scp_Qa.vLastName ) AS scp_Qa_fullName, CONCAT( sub_scp_Qa.vFirstName, ' ', sub_scp_Qa.vLastName ) AS scp_sub_Qa_fullName, CONCAT( P_cordintr.vFirstName, ' ', P_cordintr.vLastName ) AS P_cordintr_fullName, CONCAT( P_cordintr_sub.vFirstName, ' ', P_cordintr_sub.vLastName ) AS P_cordintr_sub_fullName, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, 
             cp2.price_currency AS price_currency2, GROUP_CONCAT(DISTINCT(jsv.resources)) AS linguistId, 
             GROUP_CONCAT( DISTINCT( CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) ) ) AS linguistName, 
-            COUNT(td.id) AS comment_status, COUNT(td.id) AS comment_id, td2.id as discussion_id, its.is_urgent_scoop, its.scoop_on_hold  
+            COUNT(td.id) AS comment_status, COUNT(td.id) AS comment_id, td2.id as discussion_id, its.is_urgent_scoop, its.scoop_on_hold
+            $selectFieldLastSeeen  
             FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id 
             LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id 
             LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id 

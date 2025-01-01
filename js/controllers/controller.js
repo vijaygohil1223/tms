@@ -2351,6 +2351,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
             if($window.localStorage.getItem("session_iUserId") != 1){ 
@@ -2358,8 +2359,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.tabPermission = JSON.parse(data.tabPermission) 
                     //console.log('$scope.tabPermission===>', $scope.tabPermission)
                     $scope.dashboardTabList.map( (item) =>  { 
+                        // default lastSeen tab permission
+                        if(item.tabPermissionValue == 'lastSeen'){
+                            item.tabPermission = true
+                        }
+
                         for (const keyName in $scope.tabPermission){
-                            if( keyName == item.tabPermissionValue )
+                            if( keyName == item.tabPermissionValue  )
                                 item.tabPermission = true
                         }
                     })
