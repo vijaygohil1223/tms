@@ -1813,42 +1813,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('#jobNewTbl_paginate').parent().addClass('pull-right');
 
             $('#inProgerssTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Job in Progerss</h4>');
-            //$("#inProgerssTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Job in Progerss</h4></div>');
-            //$('#inProgerssTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$('#inProgerssTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$("#inProgerssTbl_filter").find('label').find('input').attr('id', 'Search_All');
-
-            // $("#inProgerssTbl_filter").parent().remove();
-            // $('#inProgerssTbl_info').parent().remove();
-            // $('#inProgerssTbl_paginate').parent().addClass('pull-right');
 
             $('#readyToBeDeliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Ready to be Delivered</h4>');
-            //$("#readyToBeDeliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Ready to be Delivered</h4></div>');
-            //$('#readyToBeDeliveredTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$('#readyToBeDeliveredTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$("#readyToBeDeliveredTbl_filter").find('label').find('input').attr('id', 'Search_All');
-
-            // $("#readyToBeDeliveredTbl_filter").parent().remove();
-            // $('#readyToBeDeliveredTbl_info').parent().remove();
-            // $('#readyToBeDeliveredTbl_paginate').parent().addClass('pull-right');
 
             $('#deliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Delivered</h4>');
-            //$("#deliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Delivered</h4></div>');
-            //$('#deliveredTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$('#deliveredTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$("#deliveredTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            // $("#deliveredTbl_filter").parent().remove();
-            // $('#deliveredTbl_info').parent().remove();
-            // $('#deliveredTbl_paginate').parent().addClass('pull-right');
 
             $('#completedTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Completed</h4>');
-            //$("#completedTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Jobs Completed</h4></div>');
-            //$('#completedTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$('#completedTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
-            //$("#completedTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            // $("#completedTbl_filter").parent().remove();
-            // $('#completedTbl_info').parent().remove();
-            // $('#completedTbl_paginate').parent().addClass('pull-right');
 
             var oTablejobNewTbl = $("#jobNewTbl").dataTable();
             $("#jobNewTbl").keyup(function () {
@@ -2560,66 +2530,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.groupedData = response?.groupedData
             }
             
-            //$scope.dashboardTabList[1].projectScoopData = response?.data
-            //console.log('$scope.dashboardTabList=======>', $scope.dashboardTabList)
-            // if(projectScoopData){
-            //     angular.forEach(projectScoopData, function (val, i) {
-            //         val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
-            //         val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
-            //         val.attached_workflow = val.attached_workflow.split('-').pop(); 
-                    
-            //         var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
-            //         if (val.itemsSourceLang) {
-            //             projectScoopData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-            //         } else {
-            //             projectScoopData[i].itemsSourceLang = newLangData;
-            //         }
-            //         if (val.itemsTargetLang) {
-            //             projectScoopData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-            //         } else {
-            //             projectScoopData[i].itemsTargetLang = newLangData;
-            //         }
-                    
-            //         //  ----linguist List----- / 
-            //         val.jobLinguist = [];
-            //         if(val.linguistName){
-            //             let linguistId = (val.linguistId).toString().split(',');
-            //             var lngstArr = [];
-            //             (val.linguistName).split(',').forEach((ele,i) => {
-            //                 lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
-            //             });
-            //             val.jobLinguist = lngstArr;
-            //         }   
-                    
-            //         if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
-            //             val.pm_name = val.sub_pm_name
-            //         }
-                    
-            //         var currenciesClnt = val.client_currency?.split(',')[0];
-            //         val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
-                
-            //         // Comment read unRead
-            //         var cmtcolor = '#0190d8';
-            //         var is_comment = 0;
-            //         var comment_id = 0;
-            //         // if (val.comment.length > 0) {
-            //         //     var is_comment = scoopData[i].comment[0].comment_status;
-            //         // }
-
-            //         if (val.comment_status > 0) {
-            //             cmtcolor = '#d30c39';
-            //         }
-            //         if (val.comment_status == 0) {
-            //             cmtcolor = '#67bb0a';
-            //         }
-            //         val.comment = cmtcolor;
-
-            //         //$scope.projectsAllCount++;
-            //         val.projectstatus_class = 'projectstatus_common';
-            //         val.projectstatus_color = '#8d9296';
-
-            //     })
-            // }
 
             //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)  
             
@@ -2632,20 +2542,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             //console.log('tabIndex*********************------------', tabIndex)
 
-            
-            // $scope.dashboardTabList.forEach((itm, indx) => {
-            //     if (itm.tabClassName === $scope.tabName) {
-            //         console.log('$scope.tabName=======---------'+Math.floor(Date.now() / 1000)+'=='+indx, $scope.tabName)
-            //         $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems);
-            //     }
-            // });  
-            
-            // angular.forEach($scope.dashboardTabList, function (itm, indx) {
-            //     if(itm.tabClassName == $scope.tabName){
-            //         //itm.projectScoopData = projectScoopData;
-            //         $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
-            //     }
-            // })
             //$scope.dashboardTabList[1].projectScoopData = projectScoopData
             $scope.totalItems = response.totalItems;
             $scope.totalPages = response.totalPages;
@@ -2781,7 +2677,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // var tabIndex = findIndexByTabClassName('tab-due-today');
             // $scope.tabName = 'tab-due-today';
             const tempDafaultTabName = $scope.dashboardTabList[0].tabClassName || 'tab-due-today';
-            console.log('tempDafaultTabName--------->defaultcall', tempDafaultTabName)
+            //console.log('tempDafaultTabName--------->defaultcall', tempDafaultTabName)
             var tabIndex = findIndexByTabClassName(tempDafaultTabName);
             $scope.tabName = tempDafaultTabName;
             $window.localStorage.setItem("projectActiveTab", $scope.tabName);
@@ -2831,8 +2727,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         else    
             $window.localStorage.setItem("projectActiveTab", '');
     }
-
-
     
     $scope.projectBranchchange = function (id) {
         //$scope.projBranchChange = true;
@@ -2922,35 +2816,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please select project scoop', 'information');
         }    
     }
-
-    // Dynamic Dashboard tabs
-/*     $scope.tabList = [{name:'All',className:'All',statusCount:'0'},{name:'Ongoing',className:'Ongoing',statusCount:'0'}];
-    $scope.projectsListData = [];
-    $scope.dashboardProjects = function (tabName) {
-        $scope.showDataLoader = true;
-        $scope.projectsListData = [];
-        let tabList = $scope.tabList;
-        switch (tabName) {
-            case 'All':
-                $scope.projectsListData = $scope.projectsAll;
-                tabList.filter( (nm) => { 
-                    if(nm.name == 'All')
-                        nm.statusCount = $scope.projectsAllCount 
-                })
-                break;
-            case 'Ongoing':
-                $scope.projectsListData = $scope.projectsAssigned;
-                tabList.filter( (nm) => { 
-                    if(nm.name == 'Ongoing')
-                        nm.statusCount = 5 
-                } )
-                $scope.showDataLoader = false;
-                break;
-            default:
-                $scope.projectsListData = $scope.projectsAssigned;
-                break;
-        }
-    } */
 
     /* Jobs section */
     $scope.jobList_tabFilter = function () {
@@ -4231,6 +4096,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $timeout(function () {
+        // to do - check below code if not in use remove it
         //jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
         $(".projecttable #DataTables_Table_0_filter input[type='search']").keyup(function () {
             if ($(this).val().length) {
