@@ -391,7 +391,6 @@ class users {
             $return['status'] = 422;
             $return['msg'] = 'UserName already exists.';
         }else{
-            //print_r($userPostdata);
             
             $this->_db->where('iUserId',$id);
             $userData = $this->_db->getOne('tms_users');
@@ -1664,13 +1663,13 @@ array(
         $this->_db->where('is_active', 1);
         $tabList = $this->_db->get('tms_dashboard_tabs');
         $this->_db->where('iUserId ', $id);
-        $tabList = $this->_db->get('tms_users');
+        $userData = $this->_db->get('tms_users');
 
         // Assuming $user['tabPermission'] is the updated permission data from the post
         if (isset($user['tabPermission'])) {
             // Decode the existing tab_sortedorder and the new tabPermission
-            $tabSortedorder = json_decode($postData['tab_sortedorder'], true);
-            $tabPermission = json_decode($user['tabPermission'], true);
+            $tabSortedorder = json_decode($userData['tab_sortedorder'], true);
+            $tabPermission = json_decode($postData['tabPermission'], true);
             
             // Get the active tab permissions (tabs the user is allowed to see)
             $activeTabs = array_keys(array_filter($tabPermission));
