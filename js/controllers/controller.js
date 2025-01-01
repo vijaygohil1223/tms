@@ -2334,7 +2334,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
       
     }else{
         $scope.dashboardTabList = $scope.getDefaultDashboardTabList()
-       // console.log('$scope.dashboardTabList', $scope.dashboardTabList)
+        console.log('$scope.dashboardTabList', $scope.dashboardTabList)
     }
 
     // Tabs permission array
@@ -2511,7 +2511,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var debounceTimeout;
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
-       // console.log('tabIndex==================PageChange', tabIndex)
+       console.log('tabIndex==================PageChange', tabIndex)
+
+       console.log('$scope.dashboardTabList==>apicalled',$scope.dashboardTabList )
         $scope.showDataLoader = true;
         var projectScoopData = [];
         var assignOrderData = [];
@@ -2773,6 +2775,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // var tabIndex = findIndexByTabClassName('tab-due-today');
             // $scope.tabName = 'tab-due-today';
             const tempDafaultTabName = $scope.dashboardTabList[0].tabClassName || 'tab-due-today';
+            console.log('tempDafaultTabName--------->defaultcall', tempDafaultTabName)
             var tabIndex = findIndexByTabClassName(tempDafaultTabName);
             $scope.tabName = tempDafaultTabName;
             $window.localStorage.setItem("projectActiveTab", $scope.tabName);

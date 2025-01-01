@@ -391,10 +391,10 @@ class users {
             $return['status'] = 422;
             $return['msg'] = 'UserName already exists.';
         }else{
+            //print_r($userPostdata);
+            
             $this->_db->where('iUserId',$id);
             $userData = $this->_db->getOne('tms_users');
-            
-            // $tab_sortedorder = json_decode($userData['tab_sortedorder'] , true);
 
             if (isset($user['image'])) {
                 if(isset($id)){
@@ -1657,6 +1657,70 @@ array(
         $this->_db->update('tms_users', $postData );
         $result['status'] = 200;
         return $result;
+    }
+
+    // user dashboard tabs permission
+    public function getTabsPermision($id, $postData) {
+        $this->_db->where('is_active', 1);
+        $tabList = $this->_db->get('tms_dashboard_tabs');
+        $this->_db->where('iUserId ', $id);
+        $tabList = $this->_db->get('tms_users');
+
+        // Assuming $user['tabPermission'] is the updated permission data from the post
+        if (isset($user['tabPermission'])) {
+            // Decode the existing tab_sortedorder and the new tabPermission
+            $tabSortedorder = json_decode($postData['tab_sortedorder'], true);
+            $tabPermission = json_decode($user['tabPermission'], true);
+            
+            // Get the active tab permissions (tabs the user is allowed to see)
+            $activeTabs = array_keys(array_filter($tabPermission));
+            
+            // Step 1: Remove tabs from tab_sortedorder that are no longer in tabPermission
+            $tabSortedorder = array_filter($tabSortedorder, function($tab) use ($activeTabs) {
+                // Keep only those tabs where the tabPermissionValue is in the activeTabs list
+                return in_array($tab['tabPermissionValue'], $activeTabs);
+            });
+
+            // Step 2: Add any new tabs that are in tabPermission but not in tab_sortedorder
+            foreach ($activeTabs as $permissionValue) {
+                // Check if the tab exists in the current tab_sortedorder
+                $tabExists = false;
+                foreach ($tabSortedorder as $tab) {
+                    if ($tab['tabPermissionValue'] == $permissionValue) {
+                        $tabExists = true;
+                        break;
+                    }
+                }
+                
+                if (!$tabExists) {
+                    // Find the tab info based on the permissionValue
+                    $tabInfo = null;
+                    foreach ($tabList as $tab) {
+                        if ($tab['tabPermissionValue'] == $permissionValue) {
+                            // Remove unwanted fields like is_active and created_date
+                            $tabInfo = array(
+                                'tabName' => $tab['tabName'],
+                                'tabClassName' => $tab['tabClassName'],
+                                'tabPermissionValue' => $tab['tabPermissionValue'],
+                                'projectScoopCount' => $tab['projectScoopCount'],
+                                'totalItems' => $tab['totalItems'],
+                                'totalPages' => $tab['totalPages'],
+                                'pageShowRec' => $tab['pageShowRec'],
+                                'tabIndexId' => $tab['tabIndexId']
+                            );
+                            break;
+                        }
+                    }
+                    // If tabInfo is found, add it to the sorted order
+                    if ($tabInfo) {
+                        $tabSortedorder[] = $tabInfo;
+                    }
+                }
+            }
+            $updatedTabSortedorder = json_encode($tabSortedorder);
+            $userData['tab_sortedorder'] = $updatedTabSortedorder;
+
+        }
     }
 
     
