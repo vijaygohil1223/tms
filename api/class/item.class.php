@@ -516,17 +516,15 @@ class item {
                 $is_urgent_scoop = 1;  // Mark as urgent if due date is today
             }
             // If static server name is dosina then scoop status will be 15 (Upcoming)
-            if(STATIC_SERVER_NAME && STATIC_SERVER_NAME == 'dosina'){
-                $statusId = 15;
-            }else{
-                // $this->_db->where('is_default',1);
-                // $this->_db->where('is_active',1);
-                // $scoopStatus = $this->_db->getOne('tms_item_status');
+            // if(STATIC_SERVER_NAME && STATIC_SERVER_NAME == 'dosina'){
+            //     $statusId = 15;
+            // }else{
                 $scoopStatus = $this->_db->where('is_default', 1)
                              ->where('is_active', 1)
                              ->getOne('tms_item_status');
                 $statusId = $scoopStatus ? $scoopStatus['item_status_id'] : '';
-            }
+            //}
+
             for($i=$itemId+1;$i<=$no_of_items+$itemId;$i++){
                 $Idata['item_number'] =$i;
                 $Idata['contact_person'] = $contactPerson;
@@ -538,8 +536,8 @@ class item {
                 $Idata['created_date'] = date('Y-m-d H:i:s');
                 $Idata['updated_date'] = date('Y-m-d H:i:s');
                 
-                $Idata['project_coordinator'] = ($customerDetail && isset($customerDetail['project_coordinator'])) ? $customerDetail['QA_specialist'] : 0;
-                $Idata['project_manager'] = ($customerDetail && isset($customerDetail['project_manager'])) ? $customerDetail['QA_specialist'] : 0;
+                $Idata['manager'] = ($customerDetail && isset($customerDetail['project_manager'])) ? $customerDetail['project_manager'] : 0;
+                $Idata['coordinator'] = ($customerDetail && isset($customerDetail['project_coordinator'])) ? $customerDetail['project_coordinator'] : 0;
                 $Idata['qaSpecialist'] = ($customerDetail && isset($customerDetail['QA_specialist'])) ? $customerDetail['QA_specialist'] : 0;
                 
                 //Item Start Date
