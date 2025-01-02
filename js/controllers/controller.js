@@ -26822,22 +26822,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
                     })
                     
+                    // var jobChainoption = $scope.jobchainoption;
+                    // var chaintext = val.attached_workflow.split('jobChain -');
+                    // var chainworkflow = jobChainoption.filter(x => x.job_name == chaintext[1]).map(x => x.job_chain_id);
+                    // if (chainworkflow.length > 0)
+                    //     $('#jobchainName' + val.itemId).val('c' + chainworkflow);
                     var jobChainoption = $scope.jobchainoption;
-                    
+                    var chainTextParts = val.attached_workflow.split('jobChain -');
+                    if (chainTextParts.length > 1) {
+                        var chainName = chainTextParts[1];
+                        var chainWorkflow = jobChainoption?.find(x => x.job_name === chainName)?.job_chain_id;
 
-                    var chaintext = val.attached_workflow.split('jobChain -');
-                    
-                    var chainworkflow = jobChainoption.filter(x => x.job_name == chaintext[1]).map(x => x.job_chain_id);
-                    
-                    if (chainworkflow.length > 0)
-                        $('#jobchainName' + val.itemId).val('c' + chainworkflow);
+                        if (chainWorkflow) {
+                            $('#jobchainName' + val.itemId).val('c' + chainWorkflow);
+                        }
+                    }
 
                     var joboption = $scope.joboption;
                     var jobtext = val.attached_workflow.split('SingleJob -');
-                    
-                    var jobworkflow = joboption.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1]).map(x => x.job_id);
-                    
-                    if (jobworkflow.length > 0)
+                    var jobworkflow = joboption?.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1]).map(x => x.job_id);
+                    if (jobworkflow)
                         $('#jobchainName' + val.itemId).val('j' + jobworkflow);
 
                     if ($('#jobchainName' + val.itemId).val() !== 'select') {
@@ -26908,55 +26912,59 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     angular.element('#qa_deadline' + i).val('');
                     // }
 
-                    if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
-                        var sourceData = JSON.parse($scope.itemList[i].source_lang);
-                        var targetData = JSON.parse($scope.itemList[i].target_lang);
-                        angular.element('#source_lang' + val.itemId).text(sourceData.sourceLang);
-                        angular.element('#target_lang').text(targetData.sourceLang);
-                    } else {
-                        angular.element('#source_lang' + val.itemId).text('English (US)');
-                        angular.element('#target_lang' + val.itemId).text('English (US)');
-                    }
+                    (function(currentItem) {
+                        $timeout(() => {
+                            if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
+                                var sourceData = JSON.parse($scope.itemList[i].source_lang);
+                                var targetData = JSON.parse($scope.itemList[i].target_lang);
+                                angular.element('#source_lang' + val.itemId).text(sourceData.sourceLang);
+                                angular.element('#target_lang').text(targetData.sourceLang);
+                            } else {
+                                angular.element('#source_lang' + val.itemId).text('English (US)');
+                                angular.element('#target_lang' + val.itemId).text('English (US)');
+                            }
 
+                            var sourceField = angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale");
+                            
+                            var targetField = angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale");
+                            var sourceImg = sourceField.children('img');
+                            var targetImg = targetField.children('img');
 
-                    var sourceField = angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale");
-                    
-                    var targetField = angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale");
-                    var sourceImg = sourceField.children('img');
-                    var targetImg = targetField.children('img');
+                            angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale").text('');
+                            angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale").text('');
 
-                    angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale").text('');
-                    angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale").text('');
+                            sourceField.append(sourceImg);
+                            targetField.append(targetImg);
 
-                    sourceField.append(sourceImg);
-                    targetField.append(targetImg);
+                            if ($scope.itemList[i].source_lang.length == 0 && $scope.itemList[i].target_lang.length == 0) {
+                                let defaultImgSrc = 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png';
+                                let defaultLangName = 'English (US)';
+                                let defaultAltName = 'United States';
+                                sourceField.children().attr('data-ng-src', '');
+                                sourceField.children().attr('src', '');
+                                sourceField.children().attr('alt', 'Select');
+                                
+                                //targetField.children().attr('data-ng-src', defaultImgSrc);
+                                targetField.children().attr('data-ng-src', '');
+                                targetField.children().attr('src', '');
+                                targetField.children().attr('alt', 'Select');
 
-                    if ($scope.itemList[i].source_lang.length == 0 && $scope.itemList[i].target_lang.length == 0) {
-                        let defaultImgSrc = 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png';
-                        let defaultLangName = 'English (US)';
-                        let defaultAltName = 'United States';
-                        sourceField.children().attr('data-ng-src', '');
-                        sourceField.children().attr('src', '');
-                        sourceField.children().attr('alt', 'Select');
-                        
-                        //targetField.children().attr('data-ng-src', defaultImgSrc);
-                        targetField.children().attr('data-ng-src', '');
-                        targetField.children().attr('src', '');
-                        targetField.children().attr('alt', 'Select');
+                                var sourceImg = sourceField.children('img').after('');
+                                var targetImg = targetField.children('img').after('');
+                            } else {
+                                sourceField.children().attr('data-ng-src', sourceData.dataNgSrc);
+                                sourceField.children().attr('src', sourceData.dataNgSrc);
+                                sourceField.children().attr('alt', sourceData.alt);
 
-                        var sourceImg = sourceField.children('img').after('');
-                        var targetImg = targetField.children('img').after('');
-                    } else {
-                        sourceField.children().attr('data-ng-src', sourceData.dataNgSrc);
-                        sourceField.children().attr('src', sourceData.dataNgSrc);
-                        sourceField.children().attr('alt', sourceData.alt);
+                                targetField.children().attr('data-ng-src', targetData.dataNgSrc);
+                                targetField.children().attr('src', targetData.dataNgSrc);
+                                targetField.children().attr('alt', targetData.alt);
+                                var targetImg = targetField.children('img').after(targetData.sourceLang);
+                                var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
+                            }
+                        }, 500);
+                    })(val);
 
-                        targetField.children().attr('data-ng-src', targetData.dataNgSrc);
-                        targetField.children().attr('src', targetData.dataNgSrc);
-                        targetField.children().attr('alt', targetData.alt);
-                        var targetImg = targetField.children('img').after(targetData.sourceLang);
-                        var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
-                    }
                 // }).error(errorCallback);
                     })
                     .catch(function(error) {
