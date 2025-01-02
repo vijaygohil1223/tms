@@ -457,6 +457,13 @@ app.directive('select2Manager', function($http, rest, $timeout, maangerListServi
                                 });
                             }    
                         });
+
+                        // if (scope.it && scope.it.manager) {
+                        //     console.log('scope.it.manager', scope.it.manager)
+                        //     const selectedValues = scope.it.manager; 
+                        //     element.val(selectedValues).trigger('change');
+                        // }
+
                     }, 200);
                 }
             //}).error(function(data, error, status) {});

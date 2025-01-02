@@ -26881,16 +26881,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     else
                         $scope.itemList[i].upcomingDate = moment($scope.itemList[i].upcomingDate).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     
-
-                    if ($scope.itemList[i].due_date) {
-                        var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
-                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
-                        var due_timevl = new_due_date.split(" ")[1];
-                        $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
-                        angular.element('#due_time' + i).val(due_timevl);
-
-                    }
-
                     // removed - no longer needed
                     // if ($scope.itemList[i].pm_deadline && $scope.itemList[i].pm_deadline !== '0000-00-00') {
                     //     var new_due_date = moment($scope.itemList[i].pm_deadline).format($scope.dateFormatGlobal);
@@ -26914,6 +26904,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     (function(currentItem) {
                         $timeout(() => {
+                            // update duetime
+                            if ($scope.itemList[i].due_date) {
+                                var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                                //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                                var due_timevl = new_due_date.split(" ")[1];
+                                $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
+                                angular.element('#due_time' + i).val(due_timevl);
+        
+                            }
+                            
                             if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
                                 var sourceData = JSON.parse($scope.itemList[i].source_lang);
                                 var targetData = JSON.parse($scope.itemList[i].target_lang);
