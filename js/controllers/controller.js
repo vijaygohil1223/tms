@@ -2392,85 +2392,81 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
     // ];
 
-    if($scope.userRight == 1){
-        rest.path = "dashboardProjectsOrderCount/" + $window.localStorage.getItem("session_iUserId");
+    if ($scope.userRight == 1) {
+        const sessionUserId = $window.localStorage.getItem("session_iUserId");
+        rest.path = `dashboardProjectsOrderCount/${sessionUserId}`;
         rest.get().success(function (response) {
-            //console.log('data-dashboar-project count=>', response)
-            
-            if(response){
-                angular.forEach($scope.dashboardTabList, function (itm, i) {
-                    if(itm.tabClassName == 'tab-due-today'){
-                        //console.log('response.dueToday', response.dueToday)
-                        itm.projectScoopCount = response.dueToday || 0
+            if (response) {
+                $scope.dashboardTabList.forEach((itm) => {
+                    switch (itm.tabClassName) {
+                        case 'tab-due-today':
+                            itm.projectScoopCount = response.dueToday || 0;
+                            break;
+                        case 'tab-due-tomorrow':
+                            itm.projectScoopCount = response.dueTomorrow || 0;
+                            break;
+                        case 'tab-all':
+                            itm.projectScoopCount = response.tabAll || 0;
+                            break;
+                        case 'tab-assigned':
+                            itm.projectScoopCount = response.assign || 0;
+                            break;
+                        case 'tab-ongoing':
+                            itm.projectScoopCount = response.ongoing || 0;
+                            break;
+                        case 'tab-qa-ready': {
+                            const tQa = response.tabStatus?.find(val => val.item_status == 10);
+                            itm.projectScoopCount = tQa?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-qa-issue': {
+                            const tQaIssue = response.tabStatus?.find(val => val.item_status == 13);
+                            itm.projectScoopCount = tQaIssue?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-pm-ready': {
+                            const tPmReady = response.tabStatus?.find(val => val.item_status == 12);
+                            itm.projectScoopCount = tPmReady?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-to-be-delivered': {
+                            const tToBeDel = response.tabStatus?.find(val => val.item_status == 3);
+                            itm.projectScoopCount = tToBeDel?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-completed': {
+                            const tComp = response.tabStatus?.find(val => val.item_status == 4);
+                            itm.projectScoopCount = tComp?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-approved': {
+                            const tApprvd = response.tabStatus?.find(val => val.item_status == 5);
+                            itm.projectScoopCount = tApprvd?.totalItems || 0;
+                            break;
+                        }
+                        case 'tab-overdue':
+                            itm.projectScoopCount = response.overDue || 0;
+                            break;
+                        case 'tab-my-projects':
+                            itm.projectScoopCount = response.myProject || 0;
+                            break;
+                        case 'tab-my-upcoming':
+                            itm.projectScoopCount = response.upcomming || 0;
+                            break;
+                        case 'tab-poMissing':
+                            itm.projectScoopCount = response.poMissing || 0;
+                            break;
+                        case 'tab-lastSeen':
+                            itm.projectScoopCount = response.lastSeen || 0;
+                            break;
+                        default:
+                            break;
                     }
-                    if(itm.tabClassName == 'tab-due-tomorrow'){
-                        itm.projectScoopCount = response.dueTomorrow || 0
-                    }
-                    if(itm.tabClassName == 'tab-all'){
-                        itm.projectScoopCount = response.tabAll || 0
-                    }
-                    if(itm.tabClassName == 'tab-assigned'){
-                        var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
-                        itm.projectScoopCount = asigncount?.totalItems || 0
-                    }
-                    // if(itm.tabClassName == 'tab-assigned'){
-                    //     itm.projectScoopCount = response.assign || 0
-                    // }
-                    if(itm.tabClassName == 'tab-ongoing'){
-                        //2
-                        itm.projectScoopCount = response.ongoing || 0
-                    }
-                    if(itm.tabClassName == 'tab-qa-ready'){
-                        var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
-                        itm.projectScoopCount = tQa?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-qa-issue'){
-                        var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
-                        itm.projectScoopCount = tQaissue?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-pm-ready'){
-                        var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
-                        itm.projectScoopCount = tPmready?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-to-be-delivered'){
-                        var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
-                        itm.projectScoopCount = tTobDel?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-completed'){
-                        var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
-                        itm.projectScoopCount = tComp?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-approved'){
-                        var tApprvd = response.tabStatus.find( (val) => val.item_status == 5 );
-                        itm.projectScoopCount = tApprvd?.totalItems || 0
-                    }
-                    if(itm.tabClassName == 'tab-overdue'){
-                        // 11
-                        //var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
-                        itm.projectScoopCount = response?.overDue || 0
-                    }
-                    if(itm.tabClassName == 'tab-my-projects'){
-                        itm.projectScoopCount = response?.myProject || 0
-                    }
-                    if(itm.tabClassName == 'tab-my-upcoming'){
-                        itm.projectScoopCount = response?.upcomming || 0
-                    }
-                    if(itm.tabClassName == 'tab-poMissing'){
-                        itm.projectScoopCount = response?.poMissing || 0
-                        //console.log('response===================>', response)
-                    }
-                    if(itm.tabClassName == 'tab-lastSeen'){
-                        itm.projectScoopCount = response?.lastSeen || 0
-                        //console.log('response===================>', response)
-                    }
-                    // if(itm.tabClassName == 'tab-approved'){
-                    //     itm.projectScoopCount = response?.approved || 0
-                    // }
-                })
+                });
             }
-
         });
     }
+    
 
     function findIndexByTabClassName(tabClassName) {
         return $scope.dashboardTabList.findIndex(tab => tab.tabClassName === tabClassName);
@@ -3447,6 +3443,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
+            //console.log('data===========>jobslisting', data)
             //$scope.jobList = data;
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
@@ -26913,7 +26910,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 angular.element('#due_time' + i).val(due_timevl);
         
                             }
-                            
+
                             if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
                                 var sourceData = JSON.parse($scope.itemList[i].source_lang);
                                 var targetData = JSON.parse($scope.itemList[i].target_lang);
@@ -27533,7 +27530,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     } catch (error) {
         console.log('error', error)
     }
-
+    
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.contactMsgId;

@@ -516,14 +516,14 @@ class item {
                 $is_urgent_scoop = 1;  // Mark as urgent if due date is today
             }
             // If static server name is dosina then scoop status will be 15 (Upcoming)
-            // if(STATIC_SERVER_NAME && STATIC_SERVER_NAME == 'dosina'){
-            //     $statusId = 15;
-            // }else{
+            if( STATIC_SERVER_NAME == 'dosina'){
+                $statusId = 15;
+            }else{
                 $scoopStatus = $this->_db->where('is_default', 1)
                              ->where('is_active', 1)
                              ->getOne('tms_item_status');
                 $statusId = $scoopStatus ? $scoopStatus['item_status_id'] : '';
-            //}
+            }
 
             for($i=$itemId+1;$i<=$no_of_items+$itemId;$i++){
                 $Idata['item_number'] =$i;
@@ -539,6 +539,10 @@ class item {
                 $Idata['manager'] = ($customerDetail && isset($customerDetail['project_manager'])) ? $customerDetail['project_manager'] : 0;
                 $Idata['coordinator'] = ($customerDetail && isset($customerDetail['project_coordinator'])) ? $customerDetail['project_coordinator'] : 0;
                 $Idata['qaSpecialist'] = ($customerDetail && isset($customerDetail['QA_specialist'])) ? $customerDetail['QA_specialist'] : 0;
+
+                $Idata['subPm'] = ($customerDetail && isset($customerDetail['sub_pm'])) ? $customerDetail['sub_pm'] : 0;
+                $Idata['subPc'] = ($customerDetail && isset($customerDetail['sub_pc'])) ? $customerDetail['sub_pc'] : 0;
+                $Idata['subQa'] = ($customerDetail && isset($customerDetail['sub_qa'])) ? $customerDetail['sub_qa'] : 0;
                 
                 //Item Start Date
                 /*$currentDate = date('Y-m-d H:i:s');
