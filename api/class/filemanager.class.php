@@ -1532,7 +1532,8 @@ array(
                 $extensionName = strtolower(pathinfo($defaultFileName, PATHINFO_EXTENSION));
                 $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
                 $timestamp = time();
-                $filename = $filenameWithoutExtension . '_' . $timestamp . '.' . $extensionName;
+                $uniqId = uniqid();
+                $filename = $filenameWithoutExtension. '_'. $uniqId . '_' . $timestamp . '.' . $extensionName;
                 $keyName = $currentDate . '/' . $filename;
     
                 // Upload file to AWS

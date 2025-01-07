@@ -774,8 +774,9 @@ class item {
             $totalItems = count($itemData);
     
             foreach ($itemData as $key => $item) {
+                $base_currency_rate = $item['base_currency_rate'] ? $item['base_currency_rate'] : 1;
                 $scoopTotalPrice += $item['total_amount'];
-                $scopePriceRate = $item['total_amount'] / $item['base_currency_rate'];
+                $scopePriceRate = $item['total_amount'] / $base_currency_rate;
                 $scopopeStatusId = $item['item_status'];
     
                 $jobInfo = $this->_db->where('item_id', $item['item_number'])
@@ -785,19 +786,22 @@ class item {
                 $totalJobPrice = 0;
                 if ($jobInfo) {
                     foreach ($jobInfo as $job) {
-                        $totalJobPrice += $job['total_price'] / $job['user_base_currency_rate'];
+                        $user_base_currency_rate = $item['user_base_currency_rate'] ? $item['user_base_currency_rate'] : 1;
+                        
+                        $totalJobPrice += $job['total_price'] / $user_base_currency_rate;
                     }
                 }
-    
+                
                 $profitMargin = $scopePriceRate - $totalJobPrice;
                 $profitMarginPercentage = ($scopePriceRate != 0) 
                     ? round(($profitMargin / $scopePriceRate) * 100, 2) 
                     : 0;
 
-                if ($totalJobPrice > 0 && $scopePriceRate == $totalJobPrice) {
+                if ($totalJobPrice > 0 && $scopePriceRate == 0) {
+                //if ($totalJobPrice > 0 && $scopePriceRate == $totalJobPrice) {    
                     $profitMarginPercentage = -100;
                 }
-    
+                
                 $totalProfitMarginPercentage += $profitMarginPercentage;
                 $scoopTotalPriceAll += $scopePriceRate;
                 $totalJobPriceAll += $totalJobPrice;
@@ -835,9 +839,11 @@ class item {
             }
     
             $profitMarginTotal = $scoopTotalPriceAll - $totalJobPriceAll;
-            $totalProfitMarginPercentage = ($profitMarginTotal != 0) 
-                ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2) 
-                : 0;
+            
+            // $totalProfitMarginPercentage = ($profitMarginTotal != 0) 
+            //     ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2) 
+            //     : 0; 
+            $totalProfitMarginPercentage = ($scoopTotalPriceAll != 0)  ? round(($profitMarginTotal / $scoopTotalPriceAll) * 100, 2)  : 0;   
 
             if ($totalJobPriceAll > 0 && $scoopTotalPriceAll == 0 ) {
                 $totalProfitMarginPercentage = -100;

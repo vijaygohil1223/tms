@@ -390,9 +390,11 @@ class Freelance_invoice
                     $whereCond .= " AND (tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved != '1'  ) ";
                     break;
                 case 'Approved':
-                    $whereCond .= " AND (tmInvoice.invoice_status = 'Approved' AND tmInvoice.is_approved = 1) 
-                        AND tmInvoice.invoice_status NOT IN ('Complete','Completed','Partly Paid','Paid') ";
-                    break;
+                    // $whereCond .= " AND (tmInvoice.invoice_status = 'Approved' AND tmInvoice.is_approved = 1) 
+                    //     AND tmInvoice.invoice_status NOT IN ('Complete','Completed','Partly Paid','Paid') ";
+                    $whereCond .= " AND (tmInvoice.invoice_status IN ('Approved','Partly Paid') AND tmInvoice.is_approved = 1) 
+                    AND tmInvoice.invoice_status NOT IN ('Complete','Completed','Paid') ";
+                break;
                 case 'Completed':
                     $whereCond .= " AND (tmInvoice.invoice_status = 'Complete' 
                                         OR tmInvoice.invoice_status = 'Completed' 
