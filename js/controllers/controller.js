@@ -822,7 +822,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
                     $window.localStorage.setItem("session_superAdmin", data.session_data.super_admin);
-                    $window.localStorage.setItem("linguist_invoice_due_days", 59);
+                    $window.localStorage.setItem("linguist_invoice_due_days", 58);
                     $window.localStorage.setItem("dashboardTabListSorted", data.session_data.tab_sortedorder )
 
                     $rootScope.myData = data;

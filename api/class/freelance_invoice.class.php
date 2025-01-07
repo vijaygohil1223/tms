@@ -116,7 +116,7 @@ class Freelance_invoice
     //invoice and draft save
     public function saveInvoice($data)
     {
-        $checkDueDate = self::calculateDueDate(date("Y-m-d"), 60 );
+        $checkDueDate = self::calculateDueDate(date("Y-m-d"), 58 );
         $alreadyInvoiceDueDate = $checkDueDate->format('Y-m-d');
        
         $this->_db->where('is_deleted', 0);
@@ -150,45 +150,43 @@ class Freelance_invoice
             $invoiceAlreadyAdded = false;
             try {
                 if (!empty($data['job_id'])) {
-                    $invoiceRecords = $this->_db->get('tms_invoice');
-                    if (is_array($invoiceRecords)) {
-                        foreach ($invoiceRecords as $k => $v) {
-                            $jobIds = json_decode($v['job_id'], true);
-                            if (is_array($jobIds)) {
-                                foreach ($jobIds as $ke => $val) {
-                                    $existedJobId = $val['id'];
-                                    $postedJobIds = json_decode($data['job_id'], true);
-                                    if (is_array($postedJobIds)) {
-                                        foreach ($postedJobIds as $k1 => $v1) {
-                                            $postedJobId = $v1['id'];
-                                            if ($postedJobId == $existedJobId) {
-                                                $invoiceAlreadyAdded = true;
-                                                break 3; // Exit all loops once a match is found
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    $this->_db->where('is_deleted', 0 );
+                    $this->_db->where('invc_job_id', $data['job_id'] );
+                    $jobExist = $this->_db->getOne('tms_invoice_jobs');
+                    if($jobExist){
+                        $invoiceAlreadyAdded = true;
                     }
                 }
             } catch (Exception $e) {
-                // 
+                
             }
-
-            // if($data['job_id']){
-            //     $invoiceRecords = $this->_db->get('tms_invoice');
-            //     foreach ($invoiceRecords as $k => $v) {
-            //         foreach (json_decode($v['job_id'],true) as $ke => $val) {
-            //             $existedJobId = $val['id'];
-            //             foreach (json_decode($data['job_id'],true) as $k1 => $v1) {
-            //                 $postedJobId = $v1['id'];
-            //                 if($postedJobId == $existedJobId){
-            //                     $invoiceAlreadyAdded = true;
+            // manage seperate table to check invoice already added or not in invoice_jobs table
+            // try {
+            //     if (!empty($data['job_id'])) {
+            //         $invoiceRecords = $this->_db->get('tms_invoice');
+            //         if (is_array($invoiceRecords)) {
+            //             foreach ($invoiceRecords as $k => $v) {
+            //                 $jobIds = json_decode($v['job_id'], true);
+            //                 if (is_array($jobIds)) {
+            //                     foreach ($jobIds as $ke => $val) {
+            //                         $existedJobId = $val['id'];
+            //                         $postedJobIds = json_decode($data['job_id'], true);
+            //                         if (is_array($postedJobIds)) {
+            //                             foreach ($postedJobIds as $k1 => $v1) {
+            //                                 $postedJobId = $v1['id'];
+            //                                 if ($postedJobId == $existedJobId) {
+            //                                     $invoiceAlreadyAdded = true;
+            //                                     break 3; // Exit all loops once a match is found
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
             //                 }
             //             }
             //         }
             //     }
+            // } catch (Exception $e) {
+            //     // 
             // }
 
             if (isset($data['job'])) {
@@ -200,8 +198,8 @@ class Freelance_invoice
                     $data['resourceInvoiceFileName'] = $fileName;
                 if (isset($data['resourceInvoiceFile']))
                     unset($data['resourceInvoiceFile']);
-                $data['created_date'] = date('Y-m-d');
-                $data['modified_date'] = date('Y-m-d');
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['modified_date'] = date('Y-m-d H:i:s');
                 $data['value_date'] = date('Y-m-d');
                 $data['invoice_date'] = (isset($data['invoice_date'])) ? $data['invoice_date'] : date('Y-m-d');
                 
@@ -232,8 +230,8 @@ class Freelance_invoice
                             $iJobdata['invc_Id'] =  $id;
                             $iJobdata['invc_job_id'] = $item['id'];
                             $iJobdata['job_price'] =  $jobDetail['total_price'];
-                            $iJobdata['created_date'] = date('Y-m-d');
-                            $iJobdata['updated_date'] = date('Y-m-d');
+                            $iJobdata['created_date'] = date('Y-m-d H:i:s');
+                            $iJobdata['updated_date'] = date('Y-m-d H:i:s');
                             $this->_db->insert('tms_invoice_jobs', $iJobdata);
                         } catch (Exception $e) {
                         }

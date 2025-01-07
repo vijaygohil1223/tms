@@ -786,7 +786,7 @@ class item {
                 $totalJobPrice = 0;
                 if ($jobInfo) {
                     foreach ($jobInfo as $job) {
-                        $user_base_currency_rate = $item['user_base_currency_rate'] ? $item['user_base_currency_rate'] : 1;
+                        $user_base_currency_rate = !empty($job['user_base_currency_rate']) ? $job['user_base_currency_rate'] : 1;
                         
                         $totalJobPrice += $job['total_price'] / $user_base_currency_rate;
                     }
