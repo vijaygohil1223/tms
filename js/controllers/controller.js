@@ -8386,7 +8386,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.GetRootFolderName();
 
-    function downloadWithRetry(url, retries = 3) {
+    function downloadWithRetry(url, retries = 2) {
         return $q(function (resolve, reject) {
             function attempt(remainingRetries) {
                 JSZipUtils.getBinaryContent(url, function (err, data) {
@@ -8586,7 +8586,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     });
                         
                                     var filePromises = fileUrls.map(function (url) {
-                                        return downloadWithRetry(url.full_url, 3).then(function (data) {
+                                        return downloadWithRetry(url.full_url, 1).then(function (data) {
                                             return { url, data };
                                         });
                                     });
