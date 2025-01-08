@@ -8559,7 +8559,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (folderId !== undefined) {
                                 $scope.showLoder = true;
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
-                        
                                 rest.get().then(function (response) {
                                     $scope.downloadAllfile = response.data;
                                     var zipdwnld = new JSZip();
@@ -8569,51 +8568,111 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         
                                     angular.forEach($scope.downloadAllfile, function (val) {
                                         if (val.ext !== '') {
-                                            //const fileUrl = val.is_s3bucket ? val.name : `uploads/fileupload/${val.name}`;
+                                            var fimg = val.name;
+                                            let fOriginalName_ = val.original_filename;
+                        
+                                            // Handle duplicate file names
+                                            const sameNameExist = $scope.downloadAllfile.filter(itm => itm.original_filename === val.original_filename);
+                                            if (sameNameExist.length > 1) {
+                                                const currentIndex = sameNameExist.indexOf(val);
+                                                if (currentIndex > 0) {
+                                                    fOriginalName_ = fOriginalName_.replace(/\.[^/.]+$/, '') + `(${currentIndex})` + '.' + val.ext;
+                                                }
+                                            }
+                        
+                                            //var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
                                             const cacheBuster = `?cache_buster=${new Date().getTime()}`;
-                                            const fileUrl = val.is_s3bucket ? val.name + cacheBuster : "uploads/fileupload/" + val.name + cacheBuster;
-                                            fileUrls.push({
-                                                full_url: fileUrl,
-                                                file_name: val.original_filename,
-                                                folderurl_dir: val.folderurl,
-                                            });
+                                            const fimgUrl = val.is_s3bucket ? val.name + cacheBuster : "uploads/fileupload/" + val.name + cacheBuster;
+                        
+                                            if (val.is_s3bucket == 1 ) {
+                                                fileUrls.push({
+                                                    'parent_id': val.parent_id,
+                                                    'full_url': fimgUrl,
+                                                    'file_name': fOriginalName_,
+                                                    'folderurl_dir': val.folderurl,
+                                                });
+                                            }
+                                            // remove this condition
+                                            // if (val.is_s3bucket == 1) {
+                                            //     fileUrls.push({
+                                            //         'parent_id': val.parent_id,
+                                            //         'full_url': fimgUrl,
+                                            //         'file_name': fOriginalName_,
+                                            //         'folderurl_dir': val.folderurl,
+                                            //     });
+                                            // }else{
+                                            //     if(fileUrlExists(fimgUrl)){
+                                            //         fileUrls.push({
+                                            //             'parent_id': val.parent_id,
+                                            //             'full_url': fimgUrl,
+                                            //             'file_name': fOriginalName_,
+                                            //             'folderurl_dir': val.folderurl,
+                                            //         });
+                                            //     }
+                                            // }
                                         } else if (val.ext === '') {
                                             folderArr.push({
-                                                folder_name: val.name,
-                                                folderurl_dir: val.folderurl,
+                                                'fmanager_id': val.fmanager_id,
+                                                'folder_name': val.name,
+                                                'folderurl_dir': val.folderurl,
                                             });
                                         }
                                     });
                         
-                                    var filePromises = fileUrls.map(function (url) {
-                                        return downloadWithRetry(url.full_url, 1).then(function (data) {
-                                            return { url, data };
+                                    if (fileUrls.length === 0 && folderArr.length > 0) {
+                                        folderArr.forEach(function (folder) {
+                                            zipdwnld.folder(folder.folderurl_dir);
                                         });
-                                    });
+                                        zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                                            saveAs(content, tmsfolder + ".zip");
+                                            $scope.showLoder = false;
+                                            $route.reload();
+                                        });
+                                    } else {
+                                        var filePromises = fileUrls.map(function (url) {
+                                            return $q(function (resolve, reject) {
+                                                JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
+                                                    if (err) {
+                                                        console.warn(`File not found or inaccessible: ${url.full_url}`, err);
+                                                        missingFiles.push(url.full_url); // Track missing files
+                                                        //notification(`File not found or inaccessible: ${url.full_url}`, 'warning');
+                                                        return resolve(null); // Resolve with null for missing files
+                                                    }
+                                                    resolve({
+                                                        url: url,
+                                                        data: data
+                                                    });
+                                                });
+                                            });
+                                        });
+
+                                        return $q.all(filePromises).then(function (files) {
+                                            folderArr.forEach(function (folder) {
+                                                zipdwnld.folder(folder.folderurl_dir);
+                                            });
                         
-                                    $q.all(filePromises).then(function (files) {
-                                        files.forEach(function (file) {
-                                            if (file.data) {
-                                                zipdwnld.file(file.url.folderurl_dir + file.url.file_name, file.data, { binary: true });
-                                            } else {
-                                                missingFiles.push(file.url.full_url);
+                                            files.forEach(function (file) {
+                                                if (file && file.data !== null) { // Only include valid files
+                                                    zipdwnld.file(file.url.folderurl_dir + file.url.file_name, file.data, { binary: true });
+                                                }
+                                            });
+                                            
+                                            return zipdwnld.generateAsync({ type: 'blob' });
+                                        }).then(function (content) {
+                                            saveAs(content, tmsfolder + ".zip");
+                                            $scope.showLoder = false;
+                                            if (missingFiles.length > 0) {
+                                                // Display notification for missing or inaccessible files
+                                                notification(`File(s) not found or inaccessible: ${missingFiles.join(', ')}`, 'warning');
                                             }
+                                            $route.reload();
+                                        }).catch(function (error) {
+                                            console.error('Error while creating ZIP:', error);
+                                            $scope.showLoder = false;
                                         });
-                        
-                                        return zipdwnld.generateAsync({ type: 'blob' });
-                                    }).then(function (content) {
-                                        saveAs(content, tmsfolder + ".zip");
-                                        $scope.showLoder = false;
-                        
-                                        if (missingFiles.length > 0) {
-                                            notification(`Some files could not be downloaded: ${missingFiles.join(', ')}`, 'warning');
-                                        }
-                                    }).catch(function (error) {
-                                        console.error('Error while creating ZIP:', error);
-                                        $scope.showLoder = false;
-                                    });
+                                    }
                                 }).catch(function (error) {
-                                    console.error('Error fetching folder data:', error);
+                                    console.error('Error:', error);
                                     $scope.showLoder = false;
                                 });
                             }
