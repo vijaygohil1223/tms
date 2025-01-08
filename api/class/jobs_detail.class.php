@@ -211,7 +211,6 @@ class jobs_detail
         $this->_db->where('tsv.order_id', $id);
         //$this->_db->groupBy('tsv.job_summmeryId');
         $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId, ti.itemId as scoopID ');
-        
         foreach ($data as &$row) {
             $jobid = $row['job_summmeryId'];
             $discussion = $this->_db->rawQueryNew("select id as discussion_id, job_id as discussion_job_id, read_id as discussionReadId from tms_discussion where externalChat =1 and job_id=$jobid ORDER BY id DESC limit 1  ");

@@ -6047,6 +6047,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     function fileDownloadByDynamicUrl(dynamicUrl, fileName){
+        var cacheVersion = `?version=${new Date().getTime()}`;
+        dynamicUrl = dynamicUrl + cacheVersion;
         fetch(dynamicUrl)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
@@ -6654,7 +6656,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     }
                         
                                                     var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
-                        
+                                                    const cacheBuster = `?version=${new Date().getTime()}`;
+                                                    var fimgUrl = val.is_s3bucket ? val.name + cacheBuster : "uploads/fileupload/" + val.name + cacheBuster;
+                                                    
                                                     if (val.is_s3bucket === 1 || fileUrlExists(fimgUrl)) {
                                                         fileUrls.push({
                                                             'parent_id': val.parent_id,
@@ -6692,7 +6696,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                         JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
                                                             if (err) {
                                                                 console.warn('Error fetching file:', url.full_url, err);
-                                                                missingFiles.push(url.full_url); // Track missing files
+                                                                missingFiles.push(url.file_name); // Track missing files
                                                                 return resolve(null); // Skip the missing file but continue
                                                             }
                                                             resolve({
@@ -8009,6 +8013,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     function fileDownloadByDynamicUrl(dynamicUrl, fileName){
         console.log('dynamicUrl', dynamicUrl)
+        var cacheVersion = `?version=${new Date().getTime()}`;
+        dynamicUrl = dynamicUrl + cacheVersion;
         fetch(dynamicUrl)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
@@ -8582,7 +8588,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         
                                             //var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
                                             const cacheBuster = `?cache_buster=${new Date().getTime()}`;
-                                            const fimgUrl = val.is_s3bucket ? val.name + cacheBuster : "uploads/fileupload/" + val.name + cacheBuster;
+                                            var fimgUrl = val.is_s3bucket ? val.name + cacheBuster : "uploads/fileupload/" + val.name + cacheBuster;
                         
                                             if (val.is_s3bucket == 1 ) {
                                                 fileUrls.push({
@@ -8634,7 +8640,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
                                                     if (err) {
                                                         console.warn(`File not found or inaccessible: ${url.full_url}`, err);
-                                                        missingFiles.push(url.full_url); // Track missing files
+                                                        missingFiles.push(url.file_name); // Track missing files
                                                         //notification(`File not found or inaccessible: ${url.full_url}`, 'warning');
                                                         return resolve(null); // Resolve with null for missing files
                                                     }
@@ -8749,6 +8755,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // context-menu for files
                     $scope.menuOptionsFiles = [
                         ['Download', function ($itemScope) {
+                            // To resove cors issue, download the file using a dynamic URL
+                            var cacheVersion = `?version=${new Date().getTime()}`;
+                                
                             if ($scope.menuRclkID) {
                                 console.log('$scope.menuRclkID', $scope.menuRclkID)
                                 var fileID = $scope.menuRclkID;
@@ -8756,6 +8765,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //var fOriginalName = $scope.menuRclkName;
                                 //var fOriginalName = $('#'+$scope.menuRclkID+'p').text().trim();
                                 var fOriginalName = $('#' + $scope.menuRclkID + ' p').text().trim();
+                                console.log('fOriginalName', fOriginalName)
                             
                             } else {
                                 var fileID = $itemScope.display.fmanager_id;
@@ -8763,7 +8773,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //var fOriginalName = fileName;
                                 var fOriginalName = $itemScope.display.original_filename;
                             }
-                            downloadFileByAtag(fileName, fOriginalName)
+
+                            downloadFileByAtag(fileName+cacheVersion, fOriginalName)
                             // const isAwsUrl = fileName.startsWith('https://');
                             // const isAwsUrl2 = isAwsUrl ? 1 : 0;
                             // $scope.downloadNewFn(fileName, fOriginalName, isAwsUrl2)

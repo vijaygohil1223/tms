@@ -116,7 +116,7 @@ class Freelance_invoice
     //invoice and draft save
     public function saveInvoice($data)
     {
-        $checkDueDate = self::calculateDueDate(date("Y-m-d"), 58 );
+        $checkDueDate = self::calculateDueDate(date("Y-m-d"), 59 );
         $alreadyInvoiceDueDate = $checkDueDate->format('Y-m-d');
        
         $this->_db->where('is_deleted', 0);
