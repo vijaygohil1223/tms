@@ -677,8 +677,26 @@ class jobs_detail
                 // Update scoop status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed') {
 
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6) ";
-                    $this->_db->rawQuery($qry_up);
+
+                    //Check if the job is a proofreading job with status 'Completed' or 'Complete'
+                    $this->_db->where('order_id', $jobsData['order_id']);
+                    $this->_db->where('item_id', $jobsData['item_id']);
+                    $this->_db->where('job_id', 10);
+                    //$this->_db->where('item_status', ['Completed', 'Complete'], 'IN');
+                    $isProofReadingJob = $this->_db->getOne('tms_summmery_view');
+                    $isScoopStatusUpdate = $isProofReadingJob && $isProofReadingJob['item_status'] != 'Completed' ? false : true ;
+
+                    if($isScoopStatusUpdate ){
+                        //$qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6) ";
+                        $qry_up = "
+                                UPDATE `tms_items`
+                                SET `item_status` = '10'
+                                WHERE `order_id` = '" . $jobsData['order_id'] . "'
+                                AND `item_number` = '" . $jobsData['item_id'] . "'
+                                AND `item_status` NOT IN (3, 4, 5, 6, 7)
+                            ";    
+                        $this->_db->rawQuery($qry_up);
+                    }
 
                     // check for purchase order
                     $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != " . $id . " AND tsv.order_id = " . $jobsData['order_id'] . " AND tsv.item_id = " . $jobsData['item_id'] . " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0 AND tsv.isPoSent != 1  ORDER BY tsv.job_summmeryId ASC";
@@ -1417,6 +1435,21 @@ class jobs_detail
             $update = $this->_db->update('tms_summmery_view', $data);
         
             if ($update) {
+                
+                if (isset($data['item_status']) && $data['item_status'] == 'Completed' ) {
+                    $this->_db->where('order_id', $data['order_id'] );
+                    $this->_db->where('item_id', $data['item_id'] );
+                    $this->_db->where('job_id', 10);
+                    //$this->_db->where('item_status', ['Completed', 'Complete'], 'IN');
+                    $isProofReadingJob = $this->_db->getOne('tms_summmery_view');
+                    $isScoopStatusUpdate = $isProofReadingJob && $isProofReadingJob['item_status'] != 'Completed' ? false : true ;
+
+                    if($isScoopStatusUpdate ){
+                        $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $data['order_id'] . "' AND item_number = '" . $data['item_id'] . "' AND item_status NOT IN (3,4,5,6,7) ";
+                        $this->_db->rawQuery($qry_up);
+                    }
+                }
+                
                 $return['status'] = 200;
                 $return['msg'] = 'Successfully Updated.';
             } else {
@@ -1427,9 +1460,7 @@ class jobs_detail
             // Always return this key for consistency
             $return['is_invoice_exist'] = 0;
         }
-
         
-
         return $return;
     }
 
@@ -1736,8 +1767,19 @@ class jobs_detail
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6) ";
-                    $this->_db->rawQuery($qry_up);
+
+                    //Check if the job is a proofreading job with status 'Completed' or 'Complete'
+                    $this->_db->where('order_id', $jobsData['order_id']);
+                    $this->_db->where('item_id', $jobsData['item_id']);
+                    $this->_db->where('job_id', 10);
+                    //$this->_db->where('item_status', ['Completed', 'Complete'], 'IN');
+                    $isProofReadingJob = $this->_db->getOne('tms_summmery_view');
+                    $isScoopStatusUpdate = $isProofReadingJob && $isProofReadingJob['item_status'] != 'Completed' ? false : true ;
+
+                    if($isScoopStatusUpdate ){
+                        $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6,7) ";
+                        $this->_db->rawQuery($qry_up);
+                        }
                 }
 
             } else {
