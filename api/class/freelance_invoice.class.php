@@ -433,9 +433,9 @@ class Freelance_invoice
                 $invoiceStatus = " invoice_status LIKE 'Open' AND is_approved LIKE 1 ";
             }
             $invoiceStatusCond = $invoiceStatus !='' ? ' OR '. $invoiceStatus : '';
-            
             $whereCond .= " AND ( 
                         tmInvoice.invoice_number LIKE '%" . $searchValue . "%'
+                        OR tmInvoice.custom_invoice_no LIKE '%" . $searchValue . "%'
                         OR tu.freelance_currency LIKE '%" . $searchValue . "%'
                         OR tmInvoice.Invoice_cost LIKE '%" . $priceVal . "%'
                         OR tmInvoice.paid_amount LIKE '%" . $priceVal . "%'
@@ -486,6 +486,7 @@ class Freelance_invoice
             tmInvoice.Invoice_cost2 as priceInNok, 
             tpy.vBankInfo as linguist_bankinfo, 
             (tmInvoice.Invoice_cost/tmInvoice.currency_rate) AS Invoice_costEUR ,
+            (tmInvoice.paid_amount/tmInvoice.currency_rate) AS paid_amountEUR ,
             CASE
                 WHEN tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved = 1 THEN 'Outstanding'
                 WHEN tmInvoice.invoice_status = 'Open' AND tmInvoice.is_approved = 0 THEN 'Waiting on approval'
@@ -527,8 +528,32 @@ class Freelance_invoice
 
         if ($post && isset($post['activeTab']) && $post['activeTab'] == 'Approved' ) {
             // $grpQry = " SELECT tmInvoice.invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur $jonTable $whereCond  GROUP BY $gropbyField, DATE(tmInvoice.inv_due_date) " ;
-            $select_1 = "SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, Invoice_cost , currency_rate ";
-            $grpQry = "SELECT  invoice_id, order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur  FROM ($select_1 $jonTable $whereCond GROUP BY $gropbyField ) AS subquery GROUP BY order_day " ;
+            // $select_1 = "SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, Invoice_cost , currency_rate ";
+            // $grpQry = "SELECT  invoice_id, order_day, SUM(Invoice_cost) AS total_invoice_cost, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_invoice_cost_eur  FROM ($select_1 $jonTable $whereCond GROUP BY $gropbyField ) AS subquery GROUP BY order_day " ;
+            $select_1 = " SELECT invoice_id, DATE(tmInvoice.inv_due_date) AS order_day, Invoice_cost, currency_rate, paid_amount, invoice_status ";
+            $grpQry = "
+                SELECT 
+                    invoice_id, 
+                    order_day, 
+                    
+                    SUM(Invoice_cost) - SUM(CASE 
+                        WHEN invoice_status = 'Partly Paid' THEN paid_amount 
+                        ELSE 0 
+                    END) AS total_invoice_cost,
+                    SUM(
+                        Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1) 
+                        - CASE 
+                            WHEN invoice_status = 'Partly Paid' THEN paid_amount / COALESCE(NULLIF(currency_rate, 0), 1) 
+                            ELSE 0 
+                        END
+                    ) AS total_invoice_cost_eur
+
+                FROM 
+                    ($select_1 $jonTable $whereCond GROUP BY $gropbyField) AS subquery 
+                GROUP BY 
+                    order_day
+            ";
+
             
             $groupByDate = $this->_db->rawQueryNew($grpQry);
             $totalCostsByDate = [];
@@ -571,6 +596,10 @@ class Freelance_invoice
             }
 
             $data[$key]['linguist_account_holder'] = '';
+            if(isset($value['invoice_status']) && $value['invoice_status'] == 'Partly Paid'){
+                $data[$key]['Invoice_cost'] = $value['Invoice_cost'] -$value['paid_amount'] ;
+                $data[$key]['Invoice_costEUR'] = $value['Invoice_costEUR'] - $value['paid_amountEUR'] ;
+            }
             $data[$key]['linguist_iban'] = '';
             $data[$key]['linguist_bic_swift'] = '';
             if (!empty($value['linguist_bankinfo'])) {
@@ -587,8 +616,26 @@ class Freelance_invoice
         $recordsTotal = $countQry[0]['total'];
 
         //$constQry = "select SUM(tmInvoice.Invoice_cost) as priceTotal, SUM(Invoice_cost / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro $jonTable $whereCond GROUP BY $gropbyField ";
-        $selectSumField = " SELECT Invoice_cost as priceTotal, currency_rate  ";
-        $constQry = " SELECT SUM(priceTotal) as priceTotal, SUM(priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro  FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery " ;
+
+        $selectSumField = " SELECT Invoice_cost as priceTotal, currency_rate, paid_amount, invoice_status  ";
+        //$constQry = " SELECT SUM(priceTotal) as priceTotal, SUM(priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)) AS total_price_euro  FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery " ;
+        $constQry = "
+                SELECT 
+                    SUM(priceTotal) - SUM(CASE 
+                        WHEN invoice_status = 'Partly Paid' THEN paid_amount 
+                        ELSE 0 
+                    END) AS priceTotal,
+                    
+                    SUM(
+                        priceTotal / COALESCE(NULLIF(currency_rate, 0), 1)
+                        - CASE 
+                            WHEN invoice_status = 'Partly Paid' THEN paid_amount / COALESCE(NULLIF(currency_rate, 0), 1)
+                            ELSE 0 
+                        END
+                    ) AS total_price_euro
+                    
+                FROM ($selectSumField $jonTable $whereCond GROUP BY $gropbyField ) AS subquery
+            ";
         $priceRecord = $this->_db->rawQueryNew($constQry);
         $priceTotal = $priceRecord[0]['priceTotal'];
         $priceTotalEur = $priceRecord[0]['total_price_euro'];
