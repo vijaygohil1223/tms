@@ -471,6 +471,200 @@ class jobstatussearch {
 
 		}
 
+		public function jobReportMargin($post){ 
+
+    		$searchValue = $post['search'] ?? ''; // Search value
+			$orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
+			$orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
+			$start = $post['start'] ?? 0; // Starting point for pagination
+			$length = $post['length'] ?? 20; // Number of records to fetch
+			$filterParams = $post['filterParams'] ?? '';
+
+			$columns = [
+				// 0 => 'job_summmeryId',
+				// 1 => 'job_summmeryId',
+				2 => 'orderNum',
+				3 => 'jobStatus',
+				4 => 'contactPersonName',
+				5 => 'resourceName',
+				6 => 'customerName',
+				7 => 'client_account_name',
+				8 => 'ItemLanguage',
+				9 => 'jobPrice',
+				10 => 'job_due_date',
+			];
+
+			// Determine the column to sort by based on DataTables order index
+			$orderColumn = $columns[$orderColumnIndex] ?? 'ti.itemId';
+
+			// Ensure the order direction is valid
+			$orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'DESC';
+
+			// Base query
+			$where_cond = '';
+			function convertDateFormat($date)
+			{
+				$dateParts = explode('.', $date);
+				if (count($dateParts) === 3) {
+					return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+				}
+				return $date; // Return the original date if format is incorrect
+			}
+
+			// Assuming $searchValue can contain a date in dd.mm.yyyy format
+			$searchValueConverted = convertDateFormat($searchValue);
+
+			// Assuming $searchValue can contain a date in dd.mm.yyyy format
+			$searchValueConverted = convertDateFormat($searchValue);
+
+			// Apply search functionality
+			if (!empty($searchValue)) {
+				$where_cond .= " AND (concat(tg.order_no,'_',tmv.job_code,tmv.job_no) LIKE '%" . $searchValue . "%' 
+							OR tmv.item_status LIKE '%" . $searchValue . "%'
+							OR CONCAT(tmu.vFirstName, ' ', tmu.vLastName) LIKE '%" . $searchValue . "%'
+							OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $searchValue . "%'
+							OR tc.vUserName LIKE '%" . $searchValue . "%'
+							OR tcia.vUserName LIKE '%" . $searchValue . "%'
+							OR tmv.ItemLanguage LIKE '%" . $searchValue . "%'
+							OR tmv.total_price LIKE '%" . $searchValue . "%'
+							OR tmv.due_date LIKE '%" . $searchValueConverted . "%'
+							)";
+							
+			}
+
+			// if (isset($filterParams['contactPerson'])) {
+			// 	$where_cond .= " AND tmu.iUserId = '" . $filterParams['contactPerson'] . "'";
+			// }
+			$joinTables = " LEFT JOIN 
+				tms_summmery_view tmv ON ti.order_id = tmv.order_id AND ti.item_number = tmv.item_id
+			INNER JOIN 
+				tms_customer tcu ON ti.order_id = tcu.order_id
+			INNER JOIN 
+				tms_client tc ON tcu.client = tc.iClientId
+			INNER JOIN 
+				tms_client_indirect tcia ON tcia.iClientId = tcu.indirect_customer
+			INNER JOIN 
+				tms_general tg ON ti.order_id = tg.order_id
+			INNER JOIN 
+				tms_users tu ON tmv.resource = tu.iUserId
+			INNER JOIN 
+				tms_users tmu ON tmv.contact_person = tmu.iUserId ";
+			$querydata = "SELECT
+				ti.itemId,
+				tmv.job_summmeryId, 
+				tmv.ItemLanguage, 
+				tmv.job_no AS jobNo,
+				tmv.job_code AS jobCode,
+				tmu.iUserId AS contactPerson,
+				CONCAT(tmu.vFirstName, ' ', tmu.vLastName) AS contactPersonName, 
+				tmv.resource AS resource, 
+				CONCAT(tu.vFirstName, ' ', tu.vLastName) AS resourceName,
+				tc.vUserName AS customerName,
+				tmv.company_code AS companyCode,
+				tcu.client AS customer,
+				tu.vResourceType AS serviceGroup,
+				tg.project_type AS projectType,
+				tmv.item_status AS jobStatus,
+				tmv.due_date AS job_due_date,
+				ti.item_status AS itemStatus,
+				tu.iFkUserTypeId AS orderTypes,
+				tg.order_no AS orderNum,
+				tmv.job_summmeryId AS jobId,
+				tu.iFkUserTypeId AS ifkuserId,
+				tmv.po_number AS poNumber,
+				tmv.total_price AS jobPrice,
+				tcia.vUserName AS client_account_name,
+				ti.total_amount AS totalAmount,
+				SUM(tmv.total_price) AS total_paid_to_linguist,
+				(ti.total_amount - SUM(tmv.total_price)) AS profit,
+				ROUND(((ti.total_amount - SUM(tmv.total_price)) / ti.total_amount) * 100, 2) AS profit_margin_percent
+
+			FROM 
+				tms_items ti
+			$joinTables
+			WHERE 
+				1=1 " . $where_cond . " 
+			GROUP BY
+			ti.itemId,
+			tmu.iUserId,
+			tmu.vFirstName,
+			tmu.vLastName,
+			tc.vUserName,
+			tmv.company_code,
+			tcu.client,
+			tu.vResourceType,
+			tg.project_type,
+			ti.item_status,
+			tu.iFkUserTypeId,
+			tg.order_no,
+			tmv.po_number,
+			ti.total_amount,
+			tcia.vUserName  
+			HAVING
+		    SUM(tmv.total_price) > 0.5 * ti.total_amount
+			ORDER BY " . $orderColumn . " " . $orderDir . " 
+			LIMIT $start, $length";
+
+			// echo $querydata;
+			// exit;
+			$results = $this->_db->rawQueryNew($querydata);
+
+			$totalRecordsQuery = "SELECT COUNT(DISTINCT job_summmeryId) AS count, SUM(total_price) AS totalPrice, SUM(total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
+			FROM (
+			SELECT  
+				tmv.job_summmeryId, 
+				tmv.total_price, 
+				user_base_currency_rate 
+			FROM tms_items ti 
+			$joinTables WHERE 1=1 $where_cond ) as subquery ";
+			$totalRecordsResult = $this->_db->rawQueryNew($totalRecordsQuery);
+
+			$is_multiple_currency = false;
+	        $temp_currency_arr = [];
+			$currencyQry = "SELECT tu.freelance_currency 
+			FROM 
+				tms_items ti
+			$joinTables
+			WHERE 1=1 " . $where_cond . " GROUP BY tu.freelance_currency ";
+			$currencyQryRes = $this->_db->rawQueryNew($currencyQry);
+			if ($currencyQryRes) {
+				foreach ($currencyQryRes as $row) {
+					$currencyVal = !empty($row['freelance_currency']) 
+								? explode(',', $row['freelance_currency'])[0] 
+								: 'EUR';
+					$temp_currency_arr[$currencyVal] = true; // Use an associative array for unique values
+				}
+			}
+			$is_multiple_currency = count($temp_currency_arr) > 1;
+
+			$totalRecords = $totalRecordsResult[0]['count'] ?? 0;
+			$totalPrice = $totalRecordsResult[0]['totalPrice'] ?? 0;
+			$totalPriceEuro = $totalRecordsResult[0]['total_price_euro'] ?? 0;
+
+			// $response = [
+			// 	"draw" => intval($post['draw']),
+			// 	"recordsTotal" => 0,
+			// 	"recordsFiltered" => 0,
+			// 	"data" => [],
+			// 	"totalPrice" => 0,
+			// 	"totalPriceEuro" => 0,
+			// 	"is_multiple_currency" => false
+			// ];
+			
+			// If filterParams is set, modify the response with actual data
+			//if (isset($post['filterParams']) && !empty($post['filterParams'])) {
+				$response["recordsTotal"] = $totalRecords;
+				$response["recordsFiltered"] = $totalRecords;
+				$response["data"] = $results;
+				$response["totalPrice"] = $totalPrice;
+				$response["totalPriceEuro"] = $totalPriceEuro;
+				$response["is_multiple_currency"] = $is_multiple_currency;
+			//}
+
+			return $response;
+
+		}
+
 
 
 }

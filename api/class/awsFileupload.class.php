@@ -181,7 +181,7 @@ class awsFileupload
 
         try {
             //$filePath = "/var/www/html/tms/uploads/fileupload/". $filename;
-            $filePath = "/home/dosinxdu/tms.dosina.no/uploads/fileupload/". $filename;
+            //$filePath = "/home/dosinxdu/tms.dosina.no/uploads/fileupload/". $filename;
             //$filePath = "/home/beconmxb/tms.beconnected.no/uploads/fileupload/". $filename;
             
             // Upload the file to S3

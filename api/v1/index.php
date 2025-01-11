@@ -3156,6 +3156,12 @@ $app->post('/jobReportCustomFilter', function () use($app) {
     $result = $statusJob->jobReportCustomFilter($data);
     echoResponse(200, $result);
 });
+$app->post('/jobReportMargin', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusJob->jobReportMargin($data);
+    echoResponse(200, $result);
+});
 //---------------freelance job manage------------------//
 $app->get('/freelanceJob/:id','authenticate', function ($id) use($app) {
     $freelanceJob = new freelanceJob ();

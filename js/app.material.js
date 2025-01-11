@@ -491,6 +491,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'jobstatusReportController',
             activetab: 'Jobs-status-report',
             role: '1'
+        }).when('/job-margin-report', {
+                templateUrl: modulesPath + 'job_margin_report.html',
+                controller: 'jobMarginReportController',
+                activetab: 'Jobs-margin-report',
+                role: '1'    
         }).when('/overview-report', {
             templateUrl: modulesPath + 'overview_report.html',
             controller: 'overviewReportController',
