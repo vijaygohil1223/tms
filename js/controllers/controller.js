@@ -2412,7 +2412,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             itm.projectScoopCount = response.assign || 0;
                             break;
                         case 'tab-ongoing':
-                            itm.projectScoopCount = response.ongoing || 0;
+                            //itm.projectScoopCount = response.ongoing || 0;
+                            const tOng = response.tabStatus?.find(val => val.item_status == 2);
+                            itm.projectScoopCount = tOng?.totalItems || 0;
                             break;
                         case 'tab-qa-ready': {
                             const tQa = response.tabStatus?.find(val => val.item_status == 10);

@@ -97,9 +97,9 @@ class dashboard {
         $dataAssign = $this->_db->rawQuery($qry);
         $data['assign'] = $dataAssign[0]['totalItems'] ?? 0;
 
-        $qry = "SELECT COUNT(DISTINCT its.itemId) AS totalItems FROM tms_items AS its WHERE its.order_id != 0 AND its.item_status NOT IN (1, 4, 5, 6, 7, 8, 9, 14)";
-        $dataOn = $this->_db->rawQuery($qry);
-        $data['ongoing'] = $dataOn[0]['totalItems'] ?? 0;;
+        // $qry = "SELECT COUNT(DISTINCT its.itemId) AS totalItems FROM tms_items AS its WHERE its.order_id != 0 AND its.item_status NOT IN (1, 4, 5, 6, 7, 8, 9, 14)";
+        // $dataOn = $this->_db->rawQuery($qry);
+        // $data['ongoing'] = $dataOn[0]['totalItems'] ?? 0;;
         
         $qry = "SELECT COUNT(*) AS totalItems FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa WHERE its.order_id != 0 AND( cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id || its.manager = $id || its.coordinator = $id || its.qaSpecialist = $id || its.subPm = $id || its.subPc = $id || its.subQa = $id ) AND its.item_status NOT IN(4, 5, 6, 7, 8, 9) GROUP BY its.itemId ) AS subquery";
         $dataMyProj = $this->_db->rawQuery($qry);
@@ -227,7 +227,9 @@ class dashboard {
                     break;
         
                 case 'tab-ongoing':
-                    $whereCond = " AND its.item_status NOT IN (1, 4, 5, 6, 7, 8, 9, 14) ";
+                    //$whereCond = " AND its.item_status NOT IN (1, 4, 5, 6, 7, 8, 9, 14) ";
+                    // display ongoing status only
+                    $whereCond = " AND its.item_status = 2 ";
                     break;
         
                 case 'tab-due-today':
