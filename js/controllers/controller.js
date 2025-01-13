@@ -19270,7 +19270,580 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
         return total;
     };
+
+}).controller('jobMarginReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder,  $timeout, DTColumnBuilder, $http, $filter, $compile) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.clientnamec = "";
+
+    //current year get
+    $scope.date = new Date();
+    var year = $scope.date.getFullYear();
+    $scope.Currentyear = year.toString().substr(2, 2);
+
+    //Job report search start
+
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
+    $scope.jobstatusReportsearch = function (frmId, eID) {
+
+        if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
+            notification('Please Select option', 'information');
+        } else if (jQuery.isEmptyObject($scope.jobReport) == true) {
+            notification('Please Select option', 'information');
+            $route.reload();
+        } else {
+            //$window.localStorage.jobReport = JSON.stringify($scope.jobReport);
+            $rootScope.jobReport = $scope.jobReport
+            if ($scope.jobReport.startCreateDate) {
+                $scope.jobReport.createDateFrom = originalDateFormatNew($scope.jobReport.startCreateDate);
+            }
+            if ($scope.jobReport.endCreateDate) {
+                $scope.jobReport.createDateTo = originalDateFormatNew($scope.jobReport.endCreateDate);
+            }
+            if ($scope.jobReport.itemDuedate) {
+                $scope.jobReport.itemDuedateStart = originalDateFormatNew($scope.jobReport.itemDuedate);
+            }
+            if ($scope.jobReport.endItemDuedate) {
+                $scope.jobReport.itemDuedateEnd = originalDateFormatNew($scope.jobReport.endItemDuedate);
+            }
+
+            // $scope.filterInvoiceFn();
+            if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                $scope.dtInstance.reloadData();
+            } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                $scope.dtInstance.DataTable.ajax.reload();
+            } else {
+                console.error('DataTable instance not correctly initialized.');
+            }
+            var scrollID = (eID) ? eID : 'middle';
+            scrollToId(scrollID);
+        }
+    }
+
+    // job popup
+    $scope.jobNoDetails = function (id) {
+        //scrollBodyToTop();
+        //$location.path('job-summery-details/' + id);
+        $routeParams.id = id;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobEditPopup.html',
+            controller: 'jobSummeryDetailsController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+
+    //serch data action
+    $scope.statucOrderAction = function (action) {
+        switch (action) {
+            case "Change status to":
+                $scope.jobStatus = true;
+                break;
+            case "Remove selection":
+                $scope.jobStatus = false;
+                break;
+            case "Export to excel":
+                $scope.jobStatus = false;
+                break;
+            case "Select all":
+                $scope.jobStatus = false;
+                break;
+        }
+    }
+    $scope.totalPrice =  0;
+    $scope.totalPriceEuro = 0;
+    $scope.is_multiple_currency = false;
+
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn(null).withTitle('Sr.no').renderWith(function(data, type, full, meta) {
+            var start = meta.settings._iDisplayStart; // Index of the first record on the current page
+            return start + meta.row + 1;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Job Details').renderWith(function(data, type, full, meta) {
+            var jobDetailsLink = '<a href="javascript:void(0)" ' +
+                                 'ng-click="jobNoDetails(' + full.job_summmeryId + ')" ' +
+                                 'class="summeryColor">' +
+                                 full.orderNum + '_' + full.jobCode + full.jobNo.toString().padStart(3, '0') + '</a>';
+            
+            return jobDetailsLink; 
+        }),
+        DTColumnBuilder.newColumn('jobStatus').withTitle('Job Status'),
+        // DTColumnBuilder.newColumn(null).withTitle('Contact Person').renderWith(function(data, type, full, meta) {
+        //     return '<a href="#/viewinternal/' + full.contactPerson + '" class="summeryColor">' +
+        //            full.contactPersonName + '</a>';
+        // }),
+        DTColumnBuilder.newColumn(null).withTitle('Resource').renderWith(function(data, type, full, meta) {
+            return full.resourceName;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Customer').renderWith(function(data, type, full, meta) {
+            if (full.customerName) {
+                return '<a href="#/viewdirect/' + full.customer + '" class="summeryColor">' +
+                       full.customerName + '</a>';
+            } else {
+                return '--';
+            }
+        }),
+        DTColumnBuilder.newColumn('client_account_name').withTitle('Account'),
+        DTColumnBuilder.newColumn('ItemLanguage').withTitle('Item Language'),
+        DTColumnBuilder.newColumn('jobPrice').withTitle('Job Price').renderWith(function(data, type, full, meta) {
+            const freelanceCurrency = full.freelance_currency ? full.freelance_currency.split(',')[0] : 'EUR'
+            return ` <span class="nowrap"> ${$filter('customNumber')(data)} &nbsp; ${freelanceCurrency} </span> ` ; 
+        }),
+        DTColumnBuilder.newColumn('job_price_euro').withTitle('Job Price(EUR)').renderWith(function(data, type, full, meta) {
+            return $filter('customNumber')(data) ;
+        }),
+        DTColumnBuilder.newColumn('job_due_date').withTitle('Due Date').renderWith(function(data, type, full, meta) {
+            return '<span style="display: none;">' + full.job_due_date + '</span>' +
+            $filter('dateFormatDisplayFront')(moment(full.job_due_date).format('YYYY-MM-DD HH:mm:ss')); // Adjust date format as needed
+        })
+    ];
+    $scope.filterInvoiceFn = function(){
+        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                filterParams: $scope.jobReport
+            };
+
+            // API call to fetch data
+            //$http.post('api/statusJobReportFilterCustomPage.php', params)
+            $http.post('api/v1/jobReportMargin', params)
+                .then(function(response) {
+                    console.log('response', response)
+                    var res = response.data;
+                    console.log('Server Response:', res);
+                    
+                    $scope.totalPrice =  res?.totalPrice,
+                    $scope.totalPriceEuro = res?.totalPriceEuro
+                    $scope.is_multiple_currency = res?.is_multiple_currency
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                    $scope.statusResult = res.data
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('createdRow', function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        } )
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[0, 'asc']])
+        .withOption('ordering', false)
+        .withOption('drawCallback', function(settings) {
+            const api = this.api();
+            const rows = api.rows({ page: 'current' }).nodes(); 
+            const rowDataArray = api.rows({ page: 'current' }).data().toArray(); 
+            let lastClient = null;
+            let groupRecords = [];
+            let groupTotalPrice = 0; 
+            const tableBody = $(rows).parent(); 
+        
+            // Caching filters for performance
+            const formatNumber = $filter('customNumber');
+            const formatDate = $filter('globalDtFormat');
+        
+            tableBody.find('tr.groupdate').remove();
+        
+            // Helper function to add a group header row with dynamic "Linguist Paid"
+            const addGroupHeaderRow = (rowData, groupTotalPrice) => {
+                const scoopNumber = rowData.orderNum + '-' + String(rowData.item_number).padStart(3, '0');
+                const scoopPrice = formatNumber(rowData.totalAmount.toFixed(2));
+                const scoopPriceEur = formatNumber(rowData.totalAmountEuro.toFixed(2));
+                const linguistPaid = formatNumber(groupTotalPrice.toFixed(2)); // Updated total
+                const scoopProfitMargin = rowData.profit_margin_percent_euro ? rowData.profit_margin_percent_euro : -100
+                const clientCurrency = rowData.client_currency ? rowData.client_currency.split(',')[0] : 'EUR'
+                
+                return angular.element(
+                    `<tr class="groupdate">
+                        <td colspan="10" style="font-weight:bold">
+                            <span> Scoop: ${scoopNumber} </span> 
+                            <span style="margin:0 25px"> Scoop Price: ${scoopPrice} ${clientCurrency} &nbsp; (${scoopPriceEur} EUR)</span>
+                            <span style="margin:0 25px"> Linguist Paid: ${linguistPaid} &nbsp; (in EUR)</span>
+                            <span style="margin:0 25px"> Profit Margin: ${scoopProfitMargin} %</span>
+                        </td>
+                    </tr>`
+                );
+            };
+        
+            // Loop through the data and process grouping
+            rowDataArray.forEach((rowData, index) => {
+                if (lastClient !== rowData.itemId) {
+                    if (lastClient !== null && groupRecords.length > 0) {
+                        // Update previous group header with total
+                        const updatedHeaderRow = addGroupHeaderRow(groupRecords[0].rowData, groupTotalPrice);
+                        $compile(updatedHeaderRow)($scope);
+                        $(rows).eq(groupRecords[0].index).prev('.groupdate').replaceWith(updatedHeaderRow);
+                    }
+        
+                    // Reset for the new group
+                    groupRecords = [];
+                    groupTotalPrice = 0;
+                    lastClient = rowData.itemId;
+        
+                    // Add new group header with initial total
+                    const headerRow = addGroupHeaderRow(rowData, groupTotalPrice);
+                    $compile(headerRow)($scope);
+                    $(rows).eq(index).before(headerRow);
+                }
+        
+                groupRecords.push({ rowData, index });
+        
+                // **Accumulate the total for the group**
+                groupTotalPrice += parseFloat(rowData.job_price_euro) || 0;
+            });
+        
+            // Update final group's header row
+            if (groupRecords.length > 0) {
+                const updatedHeaderRow = addGroupHeaderRow(groupRecords[0].rowData, groupTotalPrice);
+                $compile(updatedHeaderRow)($scope);
+                $(rows).eq(groupRecords[0].index).prev('.groupdate').replaceWith(updatedHeaderRow);
+            }
+        });
+        
+
+        
+    } 
+    $scope.filterInvoiceFn();
+
     
+    $scope.reseteSearch = function (frmId) {
+        $scope.statusResult = [];
+        location.reload();
+    }
+
+    // call fn when back to page
+    if($rootScope.jobReport){
+        $scope.jobstatusReportsearch('job-status-report','middle')
+    }
+    
+
+    //mail contactpreson and resources
+    $scope.jobsumResource = function (resourceName, jobSummeryId, jobNumber) {
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
+        $window.localStorage.ResourceMsg = resourceName;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobresourcemsg.html',
+            controller: 'jobResourceMsgController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+
+    
+
+    //remove job search 
+    $scope.clearCode = function (frmId, action) {
+        $rootScope.jobReport = '';
+        switch (action) {
+            case "companyCode":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.companyCode = '';
+                    angular.element('#companyCode1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "contactPerson":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.contactPerson = '';
+                    angular.element('#contactPerson1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "resource":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.resource = '';
+                    angular.element('#resource1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "customer":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.customer = '';
+                    angular.element('#customer1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "serviceGroup":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.serviceGroup = '';
+                    angular.element('#serviceGroup1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "projectType":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.projectType = '';
+                    angular.element('#projectType1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "jobStatus":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.jobStatus = '';
+                    angular.element('#jobStatus1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "itemStatus":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.itemStatus = '';
+                    angular.element('#itemStatus1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "userTypes":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.orderTypes = '';
+                    angular.element('#userTypes1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "itemDuedate":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.itemDuedate = '';
+                    angular.element('#itemDuedate').text;
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                        $scope.jobReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endItemDuedate":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.endItemDuedate = '';
+                    angular.element('#endItemDuedate').text;
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                        $scope.jobReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "startCreateDate":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.startCreateDate = '';
+                    angular.element('#startCreateDate').text;
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                        $scope.jobReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endCreateDate":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.endCreateDate = '';
+                    angular.element('#endCreateDate').text;
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                        $scope.jobReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "sourceLanguage":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.sourceLanguage = '';
+                    angular.element('#sourceLanguage1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "targetLanguage":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.targetLanguage = '';
+                    angular.element('#targetLanguage1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "currency":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.currency = '';
+                    angular.element('#currency').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "account":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.account = '';
+                    angular.element('#account1').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;    
+
+        }
+    }
+    // $scope.dtOptions = DTOptionsBuilder.newOptions().
+    //     withOption('responsive', true).
+    //     withOption('pageLength', 100).
+    //     withOption('columnDefs',  [
+    //         {
+    //             targets: 8,
+    //             render: function (data, type, row) {
+    //                 if (type === 'sort') {
+    //                     let tempSort = data.replace('.', '');
+    //                     return parseFloat(tempSort.replace(',', '.'));
+    //                 }
+    //                 return data;
+    //             }
+    //         }
+    //     ]);
+
+    $scope.calculateTotal = function() {
+        var total = 0;
+        angular.forEach($scope.statusResult, function(result) {
+            total += parseFloat(result.jobPrice);
+        });
+        return total;
+    };
+
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder, DTColumnBuilder, $http ) {
     $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

@@ -535,6 +535,15 @@ class jobstatussearch {
 			// if (isset($filterParams['contactPerson'])) {
 			// 	$where_cond .= " AND tmu.iUserId = '" . $filterParams['contactPerson'] . "'";
 			// }
+			//$havingCon = " HAVING SUM(tmv.total_price) > 0.1 * ti.total_amount ";
+			//$havingCon = " HAVING SUM(tmv.total_price / tmv.user_base_currency_rate) > 0.99 * (ti.total_amount / ti.base_currency_rate) ";
+			//$havingCon = " HAVING ROUND((((ti.total_amount / ti.base_currency_rate) - SUM(tmv.total_price / tmv.user_base_currency_rate)) / (ti.total_amount / ti.base_currency_rate)) * 100, 2) < 0 ";
+			//$havingCon = " HAVING ((ti.total_amount / ti.base_currency_rate) - SUM(tmv.total_price / tmv.user_base_currency_rate)) < 0 ";
+			$havingCon = " HAVING ((ti.total_amount / ti.base_currency_rate) - SUM(tmv.total_price / tmv.user_base_currency_rate)) < 0 ";
+
+
+
+
 			$joinTables = " LEFT JOIN 
 				tms_summmery_view tmv ON ti.order_id = tmv.order_id AND ti.item_number = tmv.item_id
 			INNER JOIN 
@@ -545,12 +554,13 @@ class jobstatussearch {
 				tms_client_indirect tcia ON tcia.iClientId = tcu.indirect_customer
 			INNER JOIN 
 				tms_general tg ON ti.order_id = tg.order_id
-			INNER JOIN 
+			LEFT JOIN 
 				tms_users tu ON tmv.resource = tu.iUserId
 			INNER JOIN 
 				tms_users tmu ON tmv.contact_person = tmu.iUserId ";
 			$querydata = "SELECT
 				ti.itemId,
+				ti.item_number,
 				tmv.job_summmeryId, 
 				tmv.ItemLanguage, 
 				tmv.job_no AS jobNo,
@@ -562,6 +572,7 @@ class jobstatussearch {
 				tc.vUserName AS customerName,
 				tmv.company_code AS companyCode,
 				tcu.client AS customer,
+				tc.client_currency,
 				tu.vResourceType AS serviceGroup,
 				tg.project_type AS projectType,
 				tmv.item_status AS jobStatus,
@@ -571,13 +582,17 @@ class jobstatussearch {
 				tg.order_no AS orderNum,
 				tmv.job_summmeryId AS jobId,
 				tu.iFkUserTypeId AS ifkuserId,
+				tu.freelance_currency,
 				tmv.po_number AS poNumber,
 				tmv.total_price AS jobPrice,
 				tcia.vUserName AS client_account_name,
+				ti.base_currency_rate,
+				tmv.user_base_currency_rate,
 				ti.total_amount AS totalAmount,
-				SUM(tmv.total_price) AS total_paid_to_linguist,
-				(ti.total_amount - SUM(tmv.total_price)) AS profit,
-				ROUND(((ti.total_amount - SUM(tmv.total_price)) / ti.total_amount) * 100, 2) AS profit_margin_percent
+				(ti.total_amount / ti.base_currency_rate) AS totalAmountEuro,
+				(tmv.total_price / tmv.user_base_currency_rate) AS job_price_euro,
+				((ti.total_amount / ti.base_currency_rate) - SUM(tmv.total_price / tmv.user_base_currency_rate)) AS profit_euro,
+				ROUND(((((ti.total_amount / ti.base_currency_rate) - SUM(tmv.total_price / tmv.user_base_currency_rate)) / ABS(ti.total_amount / ti.base_currency_rate)) * 100), 2) AS profit_margin_percent_euro
 
 			FROM 
 				tms_items ti
@@ -585,7 +600,7 @@ class jobstatussearch {
 			WHERE 
 				1=1 " . $where_cond . " 
 			GROUP BY
-			ti.itemId,
+			tmv.job_summmeryId,
 			tmu.iUserId,
 			tmu.vFirstName,
 			tmu.vLastName,
@@ -600,8 +615,7 @@ class jobstatussearch {
 			tmv.po_number,
 			ti.total_amount,
 			tcia.vUserName  
-			HAVING
-		    SUM(tmv.total_price) > 0.5 * ti.total_amount
+			$havingCon
 			ORDER BY " . $orderColumn . " " . $orderDir . " 
 			LIMIT $start, $length";
 
@@ -609,14 +623,25 @@ class jobstatussearch {
 			// exit;
 			$results = $this->_db->rawQueryNew($querydata);
 
-			$totalRecordsQuery = "SELECT COUNT(DISTINCT job_summmeryId) AS count, SUM(total_price) AS totalPrice, SUM(total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
+			// $totalRecordsQuery = "SELECT COUNT(DISTINCT job_summmeryId) AS count, SUM(total_price) AS totalPrice, SUM(total_price / COALESCE(NULLIF(user_base_currency_rate, 0), 1)) AS total_price_euro 
+			// FROM (
+			// SELECT  
+			// 	tmv.job_summmeryId, 
+			// 	tmv.total_price, 
+			// 	user_base_currency_rate 
+			// FROM tms_items ti 
+			// $joinTables WHERE 1=1 $where_cond ) as subquery ";
+			$totalRecordsQuery = "
+			SELECT COUNT(*) AS count
 			FROM (
-			SELECT  
-				tmv.job_summmeryId, 
-				tmv.total_price, 
-				user_base_currency_rate 
-			FROM tms_items ti 
-			$joinTables WHERE 1=1 $where_cond ) as subquery ";
+				SELECT DISTINCT job_summmeryId
+				FROM tms_items ti
+				$joinTables
+				WHERE 1=1 $where_cond
+				GROUP BY job_summmeryId, ti.total_amount, tmv.total_price, ti.base_currency_rate, tmv.user_base_currency_rate
+				$havingCon
+			) AS filtered_results";
+
 			$totalRecordsResult = $this->_db->rawQueryNew($totalRecordsQuery);
 
 			$is_multiple_currency = false;
@@ -638,8 +663,8 @@ class jobstatussearch {
 			$is_multiple_currency = count($temp_currency_arr) > 1;
 
 			$totalRecords = $totalRecordsResult[0]['count'] ?? 0;
-			$totalPrice = $totalRecordsResult[0]['totalPrice'] ?? 0;
-			$totalPriceEuro = $totalRecordsResult[0]['total_price_euro'] ?? 0;
+			$totalPrice =  0;
+			$totalPriceEuro =  0;
 
 			// $response = [
 			// 	"draw" => intval($post['draw']),
